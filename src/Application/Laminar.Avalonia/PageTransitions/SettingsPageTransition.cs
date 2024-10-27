@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Animation;
+using Avalonia.Animation.Easings;
 using Avalonia.Media;
 using Avalonia.Styling;
 using Avalonia.VisualTree;
@@ -13,6 +14,8 @@ namespace Laminar.Avalonia.PageTransitions;
 internal class SettingsPageTransition : IPageTransition
 {
     public TimeSpan Duration { get; set; }
+
+    public Easing Easing { get; set; } = new LinearEasing();
 
     public async Task Start(Visual? from, Visual? to, bool forward, CancellationToken cancellationToken)
     {
@@ -93,7 +96,8 @@ internal class SettingsPageTransition : IPageTransition
                         Cue = new Cue(1d)
                     }
                 },
-                Duration = Duration
+                Duration = Duration,
+                Easing = Easing
             };
             tasks.Add(animation.RunAsync(from, cancellationToken));
         }
@@ -130,7 +134,8 @@ internal class SettingsPageTransition : IPageTransition
                         Cue = new Cue(1d)
                     }
                 },
-                Duration = Duration
+                Duration = Duration,
+                Easing = Easing,
             };
             tasks.Add(animation.RunAsync(to, cancellationToken));
         }

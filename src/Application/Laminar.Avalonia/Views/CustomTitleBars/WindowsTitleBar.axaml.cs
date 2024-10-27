@@ -7,8 +7,11 @@ using Avalonia.Reactive;
 
 namespace Laminar.Avalonia.Views.CustomTitleBars;
 
-public partial class WindowsTitleBar : UserControl
+public partial class WindowsTitleBar : LaminarTitleBar
 {
+    public static readonly StyledProperty<Control> LaminarButtonContentProperty =
+        AvaloniaProperty.Register<WindowsTitleBar, Control>(nameof(LaminarButtonContent));
+    
     public WindowsTitleBar()
     {
         InitializeComponent();
@@ -19,6 +22,12 @@ public partial class WindowsTitleBar : UserControl
         CloseButton.Click += CloseWindow;
     }
 
+    public Control LaminarButtonContent
+    {
+        get => GetValue(LaminarButtonContentProperty);
+        set => SetValue(LaminarButtonContentProperty, value);
+    }
+    
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         if (VisualRoot is not Window hostWindow)

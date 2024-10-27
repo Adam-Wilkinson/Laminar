@@ -6,7 +6,7 @@ using Avalonia.Reactive;
 
 namespace Laminar.Avalonia.Views.CustomTitleBars;
 
-public partial class MacosTitleBar : UserControl
+public partial class MacosTitleBar : LaminarTitleBar
 {
     public MacosTitleBar()
     {

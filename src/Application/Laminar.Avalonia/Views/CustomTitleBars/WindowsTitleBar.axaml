@@ -1,12 +1,13 @@
-﻿<UserControl xmlns="https://github.com/avaloniaui"
+﻿<titlebars:LaminarTitleBar xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:s="using:System"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-			 xmlns:local="using:Laminar.Avalonia.ViewModels"
+             xmlns:titlebars="using:Laminar.Avalonia.Views.CustomTitleBars"
 			 xmlns:localshapes="using:Laminar.Avalonia.Shapes"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="Laminar.Avalonia.Views.CustomTitleBars.WindowsTitleBar"
-             DockPanel.Dock="Top">
+             SidebarState="Closed"
+             x:Class="Laminar.Avalonia.Views.CustomTitleBars.WindowsTitleBar">
   <StackPanel>
 	  <Grid Height="40">
 		  <DockPanel IsHitTestVisible="False"
@@ -21,13 +22,11 @@
 				  <TextBlock Name="ProjectText"
 							 Text="Project:"
 							 FontSize="20"
-							 FontFamily="Lucida Sans"
 							 FontWeight="UltraBold"
 							 VerticalAlignment="Center"
 							 IsHitTestVisible="False"/>
 				  <TextBlock Text="Laminar"
 							 FontSize="20"
-							 FontFamily="{StaticResource AreaKilometer50}"
 							 FontWeight="Light"
 							 VerticalAlignment="Center"
 							 IsHitTestVisible="False"/>
@@ -37,20 +36,21 @@
 			<StackPanel Orientation="Horizontal"
 						VerticalAlignment="Stretch"
 						DockPanel.Dock="Left">
-				<Button VerticalAlignment="Center" Margin="7,2,0,0" Background="#00000000">
-					<Button.Content>
+				<Button VerticalAlignment="Stretch" Background="#00000000" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Stretch" Name="LaminarButton" ClipToBounds="False">
+					<Panel Margin="3,0,0,0" Width="28">
 						<Image Source="/Assets/ProjectLaminarLogo.png"
-							   Height="25"
-							   Width="25"
-							   IsHitTestVisible="False"
-							   VerticalAlignment="Center"
-							   Name="WindowIcon"/>
-					</Button.Content>
+						       Height="28"
+						       Width="28"
+						       IsHitTestVisible="False"
+						       VerticalAlignment="Center"
+						       Name="LaminarLogo"/>
+						<Path HorizontalAlignment="Center" Name="CloseSidebarHint" Data="M 0 0 L -2 8 L 0 16" Stroke="{DynamicResource LaminarForeground}" StrokeThickness="2" Height="16" ClipToBounds="False"/>
+						<Path HorizontalAlignment="Center" Name="ExpandSidebarHint" Data="M 0 0 L 2 8 L 0 16" Stroke="{DynamicResource LaminarForeground}" StrokeThickness="2" Height="16" ClipToBounds="False"/>
+					</Panel>
 				</Button>
 				<Menu VerticalAlignment="Stretch">
 					<Menu.Styles>
 						<Style Selector=":is(MenuItem)">
-							<Setter Property="FontFamily" Value="Lucida Sans"/>
 							<Setter Property="FontSize" Value="15"/>
 							<Setter Property="FontWeight" Value="DemiBold"/>
 							<Setter Property="VerticalAlignment" Value="Stretch"/>
@@ -74,30 +74,27 @@
 						<Setter Property="Width" Value="46"/>
 						<Setter Property="BorderThickness" Value="0"/>
 					</Style>
-					<Style Selector="Button:pointerover /template/ ContentPresenter#PART_ContentPresenter">
-						<Setter Property="Background" Value="#44AAAAAA"/>
-					</Style>
 					<Style Selector="Button:not(:pointerover) /template/ ContentPresenter#PART_ContentPresenter">
 						<Setter Property="Background" Value="Transparent"/>
 					</Style>
 					<Style Selector="Path">
 						<Setter Property="Stretch" Value="Uniform"/>
 						<Setter Property="Margin" Value="10"/>
-						<Setter Property="Stroke" Value="{Binding #ProjectText.Foreground}"/>
+						<Setter Property="Stroke" Value="{DynamicResource LaminarForeground}"/>
 						<Setter Property="StrokeThickness" Value="2"/>
 					</Style>
 				</StackPanel.Styles>
 
 				<ToggleButton Name="SettingsButton"
-					    IsChecked="{Binding SettingsOpen, Mode=TwoWay, DataType={x:Type local:MainWindowViewModel}}"
 						Classes="SettingsButton"
 						ToolTip.Tip="Settings"
 						HorizontalContentAlignment="Center"
 						VerticalContentAlignment="Center"
 						VerticalAlignment="Stretch"
-						Margin="0,0,20,0">
+						Margin="0,0,20,0"
+						HotKey="Ctrl+Alt+S">
 					<Panel>
-						<localshapes:SettingsCog Classes="SettingsCog" Width="19" Height="19" SpokeDepth="4" SpokeCount="8" Stroke="{Binding #ProjectText.Foreground}" StrokeThickness="1.5"/>
+						<localshapes:SettingsCog Classes="SettingsCog" Width="19" Height="19" SpokeDepth="4.5" SpokeCount="8" Stroke="{DynamicResource LaminarForeground}" StrokeThickness="1.5"/>
 						<Border Classes="SettingsArrowRotater">
 							<Path Classes="SettingsArrow" Data="M 0 0 L 3 1 L 6 0" Height="20" Width="17" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" StrokeThickness="1.5"/>
 						</Border>
@@ -135,16 +132,24 @@
 			</StackPanel>
 		  </DockPanel>
 	  </Grid>
+	  
+	  <StackPanel.Resources>
+		  <ResourceDictionary>
+			  <Easing x:Key="SettingsButtonEasing">QuadraticEaseInOut</Easing>
+			  <s:TimeSpan x:Key="SettingsButtonDuration">0:0:0.3</s:TimeSpan>
+		  </ResourceDictionary>
+	  </StackPanel.Resources>
+	  
 	  <StackPanel.Styles>
 		  <Style Selector="ToggleButton.SettingsButton">
 			  <Setter Property="Background" Value="Transparent"/>
 			  <Style Selector="^ :is(Shape).SettingsCog">
 				  <Setter Property="Fill" Value="Transparent"/>
-				  <Setter Property="RenderTransform" Value="rotate(0)"/>
+				  <Setter Property="RenderTransform" Value="rotate(0) scale(1.1)"/>
 				  <Setter Property="Transitions">
 					  <Transitions>
-						  <TransformOperationsTransition Duration="0:0:0.2" Property="RenderTransform"/>
-						  <BrushTransition Duration="0:0:0.2" Property="Fill"/>
+						  <TransformOperationsTransition Easing="{DynamicResource SettingsButtonEasing}" Duration="{DynamicResource SettingsButtonDuration}" Property="RenderTransform"/>
+						  <BrushTransition Easing="{DynamicResource SettingsButtonEasing}" Duration="{DynamicResource SettingsButtonDuration}" Property="Fill"/>
 					  </Transitions>
 				  </Setter>
 			  </Style>
@@ -153,8 +158,8 @@
 				  <Setter Property="RenderTransform" Value="translatey(20px)"/>
 				  <Setter Property="Transitions">
 					  <Transitions>
-						  <TransformOperationsTransition Duration="0:0:0.2" Property="RenderTransform"/>
-						  <DoubleTransition Duration="0:0:0.2" Property="Opacity"/>
+						  <TransformOperationsTransition Easing="{DynamicResource SettingsButtonEasing}" Duration="{DynamicResource SettingsButtonDuration}" Property="RenderTransform"/>
+						  <DoubleTransition Easing="{DynamicResource SettingsButtonEasing}" Duration="{DynamicResource SettingsButtonDuration}" Property="Opacity"/>
 					  </Transitions>
 				  </Setter>
 			  </Style>
@@ -162,7 +167,7 @@
 				  <Setter Property="RenderTransform" Value="rotate(0deg)"/>
 				  <Setter Property="Transitions">
 					  <Transitions>
-						  <TransformOperationsTransition Duration="0:0:0.2" Property="RenderTransform"/>
+						  <TransformOperationsTransition Easing="{DynamicResource SettingsButtonEasing}" Duration="{DynamicResource SettingsButtonDuration}" Property="RenderTransform"/>
 					  </Transitions>
 				  </Setter>				  
 			  </Style>
@@ -170,6 +175,7 @@
 			  <Style Selector="^:pointerover">
 				  <Setter Property="Background" Value="Transparent"/>
 				  <Style Selector="^ :is(Shape).SettingsCog">
+					  <Setter Property="RenderTransform" Value="rotate(0) scale(1)"/>
 					  <Setter Property="Fill" Value="{Binding $self.Stroke}"/>
 				  </Style>
 
@@ -185,7 +191,7 @@
 				  </Style>
 				  <Style Selector="^ :is(Shape).SettingsCog">
 					  <Setter Property="Fill" Value="{Binding $self.Stroke}"/>
-					  <Setter Property="RenderTransform" Value="rotate(45deg)"/>
+					  <Setter Property="RenderTransform" Value="rotate(20deg)"/>
 				  </Style>
 				  <Style Selector="^ :is(Control).SettingsArrow">
 					  <Setter Property="Opacity" Value="1"/>
@@ -196,6 +202,55 @@
 				  </Style>
 			  </Style>
 		  </Style>
+		  
+		  <Style Selector=":is(Button)#LaminarButton">
+			  <Setter Property="IsHitTestVisible" Value="False"/>
+			  <Style Selector="^ Image#LaminarLogo">
+				  <Setter Property="RenderTransform" Value="translatex(0)"/>
+				  <Setter Property="Transitions">
+					  <Transitions>
+						  <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.3" Easing="QuadraticEaseInOut"/>
+					  </Transitions>
+				  </Setter>
+			  </Style>
+			  <Style Selector="^ Path">
+				  <Setter Property="Opacity" Value="0"/>
+				  <Setter Property="Transitions">
+					  <Transitions>
+						  <DoubleTransition Property="Opacity" Duration="0:0:0.3" Easing="QuadraticEaseInOut"/>
+						  <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.3" Easing="QuadraticEaseInOut"/>
+					  </Transitions>
+				  </Setter>
+				  <Style Selector="^#ExpandSidebarHint">
+					  <Setter Property="RenderTransform" Value="translatex(10px)"/>
+				  </Style>
+				  <Style Selector="^#CloseSidebarHint">
+					  <Setter Property="RenderTransform" Value="translatex(-10px)"/>
+				  </Style>
+			  </Style>
+		  </Style>
+		  
+		  <Style Selector=":is(titlebars|LaminarTitleBar)[SidebarState=Expanded] :is(Button)#LaminarButton">
+			  <Setter Property="IsHitTestVisible" Value="True"/>
+			  <Style Selector="^ Image#LaminarLogo">
+				  <Setter Property="RenderTransform" Value="translatex(2px)"/>
+			  </Style>
+			  <Style Selector="^ Path#CloseSidebarHint">
+				  <Setter Property="RenderTransform" Value="translatex(-14px)"/>
+				  <Setter Property="Opacity" Value="1"/>
+			  </Style>
+		  </Style>
+		
+		  <Style Selector=":is(titlebars|LaminarTitleBar)[SidebarState=Closed] :is(Button)#LaminarButton">
+			  <Setter Property="IsHitTestVisible" Value="True"/>
+			  <Style Selector="^ Image#LaminarLogo">
+				  <Setter Property="RenderTransform" Value="translatex(-2px)"/>
+			  </Style>
+			  <Style Selector="^ Path#ExpandSidebarHint">
+				  <Setter Property="RenderTransform" Value="translatex(15px)"/>
+				  <Setter Property="Opacity" Value="1"/>
+			  </Style>
+		  </Style>
 	  </StackPanel.Styles>
   </StackPanel>
-</UserControl>
+</titlebars:LaminarTitleBar>

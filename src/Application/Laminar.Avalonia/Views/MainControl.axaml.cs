@@ -1,11 +1,12 @@
 using Avalonia;
 using Avalonia.Controls;
-using Laminar.Avalonia.ViewModels;
+using Avalonia.Markup.Xaml;
 
 namespace Laminar.Avalonia.Views;
-public partial class MainWindow : Window
+
+public partial class MainControl : UserControl
 {
-    public MainWindow()
+    public MainControl()
     {
         InitializeComponent();
     }

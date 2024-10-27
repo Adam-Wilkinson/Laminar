@@ -5,11 +5,11 @@ using static Laminar.PluginFramework.LaminarFactory;
 
 namespace Laminar.Benchmarks.BenchmarkNodes;
 
-public class ValueIOBenchmarNode : INode
+public partial class ValueIoBenchmarkNode : INode
 {
-    public readonly static List<ValueIOBenchmarNode> Instances = new();
+    public static readonly List<ValueIoBenchmarkNode> Instances = new();
 
-    public ValueIOBenchmarNode()
+    public ValueIoBenchmarkNode()
     {
         Instances.Add(this);
     }

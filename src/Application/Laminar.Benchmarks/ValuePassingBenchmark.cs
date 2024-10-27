@@ -27,10 +27,10 @@ public class ValuePassingBenchmark
     private ValueInput<double> _firstInput;
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-    private ValueIOBenchmarNode _fieldsFirstNode;
+    private ValueIoBenchmarkNode _fieldsFirstNode;
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-    private ValueIOBenchmarNode _fieldsLastNode;
+    private ValueIoBenchmarkNode _fieldsLastNode;
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
     [GlobalSetup]
@@ -40,10 +40,10 @@ public class ValuePassingBenchmark
         _scriptEditor = instance.ServiceProvider.GetService<IScriptEditor>()!;
         _nodeWrapperFactory = instance.ServiceProvider.GetService<INodeFactory>()!;
 
-        SetupScript<ValueIOBenchmarNode>(_script1, 500);
+        SetupScript<ValueIoBenchmarkNode>(_script1, 500);
 
-        _fieldsFirstNode = ValueIOBenchmarNode.Instances[1];
-        _fieldsLastNode = ValueIOBenchmarNode.Instances[^1];
+        _fieldsFirstNode = ValueIoBenchmarkNode.Instances[1];
+        _fieldsLastNode = ValueIoBenchmarkNode.Instances[^1];
     }
 
     private void SetupScript<T>(IScript script, int nodeCount) where T : INode, new()

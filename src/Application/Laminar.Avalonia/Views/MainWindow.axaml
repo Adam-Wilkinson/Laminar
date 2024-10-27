@@ -5,11 +5,13 @@
 		xmlns:pagetransitions="using:Laminar.Avalonia.PageTransitions"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:views="clr-namespace:Laminar.Avalonia.Views"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="Laminar.Avalonia.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
         Icon="/Assets/ProjectLaminarLogo.png"
         Title="Project: Laminar"
+		FontFamily="Lucida Sans"
 		Background="{DynamicResource LaminarBackground}"
 		Foreground="{DynamicResource LaminarForeground}"
 		ExtendClientAreaToDecorationsHint="True"
@@ -23,17 +25,24 @@
     </Design.DataContext>
 
 	<DockPanel VerticalAlignment="Stretch">
-		<titlebars:WindowsTitleBar DockPanel.Dock="Top"/>
-		<titlebars:MacosTitleBar DockPanel.Dock="Top"/>
-		<TransitioningContentControl IsTransitionReversed="{Binding SettingsOpen}" 
+		<titlebars:WindowsTitleBar DockPanel.Dock="Top" SidebarState="{Binding SidebarState}"/>
+		<titlebars:MacosTitleBar DockPanel.Dock="Top" SidebarState="{Binding SidebarState}"/>
+		<TransitioningContentControl IsTransitionReversed="{Binding !SettingsOpen}" 
 									 VerticalAlignment="Stretch" 
 									 VerticalContentAlignment="Stretch" 
 									 Content="{Binding WindowCentralControl}">
 			<TransitioningContentControl.PageTransition>
-				<pagetransitions:SettingsPageTransition Duration="0:0:0.2"/>
+				<pagetransitions:SettingsPageTransition Easing="QuadraticEaseInOut" Duration="0:0:0.3"/>
 			</TransitioningContentControl.PageTransition>
 		</TransitioningContentControl>
+		
+		<DockPanel.Styles>
+			<Style Selector=":is(ToggleButton)#SettingsButton">
+				<Setter Property="IsChecked" Value="{Binding SettingsOpen, Mode=TwoWay}"/>
+			</Style>
+			<Style Selector=":is(Button)#LaminarButton">
+				<Setter Property="Command" Value="{Binding ToggleSidebar}"/>
+			</Style>
+		</DockPanel.Styles>
 	</DockPanel>
-
-
 </Window>
