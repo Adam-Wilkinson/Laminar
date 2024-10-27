@@ -2,11 +2,11 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 
-namespace Laminar.Avalonia;
+namespace Laminar.Avalonia.Views;
 
-public partial class SettingsOverlay : UserControl
+public partial class SettingsView : UserControl
 {
-    public SettingsOverlay()
+    public SettingsView()
     {
         InitializeComponent();
     }

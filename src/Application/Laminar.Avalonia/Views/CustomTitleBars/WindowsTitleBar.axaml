@@ -236,7 +236,7 @@
 				  <Setter Property="RenderTransform" Value="translatex(2px)"/>
 			  </Style>
 			  <Style Selector="^ Path#CloseSidebarHint">
-				  <Setter Property="RenderTransform" Value="translatex(-14px)"/>
+				  <Setter Property="RenderTransform" Value="translatex(-15px)"/>
 				  <Setter Property="Opacity" Value="1"/>
 			  </Style>
 		  </Style>

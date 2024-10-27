@@ -1,0 +1,70 @@
+using System;
+using System.ComponentModel;
+using System.Threading.Tasks;
+using Avalonia.Animation;
+using Avalonia.Controls;
+using Laminar.Avalonia.AdjustableStackPanel;
+using Laminar.Avalonia.ViewModels;
+
+namespace Laminar.Avalonia.Views;
+
+public partial class MainControlView : UserControl
+{
+    private readonly DoubleTransition _opacityTransition = new() { Property = OpacityProperty };
+    private double _lastFileNavigatorSize = -1;
+
+    public MainControlView()
+    {
+        InitializeComponent();
+    }
+
+    public void CloseFileNavigator()
+    {
+        FileNavigator.Transitions ??= [];
+        _opacityTransition.Duration = SidebarStackPanel.TransitionDuration;
+        FileNavigator.Transitions.Add(_opacityTransition);
+        _lastFileNavigatorSize = ResizeWidget.GetOrCreateResizer(FileNavigator).Size;
+
+        FileNavigator.Opacity = 0;
+        ResizeWidget.GetOrCreateResizer(FileNavigator).SetSizeTo(0, true);
+    }
+
+    public async void OpenFileNavigator()
+    {
+        if (_lastFileNavigatorSize < 0)
+        {
+            return;
+        }
+        
+        ResizeWidget.GetOrCreateResizer(FileNavigator).SetSizeTo(_lastFileNavigatorSize, true);
+        FileNavigator.Opacity = 1;
+
+        await Task.Delay(SidebarStackPanel.TransitionDuration);
+        
+        FileNavigator.Transitions?.Remove(_opacityTransition);
+    }
+
+    protected override void OnDataContextChanged(EventArgs e)
+    {
+        if (DataContext is not MainControlViewModel vm)
+        {
+            return;
+        }
+
+        vm.PropertyChanged += DataContext_PropertyChanged;
+        DataContext_PropertyChanged(vm, new PropertyChangedEventArgs(nameof(MainControlViewModel.SidebarExpanded)));
+    }
+
+    private void DataContext_PropertyChanged(object? sender, PropertyChangedEventArgs args)
+    {
+        if (args.PropertyName != nameof(MainControlViewModel.SidebarExpanded) || DataContext is not MainControlViewModel vm) return;
+        if (vm.SidebarExpanded)
+        {
+            OpenFileNavigator();
+        }
+        else
+        {
+            CloseFileNavigator();
+        }
+    }
+}

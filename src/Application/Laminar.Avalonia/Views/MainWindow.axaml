@@ -30,6 +30,8 @@
 		<TransitioningContentControl IsTransitionReversed="{Binding !SettingsOpen}" 
 									 VerticalAlignment="Stretch" 
 									 VerticalContentAlignment="Stretch" 
+									 HorizontalContentAlignment="Stretch"
+									 HorizontalAlignment="Stretch"
 									 Content="{Binding WindowCentralControl}">
 			<TransitioningContentControl.PageTransition>
 				<pagetransitions:SettingsPageTransition Easing="QuadraticEaseInOut" Duration="0:0:0.3"/>

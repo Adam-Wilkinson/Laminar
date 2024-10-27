@@ -35,8 +35,8 @@ internal class SettingsPageTransition : IPageTransition
         var scaleXProperty = ScaleTransform.ScaleXProperty;
         var scaleYProperty = ScaleTransform.ScaleYProperty;
 
-        var fromInitialScale = forward ? 1 : 0.8;
-        var fromFinalScale = forward ? 0.8 : 1;
+        var fromInitialScale = forward ? 1 : 0.9;
+        var fromFinalScale = forward ? 0.9 : 1;
 
         if (from is not null)
         {
@@ -55,16 +55,16 @@ internal class SettingsPageTransition : IPageTransition
                                 Property = translateYProperty,
                                 Value = 0d,
                             },
-                            new Setter
-                            {
-                                Property = scaleXProperty,
-                                Value = fromInitialScale
-                            },
-                            new Setter
-                            {
-                                Property = scaleYProperty,
-                                Value = fromInitialScale,
-                            },
+                            // new Setter
+                            // {
+                            //     Property = scaleXProperty,
+                            //     Value = fromInitialScale
+                            // },
+                            // new Setter
+                            // {
+                            //     Property = scaleYProperty,
+                            //     Value = fromInitialScale,
+                            // },
                             new Setter
                             {
                                 Property = Visual.OpacityProperty,
@@ -77,16 +77,16 @@ internal class SettingsPageTransition : IPageTransition
                     {
                         Setters = 
                         { 
-                            new Setter
-                            {
-                                Property = scaleXProperty, 
-                                Value = fromFinalScale
-                            },
-                            new Setter
-                            {
-                                Property = scaleYProperty,
-                                Value = fromFinalScale
-                            },
+                            // new Setter
+                            // {
+                            //     Property = scaleXProperty, 
+                            //     Value = fromFinalScale
+                            // },
+                            // new Setter
+                            // {
+                            //     Property = scaleYProperty,
+                            //     Value = fromFinalScale
+                            // },
                             new Setter
                             {
                                 Property = Visual.OpacityProperty,

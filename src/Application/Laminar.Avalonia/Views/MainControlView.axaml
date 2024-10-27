@@ -1,0 +1,62 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:asp="using:Laminar.Avalonia.AdjustableStackPanel"
+             HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="Laminar.Avalonia.Views.MainControlView">
+    <DockPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+        <asp:AdjustableStackPanel DockPanel.Dock="Left" HorizontalAlignment="Left" VerticalAlignment="Stretch" Orientation="Horizontal" Name="SidebarStackPanel" TransitionDuration="0:0:0.3" TransitionEasing="QuadraticEaseInOut">
+            <TextBlock Background="{DynamicResource LaminarBackgroundLighter}" Name="FileNavigator" MinWidth="200" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">The file navigator</TextBlock>
+        </asp:AdjustableStackPanel>
+        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">The script editor</TextBlock>
+        <!-- -->
+        <!-- <DockPanel.Styles> -->
+        <!--     <Style Selector="asp|AdjustableStackPanel#SidebarStackPanel asp|ResizeWidget"> -->
+        <!--         <Setter Property="Theme" Value="{StaticResource Slim}"/> -->
+        <!--     </Style> -->
+        <!-- </DockPanel.Styles> -->
+        <!-- -->
+        <DockPanel.Resources>
+            <ControlTheme x:Key="{x:Type asp:ResizeWidget}" TargetType="{x:Type asp:ResizeWidget}">
+                <Setter Property="Template">
+                    <ControlTemplate>
+                        <Panel ClipToBounds="False">
+                            <Rectangle Classes="Default"
+                                       Name="PART_DefaultResizeZone"
+                                       MinHeight="2"
+                                       MinWidth="2"
+                                       Fill="#0000"/>
+                        </Panel>
+                    </ControlTemplate>
+                </Setter>
+
+                <Style Selector="^ /template/ Rectangle.Default">
+                    <Setter Property="RenderTransform" Value="Translate(0px,0px)"/>
+                    <Setter Property="Opacity" Value="0.6"/>
+                    <Setter Property="Transitions">
+                        <Setter.Value>
+                            <Transitions>
+                                <DoubleTransition Property="Opacity" Duration="0:0:0.4"/>
+                            </Transitions>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+
+
+                <Style Selector="^[Orientation=Vertical] /template/ Rectangle.Default">
+                    <Setter Property="Cursor" Value="SizeNorthSouth"/>
+                </Style>
+
+                <Style Selector="^[Orientation=Horizontal] /template/ Rectangle.Default">
+                    <Setter Property="Cursor" Value="SizeWestEast"/>
+                </Style>
+
+                <Style Selector="^:Default /template/ Rectangle.Default">
+                    <Setter Property="Opacity" Value="1.0"/>
+                </Style>
+            </ControlTheme>
+        </DockPanel.Resources>
+    </DockPanel>
+</UserControl>

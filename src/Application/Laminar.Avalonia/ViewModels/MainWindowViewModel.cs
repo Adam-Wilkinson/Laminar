@@ -1,51 +1,48 @@
-﻿using System.Diagnostics;
-using Avalonia.Controls;
-using Avalonia.Layout;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using Laminar.Avalonia.Views;
 
 namespace Laminar.Avalonia.ViewModels;
 
 public partial class MainWindowViewModel : ViewModelBase
 {
-    private readonly SettingsOverlay _settingsOverlay = new();
-    private readonly MainControl _laminarEditor = new();
+    private readonly SettingsViewModel _settings = new();
+    private readonly MainControlView _mainControl = new();
     
-    private bool _settingsOpen = false;
+    [ObservableProperty] private bool _settingsOpen;
     private bool _sidebarOpen = true;
     
     public MainWindowViewModel()
     {
-        WindowCentralControl = _laminarEditor;
+        WindowCentralControl = _mainControl;
     }
 
-    public SidebarState SidebarState => _settingsOpen
+    public SidebarState SidebarState => SettingsOpen
         ? SidebarState.Unchangeable
         : (_sidebarOpen ? SidebarState.Expanded : SidebarState.Closed);
 
-    public Control WindowCentralControl { get; set; }
-
-    public bool SettingsOpen
-    {
-        get => _settingsOpen;
-        set
-        {
-            if (_settingsOpen == value) return;
-            
-            _settingsOpen = value;
-            WindowCentralControl = _settingsOpen ? _settingsOverlay : _laminarEditor;
-            OnPropertyChanged(nameof(WindowCentralControl));
-            OnPropertyChanged(nameof(SidebarState));
-            OnPropertyChanged();
-        }
-    }
+    public object WindowCentralControl { get; set; }
 
     public void ToggleSidebar()
     {
-        if (!_settingsOpen)
+        if (SettingsOpen) return;
+        
+        _sidebarOpen = !_sidebarOpen;
+        if (_sidebarOpen)
         {
-            _sidebarOpen = !_sidebarOpen;
-            OnPropertyChanged(nameof(SidebarState));
+            _mainControl.OpenFileNavigator();
         }
+        else
+        {
+            _mainControl.CloseFileNavigator();
+        }
+        OnPropertyChanged(nameof(SidebarState));
+    }
+
+    partial void OnSettingsOpenChanged(bool oldValue, bool newValue)
+    {
+        WindowCentralControl = newValue ? _settings : _mainControl;
+        OnPropertyChanged(nameof(WindowCentralControl));
+        OnPropertyChanged(nameof(SidebarState));
     }
 }
 
