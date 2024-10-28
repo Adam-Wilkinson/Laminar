@@ -3,6 +3,7 @@
              xmlns:s="using:System"
              x:Class="Laminar.Avalonia.App"
              xmlns:local="using:Laminar.Avalonia"
+             xmlns:conv="clr-namespace:Laminar.Avalonia.Converters"
              RequestedThemeVariant="Default">
              <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
 
@@ -13,59 +14,64 @@
     <Application.Styles>
         <FluentTheme />
         <Style Selector="TextBlock.h1">
-	        <Setter Property="FontSize" Value="32"/>
+	        <Setter Property="FontSize" Value="{DynamicResource H1FontSize}"/>
 	        <Setter Property="FontWeight" Value="DemiBold"/>
         </Style>
         
         <Style Selector="TextBlock.h2">
-	        <Setter Property="FontSize" Value="24"/>
+	        <Setter Property="FontSize" Value="{DynamicResource H2FontSize}"/>
 	        <Setter Property="FontWeight" Value="Medium"/>
         </Style>
         
         <Style Selector="TextBlock">
-	        <Setter Property="FontSize" Value="18"/>
+	        <Setter Property="FontSize" Value="{DynamicResource B1FontSize}"/>
 	        <Setter Property="FontWeight" Value="Normal"/>
         </Style>
         
         <Style Selector="TextBlock.b2">
-	        <Setter Property="FontSize" Value="14"/>
+	        <Setter Property="FontSize" Value="{DynamicResource B2FontSize}"/>
 	        <Setter Property="FontWeight" Value="SemiLight"/>
         </Style>
         
         <Style Selector=":is(TemplatedControl).h1">
-	        <Setter Property="FontSize" Value="32"/>
+	        <Setter Property="FontSize" Value="{DynamicResource H1FontSize}"/>
 	        <Setter Property="FontWeight" Value="DemiBold"/>
         </Style>
         
         <Style Selector=":is(TemplatedControl).h2">
-	        <Setter Property="FontSize" Value="24"/>
+	        <Setter Property="FontSize" Value="{DynamicResource H2FontSize}"/>
 	        <Setter Property="FontWeight" Value="Medium"/>
         </Style>
         
         <Style Selector=":is(TemplatedControl)">
-	        <Setter Property="FontSize" Value="18"/>
+	        <Setter Property="FontSize" Value="{DynamicResource B1FontSize}"/>
 	        <Setter Property="FontWeight" Value="Normal"/>
         </Style>
         
         <Style Selector=":is(TemplatedControl).b2">
-	        <Setter Property="FontSize" Value="14"/>
+	        <Setter Property="FontSize" Value="{DynamicResource B2FontSize}"/>
 	        <Setter Property="FontWeight" Value="SemiLight"/>
         </Style>
         
         <Style Selector="Window">
 	        <Setter Property="Foreground" Value="{DynamicResource LaminarForeground}"/>
 	        <Setter Property="Background" Value="{DynamicResource LaminarBackground}"/>
-	        <Setter Property="FontFamily" Value="lucida sans"/>
+	        <Setter Property="FontFamily" Value="{DynamicResource AreaKilometer}"/>
         </Style>
     </Application.Styles>
 
 	<Application.Resources>
 		<ResourceDictionary>
-			<FontFamily x:Key="LaminarIcons">avares://Laminar.Avalonia/Assets/IconWorksRegular</FontFamily>
-			<FontFamily x:Key="AreaKilometer">avares://Laminar.Avalonia/Assets/AreaKilometer50</FontFamily>
-			<FontFamily x:Key="Abyssinica">avares://Laminar.Avalonia/Assets/AbyssinicaSIL-Regular</FontFamily>
+			<FontFamily x:Key="LaminarIcons">/Assets/Fonts/IconWorksRegular.ttf#Icon-Works</FontFamily>
+			<FontFamily x:Key="AreaKilometer">/Assets/Fonts/AreaKilometer50.ttf#a Area Kilometer 50</FontFamily>
+			<FontFamily x:Key="Abyssinica">/Assets/Fonts/AbyssinicaSIL-Regular.ttf#Abyssinica SIL</FontFamily>
 			
-			<s:TimeSpan x:Key="AnimationDuration">0:0:0.3</s:TimeSpan>
+			<s:Double x:Key="H1FontSize">34</s:Double>
+			<s:Double x:Key="H2FontSize">24</s:Double>
+			<s:Double x:Key="B1FontSize">18</s:Double>
+			<s:Double x:Key="B2FontSize">14</s:Double>
+			
+			<s:TimeSpan x:Key="AnimationDuration">0:0:0.2</s:TimeSpan>
 			<Easing x:Key="AnimationEasing">QuadraticEaseInOut</Easing>
 			
 			<ResourceDictionary.ThemeDictionaries>
@@ -86,6 +92,8 @@
 					<Color x:Key='LaminarAccent'>#ab98e7</Color>
 				</ResourceDictionary>
 			</ResourceDictionary.ThemeDictionaries>
+			
+			<conv:ScaleNameConverter x:Key="ScaleNameConverter"/>
 		</ResourceDictionary>
 	</Application.Resources>
 </Application>

@@ -9,7 +9,7 @@
              SidebarState="Closed"
              x:Class="Laminar.Avalonia.Views.CustomTitleBars.WindowsTitleBar">
   <StackPanel>
-	  <Grid Height="40">
+	  <Grid Height="45">
 		  <DockPanel IsHitTestVisible="False"
 					Name="TitleBarBackground">
 			  <DockPanel.Background>
@@ -51,7 +51,8 @@
 				<Menu VerticalAlignment="Stretch">
 					<Menu.Styles>
 						<Style Selector=":is(MenuItem)">
-							<Setter Property="FontWeight" Value="SemiBold"/>
+							<Setter Property="FontSize" Value="18"/>
+							<Setter Property="FontWeight" Value="350"/>
 							<Setter Property="VerticalAlignment" Value="Stretch"/>
 						</Style>
 					</Menu.Styles>

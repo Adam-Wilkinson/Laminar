@@ -7,7 +7,7 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="Laminar.Avalonia.Views.MainControlView">
     <DockPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-        <asp:AdjustableStackPanel DockPanel.Dock="Left" HorizontalAlignment="Left" VerticalAlignment="Stretch" Orientation="Horizontal" Name="SidebarStackPanel" TransitionDuration="0:0:0.3" TransitionEasing="QuadraticEaseInOut">
+        <asp:AdjustableStackPanel DockPanel.Dock="Left" HorizontalAlignment="Left" VerticalAlignment="Stretch" Orientation="Horizontal" Name="SidebarStackPanel" TransitionDuration="{DynamicResource AnimationDuration}" TransitionEasing="{DynamicResource AnimationEasing}">
             <Panel Background="{DynamicResource LaminarBackgroundLighter}"  Name="FileNavigator">
                 <TextBlock Classes="h2" MinWidth="1" Margin="10" HorizontalAlignment="Center" VerticalAlignment="Center">The file navigator</TextBlock>
             </Panel>
