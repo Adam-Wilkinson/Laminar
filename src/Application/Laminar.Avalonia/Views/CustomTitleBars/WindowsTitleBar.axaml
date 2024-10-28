@@ -19,15 +19,15 @@
 				  </LinearGradientBrush>
 			  </DockPanel.Background>
 			  <StackPanel HorizontalAlignment="Center" Orientation="Horizontal" Spacing="5">
-				  <TextBlock Name="ProjectText"
+				  <TextBlock Name="ProjectText" Classes="h2"
 							 Text="Project:"
-							 FontSize="20"
-							 FontWeight="UltraBold"
+							 FontWeight="Bold"
+							 FontSize="24"
 							 VerticalAlignment="Center"
 							 IsHitTestVisible="False"/>
-				  <TextBlock Text="Laminar"
-							 FontSize="20"
-							 FontWeight="Light"
+				  <TextBlock Text="Laminar" Classes="h2"
+							 FontSize="24"
+							 FontWeight="SemiLight"
 							 VerticalAlignment="Center"
 							 IsHitTestVisible="False"/>
 			  </StackPanel>
@@ -51,8 +51,7 @@
 				<Menu VerticalAlignment="Stretch">
 					<Menu.Styles>
 						<Style Selector=":is(MenuItem)">
-							<Setter Property="FontSize" Value="15"/>
-							<Setter Property="FontWeight" Value="DemiBold"/>
+							<Setter Property="FontWeight" Value="SemiBold"/>
 							<Setter Property="VerticalAlignment" Value="Stretch"/>
 						</Style>
 					</Menu.Styles>
@@ -132,14 +131,7 @@
 			</StackPanel>
 		  </DockPanel>
 	  </Grid>
-	  
-	  <StackPanel.Resources>
-		  <ResourceDictionary>
-			  <Easing x:Key="SettingsButtonEasing">QuadraticEaseInOut</Easing>
-			  <s:TimeSpan x:Key="SettingsButtonDuration">0:0:0.3</s:TimeSpan>
-		  </ResourceDictionary>
-	  </StackPanel.Resources>
-	  
+
 	  <StackPanel.Styles>
 		  <Style Selector="ToggleButton.SettingsButton">
 			  <Setter Property="Background" Value="Transparent"/>
@@ -148,18 +140,18 @@
 				  <Setter Property="RenderTransform" Value="rotate(0) scale(1.1)"/>
 				  <Setter Property="Transitions">
 					  <Transitions>
-						  <TransformOperationsTransition Easing="{DynamicResource SettingsButtonEasing}" Duration="{DynamicResource SettingsButtonDuration}" Property="RenderTransform"/>
-						  <BrushTransition Easing="{DynamicResource SettingsButtonEasing}" Duration="{DynamicResource SettingsButtonDuration}" Property="Fill"/>
+						  <TransformOperationsTransition Easing="{DynamicResource AnimationEasing}" Duration="{DynamicResource AnimationDuration}" Property="RenderTransform"/>
+						  <BrushTransition Easing="{DynamicResource AnimationEasing}" Duration="{DynamicResource AnimationDuration}" Property="Fill"/>
 					  </Transitions>
 				  </Setter>
 			  </Style>
 			  <Style Selector="^ :is(Control).SettingsArrow">
 				  <Setter Property="Opacity" Value="0"/>
-				  <Setter Property="RenderTransform" Value="translatey(20px)"/>
+				  <Setter Property="RenderTransform" Value="translatey(18px)"/>
 				  <Setter Property="Transitions">
 					  <Transitions>
-						  <TransformOperationsTransition Easing="{DynamicResource SettingsButtonEasing}" Duration="{DynamicResource SettingsButtonDuration}" Property="RenderTransform"/>
-						  <DoubleTransition Easing="{DynamicResource SettingsButtonEasing}" Duration="{DynamicResource SettingsButtonDuration}" Property="Opacity"/>
+						  <TransformOperationsTransition Easing="{DynamicResource AnimationEasing}" Duration="{DynamicResource AnimationDuration}" Property="RenderTransform"/>
+						  <DoubleTransition Easing="{DynamicResource AnimationEasing}" Duration="{DynamicResource AnimationDuration}" Property="Opacity"/>
 					  </Transitions>
 				  </Setter>
 			  </Style>
@@ -167,7 +159,7 @@
 				  <Setter Property="RenderTransform" Value="rotate(0deg)"/>
 				  <Setter Property="Transitions">
 					  <Transitions>
-						  <TransformOperationsTransition Easing="{DynamicResource SettingsButtonEasing}" Duration="{DynamicResource SettingsButtonDuration}" Property="RenderTransform"/>
+						  <TransformOperationsTransition Easing="{DynamicResource AnimationEasing}" Duration="{DynamicResource AnimationDuration}" Property="RenderTransform"/>
 					  </Transitions>
 				  </Setter>				  
 			  </Style>
@@ -209,7 +201,7 @@
 				  <Setter Property="RenderTransform" Value="translatex(0)"/>
 				  <Setter Property="Transitions">
 					  <Transitions>
-						  <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.3" Easing="QuadraticEaseInOut"/>
+						  <TransformOperationsTransition Property="RenderTransform" Duration="{DynamicResource AnimationDuration}" Easing="{DynamicResource AnimationEasing}"/>
 					  </Transitions>
 				  </Setter>
 			  </Style>
@@ -217,8 +209,8 @@
 				  <Setter Property="Opacity" Value="0"/>
 				  <Setter Property="Transitions">
 					  <Transitions>
-						  <DoubleTransition Property="Opacity" Duration="0:0:0.3" Easing="QuadraticEaseInOut"/>
-						  <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.3" Easing="QuadraticEaseInOut"/>
+						  <DoubleTransition Property="Opacity" Duration="{DynamicResource AnimationDuration}" Easing="{DynamicResource AnimationEasing}"/>
+						  <TransformOperationsTransition Property="RenderTransform" Duration="{DynamicResource AnimationDuration}" Easing="{DynamicResource AnimationEasing}"/>
 					  </Transitions>
 				  </Setter>
 				  <Style Selector="^#ExpandSidebarHint">

@@ -8,16 +8,11 @@
              x:Class="Laminar.Avalonia.Views.MainControlView">
     <DockPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
         <asp:AdjustableStackPanel DockPanel.Dock="Left" HorizontalAlignment="Left" VerticalAlignment="Stretch" Orientation="Horizontal" Name="SidebarStackPanel" TransitionDuration="0:0:0.3" TransitionEasing="QuadraticEaseInOut">
-            <TextBlock Background="{DynamicResource LaminarBackgroundLighter}" Name="FileNavigator" MinWidth="200" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">The file navigator</TextBlock>
+            <Panel Background="{DynamicResource LaminarBackgroundLighter}"  Name="FileNavigator">
+                <TextBlock Classes="h2" MinWidth="1" Margin="10" HorizontalAlignment="Center" VerticalAlignment="Center">The file navigator</TextBlock>
+            </Panel>
         </asp:AdjustableStackPanel>
-        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">The script editor</TextBlock>
-        <!-- -->
-        <!-- <DockPanel.Styles> -->
-        <!--     <Style Selector="asp|AdjustableStackPanel#SidebarStackPanel asp|ResizeWidget"> -->
-        <!--         <Setter Property="Theme" Value="{StaticResource Slim}"/> -->
-        <!--     </Style> -->
-        <!-- </DockPanel.Styles> -->
-        <!-- -->
+        <TextBlock Classes="h2" HorizontalAlignment="Center" VerticalAlignment="Center">The script editor</TextBlock>
         <DockPanel.Resources>
             <ControlTheme x:Key="{x:Type asp:ResizeWidget}" TargetType="{x:Type asp:ResizeWidget}">
                 <Setter Property="Template">

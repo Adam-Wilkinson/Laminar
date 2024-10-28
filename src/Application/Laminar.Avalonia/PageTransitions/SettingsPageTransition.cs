@@ -9,13 +9,25 @@ using Avalonia.Media;
 using Avalonia.Styling;
 using Avalonia.VisualTree;
 
-
 namespace Laminar.Avalonia.PageTransitions;
-internal class SettingsPageTransition : IPageTransition
-{
-    public TimeSpan Duration { get; set; }
 
-    public Easing Easing { get; set; } = new LinearEasing();
+internal class SettingsPageTransition : AvaloniaObject, IPageTransition
+{
+    public static readonly StyledProperty<TimeSpan> DurationProperty = AvaloniaProperty.Register<SettingsPageTransition, TimeSpan>(nameof(Duration));
+
+    public static readonly StyledProperty<Easing> EasingProperty = AvaloniaProperty.Register<SettingsPageTransition, Easing>(nameof(Easing), defaultValue: new LinearEasing());
+    
+    public TimeSpan Duration
+    {
+        get => GetValue(DurationProperty);
+        set => SetValue(DurationProperty, value);
+    }
+
+    public Easing Easing
+    {
+        get => GetValue(EasingProperty);
+        set => SetValue(EasingProperty, value);
+    }
 
     public async Task Start(Visual? from, Visual? to, bool forward, CancellationToken cancellationToken)
     {

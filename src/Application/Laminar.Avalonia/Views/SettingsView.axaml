@@ -9,8 +9,8 @@
              HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
 			 Background="{DynamicResource LaminarBackgroundLighter}">
 	<Grid RowDefinitions="*,60,*" ColumnDefinitions="*,*" HorizontalAlignment="Center" VerticalAlignment="Center">
-		<TextBlock Grid.Row="0" Grid.ColumnSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center">This is a settings menu</TextBlock>
-		<TextBlock Grid.Row="2" Grid.Column="0" VerticalAlignment="Center">Theme</TextBlock>
-		<ComboBox  Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" ItemsSource="{Binding Themes}" SelectedItem="{Binding Theme}"/>
+		<TextBlock Classes="h1" Grid.Row="0" Grid.ColumnSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center">This is a settings menu</TextBlock>
+		<TextBlock Classes="h2" Grid.Row="2" Grid.Column="0" VerticalAlignment="Center">Theme</TextBlock>
+		<ComboBox Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" ItemsSource="{Binding Themes}" SelectedItem="{Binding Theme}"/>
 	</Grid>
 </UserControl>
