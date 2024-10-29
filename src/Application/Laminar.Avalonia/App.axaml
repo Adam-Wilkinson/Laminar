@@ -5,7 +5,6 @@
              xmlns:local="using:Laminar.Avalonia"
              xmlns:conv="clr-namespace:Laminar.Avalonia.Converters"
              RequestedThemeVariant="Default">
-             <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
 
     <Application.DataTemplates>
         <local:ViewLocator/>
@@ -79,6 +78,7 @@
 					<Color x:Key='LaminarForeground'>#dbe5ff</Color>
 					<Color x:Key='LaminarBackground'>#010103</Color>
 					<Color x:Key='LaminarBackgroundLighter'>#07070e</Color>
+					<Color x:Key='LaminarBackgroundAlt'>#0c0c1f</Color>
 					<Color x:Key='LaminarPrimary'>#242ee0</Color>
 					<Color x:Key='LaminarSecondary'>#000c2e</Color>
 					<Color x:Key='LaminarAccent'>#4c1867</Color>
@@ -87,6 +87,7 @@
 					<Color x:Key='LaminarForeground'>#000a24</Color>
 					<Color x:Key='LaminarBackground'>#fafaff</Color>
 					<Color x:Key='LaminarBackgroundLighter'>#efefff</Color>
+					<Color x:Key='LaminarBackgroundAlt'>#e2e2f2</Color>
 					<Color x:Key='LaminarPrimary'>#1f29db</Color>
 					<Color x:Key='LaminarSecondary'>#d1ddff</Color>
 					<Color x:Key='LaminarAccent'>#ab98e7</Color>
