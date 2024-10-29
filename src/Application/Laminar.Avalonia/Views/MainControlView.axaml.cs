@@ -1,9 +1,12 @@
 using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Avalonia.Animation;
 using Avalonia.Controls;
+using Avalonia.Interactivity;
 using Laminar.Avalonia.AdjustableStackPanel;
+using Laminar.Avalonia.DragDrop;
 using Laminar.Avalonia.ViewModels;
 
 namespace Laminar.Avalonia.Views;
@@ -25,6 +28,7 @@ public partial class MainControlView : UserControl
         FileNavigator.Transitions.Add(_opacityTransition);
         _lastFileNavigatorSize = ResizeWidget.GetOrCreateResizer(FileNavigator).Size;
 
+        FileNavigator.ClipToBounds = true;
         FileNavigator.Opacity = 0;
         ResizeWidget.GetOrCreateResizer(FileNavigator).SetSizeTo(0, true);
     }
@@ -41,6 +45,7 @@ public partial class MainControlView : UserControl
 
         await Task.Delay(SidebarStackPanel.TransitionDuration);
         
+        FileNavigator.ClipToBounds = false;
         FileNavigator.Transitions?.Remove(_opacityTransition);
     }
 
@@ -66,5 +71,11 @@ public partial class MainControlView : UserControl
         {
             CloseFileNavigator();
         }
+    }
+
+    private void DropHandler_OnDrop(object? sender, DragEventArgs e)
+    {
+        Debug.WriteLine($"Control {e.DraggingVisual} dropped onto {e.HoverOverVisual}");
+        e.Handled = true;
     }
 }

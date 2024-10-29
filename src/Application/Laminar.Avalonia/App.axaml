@@ -3,7 +3,8 @@
              xmlns:s="using:System"
              x:Class="Laminar.Avalonia.App"
              xmlns:local="using:Laminar.Avalonia"
-             xmlns:conv="clr-namespace:Laminar.Avalonia.Converters"
+             xmlns:conv="using:Laminar.Avalonia.Converters"
+             xmlns:dd="using:Laminar.Avalonia.DragDrop"
              RequestedThemeVariant="Default">
 
     <Application.DataTemplates>
@@ -62,7 +63,7 @@
 	<Application.Resources>
 		<ResourceDictionary>
 			<FontFamily x:Key="LaminarIcons">/Assets/Fonts/IconWorksRegular.ttf#Icon-Works</FontFamily>
-			<FontFamily x:Key="AreaKilometer">/Assets/Fonts/AreaKilometer50.ttf#a Area Kilometer 50</FontFamily>
+			<!-- <FontFamily x:Key="AreaKilometer">/Assets/Fonts/AreaKilometer50.ttf#a Area Kilometer 50</FontFamily> -->
 			<FontFamily x:Key="Abyssinica">/Assets/Fonts/AbyssinicaSIL-Regular.ttf#Abyssinica SIL</FontFamily>
 			
 			<s:Double x:Key="H1FontSize">34</s:Double>
@@ -95,6 +96,8 @@
 			</ResourceDictionary.ThemeDictionaries>
 			
 			<conv:ScaleNameConverter x:Key="ScaleNameConverter"/>
+			
+			<dd:DropHandler x:Key="DefaultDropHandler"/>
 		</ResourceDictionary>
 	</Application.Resources>
 </Application>

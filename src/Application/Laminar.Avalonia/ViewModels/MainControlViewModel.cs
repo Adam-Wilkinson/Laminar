@@ -1,3 +1,5 @@
+using System;
+using Avalonia.Interactivity;
 using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace Laminar.Avalonia.ViewModels;
