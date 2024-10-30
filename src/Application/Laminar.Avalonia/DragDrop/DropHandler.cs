@@ -8,10 +8,24 @@ public class DropHandler : Interactive
 {
     public static readonly RoutedEvent<DragEventArgs> DropEvent = RoutedEvent.Register<DropHandler, DragEventArgs>(nameof(Drop), RoutingStrategies.Direct);
     
-    public static readonly RoutedEvent<DragEventArgs> HoverEvent = RoutedEvent.Register<DropHandler, DragEventArgs>(nameof(Hover), RoutingStrategies.Direct);
+    public static readonly RoutedEvent<DragEventArgs> HoverEnterEvent = RoutedEvent.Register<DropHandler, DragEventArgs>(nameof(HoverEnter), RoutingStrategies.Direct);
 
-    public static readonly StyledProperty<Predicate<Visual>> AcceptsVisualProperty =
-        AvaloniaProperty.Register<DropHandler, Predicate<Visual>>(nameof(AcceptsVisual), defaultValue: _ => true);
+    public static readonly RoutedEvent<DragEventArgs> HoverLeaveEvent = RoutedEvent.Register<DropHandler, DragEventArgs>(nameof(HoverLeave), RoutingStrategies.Direct);
+    
+    public static readonly AttachedProperty<DropAcceptor> DropAcceptorProperty = AvaloniaProperty.RegisterAttached<DropHandler, Visual, DropAcceptor>(nameof(DropAcceptor), defaultValue: new DropAcceptor());
+    public static DropAcceptor GetDropAcceptor(Visual visual) => visual.GetValue(DropAcceptorProperty);
+    public static void SetDropAcceptor(Visual visual, DropAcceptor value) => visual.SetValue(DropAcceptorProperty, value);
+
+    static DropHandler()
+    {
+        // DropEvent
+    }
+    
+    public event EventHandler<DragEventArgs> HoverLeave
+    {
+        add => AddHandler(HoverLeaveEvent, value);
+        remove => RemoveHandler(HoverLeaveEvent, value);
+    }
     
     public event EventHandler<DragEventArgs> Drop
     {
@@ -19,15 +33,9 @@ public class DropHandler : Interactive
         remove => RemoveHandler(DropEvent, value);
     }
     
-    public event EventHandler<DragEventArgs> Hover
+    public event EventHandler<DragEventArgs> HoverEnter
     {
-        add => AddHandler(HoverEvent, value);
-        remove => RemoveHandler(HoverEvent, value);
-    }
-
-    public Predicate<Visual> AcceptsVisual
-    {
-        get => GetValue(AcceptsVisualProperty);
-        set => SetValue(AcceptsVisualProperty, value);
+        add => AddHandler(HoverEnterEvent, value);
+        remove => RemoveHandler(HoverEnterEvent, value);
     }
 }

@@ -75,7 +75,7 @@ public partial class MainControlView : UserControl
 
     private void DropHandler_OnDrop(object? sender, DragEventArgs e)
     {
-        Debug.WriteLine($"Control {e.DraggingVisual} dropped onto {e.HoverOverVisual}");
+        Debug.WriteLine($"Control {e.DraggingVisual} was dragged onto {e.HoverOverInteractive}, event {e.RoutedEvent!.Name}");
         e.Handled = true;
     }
 }

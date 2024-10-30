@@ -1,0 +1,42 @@
+using System.Collections.Generic;
+using Avalonia;
+using Avalonia.Input;
+using Avalonia.Media;
+using Avalonia.VisualTree;
+
+namespace Laminar.Avalonia.DragDrop;
+
+public class DropAcceptor
+{
+    public bool AcceptDrop(Visual hoverVisual, PointerEventArgs pointerEventArgs, out object? receptacleTag)
+    {
+        foreach (var receptacle in GetReceptacles(hoverVisual))
+        {
+            if (receptacle.AcceptsDropRegion.FillContains(pointerEventArgs.GetPosition(hoverVisual.GetVisualParent())))
+            {
+                receptacleTag = receptacle.Tag;
+                return true;
+            }
+        }
+
+        receptacleTag = null;
+        return false;
+    }
+
+    public void RenderAllReceptacles(Visual visual, DrawingContext drawingContext)
+    {
+        foreach (var receptacle in GetReceptacles(visual))
+        {
+            drawingContext.DrawGeometry(null, DebugReceptaclePen, receptacle.AcceptsDropRegion);
+        }
+    }
+    
+    protected virtual IPen DebugReceptaclePen { get; } = new Pen { Brush = Brushes.Red } ;
+
+    protected virtual IEnumerable<Receptacle> GetReceptacles(Visual visual)
+    {
+        yield return new Receptacle(new RectangleGeometry(visual.Bounds), null);
+    }
+
+    protected record struct Receptacle(Geometry AcceptsDropRegion, object? Tag);
+}

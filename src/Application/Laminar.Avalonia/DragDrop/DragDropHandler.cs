@@ -21,10 +21,6 @@ public class DragDropHandler
     public static MouseButton? GetTriggerMouseButton(AvaloniaObject control) => control.GetValue(TriggerMouseButtonProperty);
     public static void SetTriggerMouseButton(AvaloniaObject control, MouseButton? mouseButton) => control.SetValue(TriggerMouseButtonProperty, mouseButton);
 
-    public static readonly AttachedProperty<DropHandler?> DropHandlerProperty = AvaloniaProperty.RegisterAttached<DragDropHandler, Visual, DropHandler?>("DropHandler", defaultValue: new DropHandler());
-    public static DropHandler? GetDropHandler(Visual visual) => visual.GetValue(DropHandlerProperty);
-    public static void SetDropHandler(Visual visual, DropHandler? dropHandler) => visual.SetValue(DropHandlerProperty, dropHandler);
-
     private static DragEventArgs? _hoverArgs;
     private static Point? _clickOffset;
     private static ITransform? _controlOriginalTransform;
@@ -42,7 +38,7 @@ public class DragDropHandler
         {
             throw new Exception($"Property {nameof(TriggerMouseButtonProperty)} is only valid on objects of type {typeof(Interactive)}");
         }
-
+        
         inputElementSender.AddHandler(InputElement.PointerPressedEvent, InputElementSender_PointerPressed);
         inputElementSender.AddHandler(InputElement.PointerReleasedEvent, InputElementSender_PointerReleased);
         inputElementSender.AddHandler(InputElement.PointerMovedEvent, InputElementSender_PointerMoved);
@@ -56,14 +52,20 @@ public class DragDropHandler
         }
         
         e.Handled = true;
-
+        
         var currentClickOffset = e.GetCurrentPoint(null).Position; 
         var transform = TransformOperations.CreateBuilder(2);
         transform.AppendMatrix(_controlOriginalTransform.Value);
         transform.AppendTranslate(currentClickOffset.X - _clickOffset.Value.X, currentClickOffset.Y - _clickOffset.Value.Y);
         _hoverArgs.DraggingVisual.RenderTransform = transform.Build();
 
+        var oldHoverInteractive = _hoverArgs.HoverOverInteractive;
+        var oldHoverReceptacleTag = _hoverArgs.ReceptacleTag;
         ExecuteDragEventAtPointer(e, _hoverArgs);
+        if (oldHoverInteractive is not null && (oldHoverInteractive != _hoverArgs.HoverOverInteractive || oldHoverReceptacleTag != _hoverArgs.ReceptacleTag))
+        {
+            oldHoverInteractive.RaiseEvent(DragEventArgs.HoverLeave(_hoverArgs.DraggingVisual, _hoverArgs.OriginalClickEventArgs, currentHoverInteractive: oldHoverInteractive, receptacleTag: oldHoverReceptacleTag));
+        }
     }
 
     private static void InputElementSender_PointerPressed(object? sender, PointerPressedEventArgs e)
@@ -81,7 +83,7 @@ public class DragDropHandler
         senderControl.ZIndex = int.MaxValue;
 
         _controlOriginalTransform = senderControl.RenderTransform ?? new TranslateTransform();
-        _hoverArgs = DragEventArgs.Hover(senderControl, e);
+        _hoverArgs = DragEventArgs.HoverEnter(senderControl, e);
         
         e.Handled = true;
     }
@@ -96,7 +98,7 @@ public class DragDropHandler
         e.Handled = true;
         e.PreventGestureRecognition();
 
-        ExecuteDragEventAtPointer(e, DragEventArgs.Drop(_hoverArgs.DraggingVisual, _hoverArgs.ClickEvent));
+        ExecuteDragEventAtPointer(e, DragEventArgs.Drop(_hoverArgs.DraggingVisual, _hoverArgs.OriginalClickEventArgs));
         AnimateHome(_hoverArgs.DraggingVisual, _controlOriginalTransform);
         _clickOffset = null;
     }
@@ -104,19 +106,39 @@ public class DragDropHandler
     private static void ExecuteDragEventAtPointer(PointerEventArgs pointerEventArgs, DragEventArgs dragEvent)
     {
         dragEvent.Handled = false;
+        var currentHoverVisual = dragEvent.HoverOverInteractive;
+        var currentReceptacleTag = dragEvent.ReceptacleTag;
+        
         if (TopLevel.GetTopLevel(dragEvent.DraggingVisual) is not { } topLevel) return;
 
         foreach (var visualAtPoint in topLevel.GetVisualsAt(pointerEventArgs.GetPosition(topLevel),
                      visual => visual != dragEvent.DraggingVisual))
         {
-            if (visualAtPoint is Interactive interactiveAtPoint && GetDropHandler(interactiveAtPoint) is { } dropHandler)
+            if (!DropHandler.GetDropAcceptor(visualAtPoint)
+                    .AcceptDrop(visualAtPoint, pointerEventArgs, out var receptacleTag))
             {
-                dragEvent.HoverOverVisual = interactiveAtPoint;
+                continue;
+            }
+
+            if (visualAtPoint == currentHoverVisual && receptacleTag == currentReceptacleTag)
+            {
+                dragEvent.HoverOverInteractive = currentHoverVisual;
+                dragEvent.ReceptacleTag = dragEvent.ReceptacleTag;
+                return;
+            }
+            
+            if (visualAtPoint is Interactive interactiveAtPoint)
+            {
+                dragEvent.HoverOverInteractive = interactiveAtPoint;
+                dragEvent.ReceptacleTag = receptacleTag;
                 interactiveAtPoint.RaiseEvent(dragEvent);
             }
 
             if (dragEvent.Handled) return;
         }
+
+        dragEvent.HoverOverInteractive = null;
+        dragEvent.ReceptacleTag = null;
     }
     
     private static void AnimateHome(Visual visual, ITransform originalTransform)

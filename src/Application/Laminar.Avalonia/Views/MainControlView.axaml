@@ -10,10 +10,10 @@
              x:Class="Laminar.Avalonia.Views.MainControlView">
     <DockPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
         <asp:AdjustableStackPanel DockPanel.Dock="Left" HorizontalAlignment="Left" VerticalAlignment="Stretch" Orientation="Horizontal" Name="SidebarStackPanel" TransitionDuration="{DynamicResource AnimationDuration}" TransitionEasing="{DynamicResource AnimationEasing}">
-            <Panel dd:DropHandler.Drop="DropHandler_OnDrop" Background="{DynamicResource LaminarBackgroundLighter}" MinWidth="1" Name="FileNavigator">
+            <Panel dd:DropHandler.HoverEnter="DropHandler_OnDrop" dd:DropHandler.HoverLeave="DropHandler_OnDrop" dd:DropHandler.Drop="DropHandler_OnDrop" Background="{DynamicResource LaminarBackgroundLighter}" MinWidth="1" Name="FileNavigator">
                 <StackPanel Orientation="Vertical" MinWidth="1" Margin="3" Spacing="3">
                     <TextBlock dd:DragDropHandler.TriggerMouseButton="Left" Padding="10" Background="{DynamicResource LaminarBackgroundAlt}" VerticalAlignment="Center">>The first file</TextBlock>
-                    <TextBlock dd:DropHandler.Drop="DropHandler_OnDrop" dd:DragDropHandler.TriggerMouseButton="Left" Padding="10" Background="{DynamicResource LaminarBackgroundAlt}" VerticalAlignment="Center">>The second file</TextBlock>
+                    <TextBlock dd:DragDropHandler.TriggerMouseButton="Left" Padding="10" Background="{DynamicResource LaminarBackgroundAlt}" VerticalAlignment="Center">>The second file</TextBlock>
                     <TextBlock dd:DragDropHandler.TriggerMouseButton="Right" Padding="10" Background="{DynamicResource LaminarBackgroundAlt}" VerticalAlignment="Center">>The third file</TextBlock>
                     <TextBlock dd:DragDropHandler.TriggerMouseButton="Middle" Padding="10" Background="{DynamicResource LaminarBackgroundAlt}" VerticalAlignment="Center">>The fourth file</TextBlock>
                 </StackPanel>
