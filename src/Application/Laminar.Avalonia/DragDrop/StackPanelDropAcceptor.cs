@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using Avalonia;
 using Avalonia.Controls;
@@ -13,15 +12,42 @@ public class StackPanelDropAcceptor : DropAcceptor<StackPanel>
 
     protected override IEnumerable<Receptacle> GetReceptacles(StackPanel stackPanel)
     {
-        var isHorizontal = stackPanel.Orientation == Orientation.Horizontal;
-        var heightOfFirstReceptacle =
-            (isHorizontal ? stackPanel.Children[0].Bounds.Width : stackPanel.Children[0].Bounds.Height) *
-            ReceptacleAreaFraction / 2;
+        var heightOfFirstReceptacle = ChildDepth(stackPanel, stackPanel.Children[0]) * ReceptacleAreaFraction / 2;
         yield return new Receptacle(
-            new RectangleGeometry(isHorizontal
-                ? new Rect(0, 0, heightOfFirstReceptacle, stackPanel.DesiredSize.Height)
-                : new Rect(0, 0, stackPanel.DesiredSize.Width, heightOfFirstReceptacle)), 0);
+            new RectangleGeometry(OrientedReceptacleRect(stackPanel, 0, heightOfFirstReceptacle)), 0);
+
+        for (var i = 0; i < stackPanel.Children.Count; i++)
+        {
+            var heightOfReceptacle = ChildDepth(stackPanel, stackPanel.Children[i]) * ReceptacleAreaFraction / 2;
+            var receptacleStartPoint =
+                (stackPanel.Orientation == Orientation.Horizontal
+                    ? stackPanel.Children[i].Bounds.Right
+                    : stackPanel.Children[i].Bounds.Bottom)
+                - heightOfReceptacle;
+
+            heightOfReceptacle += stackPanel.Spacing;
+            
+            if (i < stackPanel.Children.Count - 1)
+            {
+                heightOfReceptacle += ChildDepth(stackPanel, stackPanel.Children[i + 1]) * ReceptacleAreaFraction / 2;
+            }
+
+            yield return new Receptacle(
+                new RectangleGeometry(OrientedReceptacleRect(stackPanel, receptacleStartPoint, heightOfReceptacle)), i);
+        }
     }
 
-    protected override IPen DebugReceptaclePen { get; } = new Pen(Brushes.Yellow, 1);
+    protected override IPen DebugReceptaclePen { get; set; } = new Pen(Brushes.Yellow, 1.5);
+    
+    private static double ChildDepth(StackPanel stackPanel, Control control)
+    {
+        return (stackPanel.Orientation == Orientation.Horizontal ? control.Bounds.Width : control.Bounds.Height);
+    }
+
+    private static Rect OrientedReceptacleRect(StackPanel stackPanel, double startingDepth, double receptacleDepth)
+        => stackPanel.Orientation switch
+        {
+            Orientation.Horizontal => new Rect(startingDepth, 0, receptacleDepth, stackPanel.Bounds.Height),
+            _ => new Rect(0, startingDepth, stackPanel.Bounds.Width, receptacleDepth)
+        };
 }

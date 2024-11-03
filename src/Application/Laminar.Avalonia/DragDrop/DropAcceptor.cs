@@ -33,7 +33,7 @@ public class DropAcceptor
         }
     }
     
-    protected virtual IPen DebugReceptaclePen { get; } = new Pen { Brush = Brushes.Red } ;
+    protected virtual IPen DebugReceptaclePen { get; set; } = new Pen { Brush = Brushes.Red } ;
 
     protected virtual IEnumerable<Receptacle> GetReceptacles(Visual visual)
     {

@@ -32,8 +32,7 @@ public class DragDropHandler
         TriggerMouseButtonProperty.Changed.Subscribe(new AnonymousObserver<AvaloniaPropertyChangedEventArgs<MouseButton?>>(TriggerMouseButtonChanged));
     }
 
-    public static DragDropDebugRenderer? DebugRenderer { get; set; } = 
-        new DragDropDebugRenderer<StackPanelDropAcceptor>();
+    public static DragDropDebugRenderer? DebugRenderer { get; set; }
 
     private static void TriggerMouseButtonChanged(AvaloniaPropertyChangedEventArgs<MouseButton?> e)
     {
