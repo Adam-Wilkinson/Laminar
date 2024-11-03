@@ -32,6 +32,9 @@ public class DragDropHandler
         TriggerMouseButtonProperty.Changed.Subscribe(new AnonymousObserver<AvaloniaPropertyChangedEventArgs<MouseButton?>>(TriggerMouseButtonChanged));
     }
 
+    public static DragDropDebugRenderer? DebugRenderer { get; set; } = 
+        new DragDropDebugRenderer<StackPanelDropAcceptor>();
+
     private static void TriggerMouseButtonChanged(AvaloniaPropertyChangedEventArgs<MouseButton?> e)
     {
         if (e.Sender is not Interactive inputElementSender)
@@ -97,7 +100,8 @@ public class DragDropHandler
 
         e.Handled = true;
         e.PreventGestureRecognition();
-
+        DebugRenderer?.EndAll();
+        
         ExecuteDragEventAtPointer(e, DragEventArgs.Drop(_hoverArgs.DraggingVisual, _hoverArgs.OriginalClickEventArgs));
         AnimateHome(_hoverArgs.DraggingVisual, _controlOriginalTransform);
         _clickOffset = null;
@@ -114,6 +118,11 @@ public class DragDropHandler
         foreach (var visualAtPoint in topLevel.GetVisualsAt(pointerEventArgs.GetPosition(topLevel),
                      visual => visual != dragEvent.DraggingVisual))
         {
+            if (DebugRenderer is not null && visualAtPoint is Control control)
+            {
+                DebugRenderer.EnsureAttached(control);
+            }
+            
             if (!DropHandler.GetDropAcceptor(visualAtPoint)
                     .AcceptDrop(visualAtPoint, pointerEventArgs, out var receptacleTag))
             {

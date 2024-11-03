@@ -8,10 +8,13 @@
              HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="Laminar.Avalonia.Views.MainControlView">
+    <UserControl.Resources>
+        <dd:StackPanelDropAcceptor x:Key="StackPanelDropAcceptor" ReceptacleAreaFraction="0.9"/>
+    </UserControl.Resources>
     <DockPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
         <asp:AdjustableStackPanel DockPanel.Dock="Left" HorizontalAlignment="Left" VerticalAlignment="Stretch" Orientation="Horizontal" Name="SidebarStackPanel" TransitionDuration="{DynamicResource AnimationDuration}" TransitionEasing="{DynamicResource AnimationEasing}">
-            <Panel dd:DropHandler.HoverEnter="DropHandler_OnDrop" dd:DropHandler.HoverLeave="DropHandler_OnDrop" dd:DropHandler.Drop="DropHandler_OnDrop" Background="{DynamicResource LaminarBackgroundLighter}" MinWidth="1" Name="FileNavigator">
-                <StackPanel Orientation="Vertical" MinWidth="1" Margin="3" Spacing="3">
+            <Panel Background="{DynamicResource LaminarBackgroundLighter}" MinWidth="1" Name="FileNavigator">
+                <StackPanel Background="{DynamicResource LaminarBackgroundLighter}" dd:DropHandler.DropAcceptor="{StaticResource StackPanelDropAcceptor}"  dd:DropHandler.HoverEnter="DropHandler_OnDrop" dd:DropHandler.HoverLeave="DropHandler_OnDrop" dd:DropHandler.Drop="DropHandler_OnDrop" Orientation="Vertical" MinWidth="1" Margin="3" Spacing="3">
                     <TextBlock dd:DragDropHandler.TriggerMouseButton="Left" Padding="10" Background="{DynamicResource LaminarBackgroundAlt}" VerticalAlignment="Center">>The first file</TextBlock>
                     <TextBlock dd:DragDropHandler.TriggerMouseButton="Left" Padding="10" Background="{DynamicResource LaminarBackgroundAlt}" VerticalAlignment="Center">>The second file</TextBlock>
                     <TextBlock dd:DragDropHandler.TriggerMouseButton="Right" Padding="10" Background="{DynamicResource LaminarBackgroundAlt}" VerticalAlignment="Center">>The third file</TextBlock>

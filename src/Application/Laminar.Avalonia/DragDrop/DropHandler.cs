@@ -1,3 +1,4 @@
+
 using System;
 using Avalonia;
 using Avalonia.Interactivity;
@@ -15,11 +16,6 @@ public class DropHandler : Interactive
     public static readonly AttachedProperty<DropAcceptor> DropAcceptorProperty = AvaloniaProperty.RegisterAttached<DropHandler, Visual, DropAcceptor>(nameof(DropAcceptor), defaultValue: new DropAcceptor());
     public static DropAcceptor GetDropAcceptor(Visual visual) => visual.GetValue(DropAcceptorProperty);
     public static void SetDropAcceptor(Visual visual, DropAcceptor value) => visual.SetValue(DropAcceptorProperty, value);
-
-    static DropHandler()
-    {
-        // DropEvent
-    }
     
     public event EventHandler<DragEventArgs> HoverLeave
     {

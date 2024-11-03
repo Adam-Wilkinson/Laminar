@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Media;
 using Avalonia.VisualTree;
@@ -27,6 +28,7 @@ public class DropAcceptor
     {
         foreach (var receptacle in GetReceptacles(visual))
         {
+            receptacle.AcceptsDropRegion.Transform = new MatrixTransform(visual.GetVisualParent()!.TransformToVisual(TopLevel.GetTopLevel(visual)!)!.Value);
             drawingContext.DrawGeometry(null, DebugReceptaclePen, receptacle.AcceptsDropRegion);
         }
     }
