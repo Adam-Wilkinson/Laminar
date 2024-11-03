@@ -6,7 +6,7 @@ namespace Laminar.Avalonia.ViewModels;
 public partial class MainWindowViewModel : ViewModelBase
 {
     private readonly SettingsViewModel _settings = new();
-    private readonly MainControlView _mainControl = new();
+    private readonly MainControlView _mainControl = new() { DataContext = new MainControlViewModel() };
     
     [ObservableProperty] private bool _settingsOpen;
     private bool _sidebarOpen = true;

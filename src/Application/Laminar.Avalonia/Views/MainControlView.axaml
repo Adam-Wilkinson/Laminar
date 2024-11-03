@@ -2,11 +2,13 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:Laminar.Avalonia.ViewModels"
              xmlns:local="using:Laminar.Avalonia"
              xmlns:dd="using:Laminar.Avalonia.DragDrop"
              xmlns:asp="using:Laminar.Avalonia.AdjustableStackPanel"
              HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:DataType="vm:MainControlViewModel"
              x:Class="Laminar.Avalonia.Views.MainControlView">
     <UserControl.Resources>
         <dd:StackPanelDropAcceptor x:Key="StackPanelDropAcceptor"  ReceptacleAreaFraction="0.8"/>
@@ -14,16 +16,16 @@
     <DockPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
         <asp:AdjustableStackPanel DockPanel.Dock="Left" HorizontalAlignment="Left" VerticalAlignment="Stretch" Orientation="Horizontal" Name="SidebarStackPanel" TransitionDuration="{DynamicResource AnimationDuration}" TransitionEasing="{DynamicResource AnimationEasing}">
             <Panel Background="{DynamicResource LaminarBackgroundLighter}" MinWidth="1" Name="FileNavigator">
-                <StackPanel HorizontalAlignment="Stretch" 
-                            Background="{DynamicResource LaminarBackgroundLighter}" 
-                            dd:DropHandler.DropAcceptor="{StaticResource StackPanelDropAcceptor}" dd:DropHandler.HoverEnter="DropHandler_OnDrop" dd:DropHandler.HoverLeave="DropHandler_OnDrop" dd:DropHandler.Drop="DropHandler_OnDrop" 
-                            Orientation="Vertical" 
-                            MinWidth="1" Spacing="15">
-                    <TextBlock dd:DragDropHandler.TriggerMouseButton="Left" Padding="10" Background="{DynamicResource LaminarBackgroundAlt}" VerticalAlignment="Center">>The first file</TextBlock>
-                    <TextBlock dd:DragDropHandler.TriggerMouseButton="Left" Padding="10" Background="{DynamicResource LaminarBackgroundAlt}" VerticalAlignment="Center">>The second file</TextBlock>
-                    <TextBlock dd:DragDropHandler.TriggerMouseButton="Right" Padding="10" Background="{DynamicResource LaminarBackgroundAlt}" VerticalAlignment="Center">>The third file</TextBlock>
-                    <TextBlock dd:DragDropHandler.TriggerMouseButton="Middle" Padding="10" Background="{DynamicResource LaminarBackgroundAlt}" VerticalAlignment="Center">>The fourth file</TextBlock>
-                </StackPanel>
+                <TreeView ClipToBounds="False" ItemsSource="{Binding Files}">
+                    <TreeView.ItemTemplate>
+                        <TreeDataTemplate ItemsSource="{Binding SubNodes}">
+                            <TextBlock Text="{Binding Title}"
+                                       dd:DragDropHandler.TriggerMouseButton="Left"
+                                       HorizontalAlignment="Stretch" 
+                                       Background="{DynamicResource LaminarBackgroundAlt}"/>
+                        </TreeDataTemplate>
+                    </TreeView.ItemTemplate>
+                </TreeView>
             </Panel>
         </asp:AdjustableStackPanel>
         <TextBlock Classes="h2" HorizontalAlignment="Center" VerticalAlignment="Center">The script editor</TextBlock>

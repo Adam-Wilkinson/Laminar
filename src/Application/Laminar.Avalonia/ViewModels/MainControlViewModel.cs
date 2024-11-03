@@ -9,6 +9,17 @@ public partial class MainControlViewModel : ViewModelBase
 {
     [ObservableProperty] private bool _sidebarExpanded = true;
 
+    public ObservableCollection<TreeTester> Files { get; } =
+    [
+        new("Root File", [
+            new("Sub File One"), 
+            new("Sub File Two", [
+                new("Sub Sub File One"),
+                new("Sub Sub File Two")
+            ])
+        ])
+    ];
+
     public class TreeTester
     {
         public ObservableCollection<TreeTester>? SubNodes { get; }
@@ -19,7 +30,7 @@ public partial class MainControlViewModel : ViewModelBase
             Title = title;
         }
 
-        public TreeTester(ObservableCollection<TreeTester> subNodes, string title)
+        public TreeTester(string title, ObservableCollection<TreeTester> subNodes)
             : this(title)
         {
             SubNodes = subNodes;
