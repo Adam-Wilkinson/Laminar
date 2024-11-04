@@ -1,11 +1,8 @@
 ﻿using System.Runtime.InteropServices;
 using CommunityToolkit.Mvvm.ComponentModel;
-using Laminar.Avalonia.Views;
 using Laminar.Avalonia.Views.CustomTitleBars;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Laminar.Avalonia.ViewModels;
-
 public partial class MainWindowViewModel : ViewModelBase
 {
     [ObservableProperty] private bool _settingsOpen;
@@ -27,6 +24,11 @@ public partial class MainWindowViewModel : ViewModelBase
         if (SettingsOpen) return;
         
         WindowCentralControl.SidebarExpanded = !WindowCentralControl.SidebarExpanded;
+        TitleBar.SidebarState = CurrentSidebarState();
+    }
+
+    partial void OnSettingsOpenChanged(bool value)
+    {
         TitleBar.SidebarState = CurrentSidebarState();
     }
 

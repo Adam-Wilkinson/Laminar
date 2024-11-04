@@ -4,7 +4,6 @@ using Avalonia.Styling;
 using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace Laminar.Avalonia.ViewModels;
-
 public partial class SettingsViewModel : ViewModelBase
 {
     [ObservableProperty] private string _theme = nameof(ThemeVariant.Default);

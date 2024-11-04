@@ -1,9 +1,7 @@
-using System.ComponentModel;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Media.Transformation;
 using Avalonia.Reactive;
-using Laminar.Avalonia.ViewModels;
 
 namespace Laminar.Avalonia.Views;
 public partial class MainWindow : Window
@@ -21,6 +19,7 @@ public partial class MainWindow : Window
         InitializeComponent();
 
         SettingsMenu.GetObservable(BoundsProperty).Subscribe(new AnonymousObserver<Rect>(SettingsBoundsChanged));
+        SettingsBoundsChanged(SettingsMenu.Bounds);
     }
 
     private void SettingsBoundsChanged(Rect newBounds)

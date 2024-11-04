@@ -1,9 +1,7 @@
 using System.Collections.ObjectModel;
 using Avalonia.Platform.Storage;
-using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace Laminar.Avalonia.ViewModels;
-
 public class FileNavigatorViewModel(IStorageProvider storageProvider) : ViewModelBase
 {
     private readonly IStorageProvider _storageProvider = storageProvider;
