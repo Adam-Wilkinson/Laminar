@@ -2,6 +2,7 @@ using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
@@ -13,15 +14,42 @@ namespace Laminar.Avalonia.Views;
 
 public partial class MainControlView : UserControl
 {
+    public static readonly StyledProperty<bool> SidebarOpenProperty = AvaloniaProperty.Register<MainControlView, bool>(nameof(SidebarOpen));
+
+    public bool SidebarOpen
+    {
+        get => GetValue(SidebarOpenProperty);
+        set => SetValue(SidebarOpenProperty, value);
+    }
+    
     private readonly DoubleTransition _opacityTransition = new() { Property = OpacityProperty };
     private double _lastFileNavigatorSize = -1;
 
+    static MainControlView()
+    {
+        SidebarOpenProperty.Changed.AddClassHandler<MainControlView, bool>((o, e) => o.SidebarStateChange(e));
+    }
+    
     public MainControlView()
     {
         InitializeComponent();
     }
 
-    public void CloseFileNavigator()
+    private void SidebarStateChange(AvaloniaPropertyChangedEventArgs<bool> e)
+    {
+        if (!e.NewValue.HasValue) return;
+
+        if (e.NewValue.Value)
+        {
+            OpenFileNavigator();
+        }
+        else
+        {
+            CloseFileNavigator();
+        }
+    }
+    
+    private void CloseFileNavigator()
     {
         FileNavigator.Transitions ??= [];
         _opacityTransition.Duration = SidebarStackPanel.TransitionDuration;
@@ -33,7 +61,7 @@ public partial class MainControlView : UserControl
         ResizeWidget.GetOrCreateResizer(FileNavigator).SetSizeTo(0, true);
     }
 
-    public async void OpenFileNavigator()
+    private async void OpenFileNavigator()
     {
         if (_lastFileNavigatorSize < 0)
         {
@@ -47,35 +75,5 @@ public partial class MainControlView : UserControl
         
         FileNavigator.ClipToBounds = false;
         FileNavigator.Transitions?.Remove(_opacityTransition);
-    }
-
-    protected override void OnDataContextChanged(EventArgs e)
-    {
-        if (DataContext is not MainControlViewModel vm)
-        {
-            return;
-        }
-
-        vm.PropertyChanged += DataContext_PropertyChanged;
-        DataContext_PropertyChanged(vm, new PropertyChangedEventArgs(nameof(MainControlViewModel.SidebarExpanded)));
-    }
-
-    private void DataContext_PropertyChanged(object? sender, PropertyChangedEventArgs args)
-    {
-        if (args.PropertyName != nameof(MainControlViewModel.SidebarExpanded) || DataContext is not MainControlViewModel vm) return;
-        if (vm.SidebarExpanded)
-        {
-            OpenFileNavigator();
-        }
-        else
-        {
-            CloseFileNavigator();
-        }
-    }
-
-    private void DropHandler_OnDrop(object? sender, DragEventArgs e)
-    {
-        Debug.WriteLine($"Control {e.DraggingVisual} was dragged onto {e.HoverOverInteractive}, event {e.RoutedEvent!.Name} at index {e.ReceptacleTag}");
-        e.Handled = true;
     }
 }

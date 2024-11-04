@@ -8,8 +8,6 @@ public class FileNavigatorViewModel(IStorageProvider storageProvider) : ViewMode
 {
     private readonly IStorageProvider _storageProvider = storageProvider;
     
-    public FileNavigatorViewModel() : this(null) { }
-    
     public ObservableCollection<TreeTester> Files { get; } =
     [
         new("Root File", [

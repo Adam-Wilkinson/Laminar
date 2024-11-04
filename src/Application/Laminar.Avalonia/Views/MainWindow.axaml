@@ -1,42 +1,63 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:Laminar.Avalonia.ViewModels"
-        xmlns:local="using:Laminar.Avalonia"
-		xmlns:pagetransitions="using:Laminar.Avalonia.PageTransitions"
+        xmlns:dvm="using:Laminar.Avalonia.ViewModels.Design"
+        xmlns:v="using:Laminar.Avalonia.Views"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450" d:DataContext="{x:Static dvm:DesignViewModel.MainWindow}"
         x:Class="Laminar.Avalonia.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
         Icon="/Assets/ProjectLaminarLogo.png"
         Title="Project: Laminar"
 		ExtendClientAreaToDecorationsHint="True"
 		ExtendClientAreaChromeHints="NoChrome"
-		ExtendClientAreaTitleBarHeightHint="{Binding #TitleBar.Height}">
-
-	<Design.DataContext>
-		<vm:MainWindowViewModel/>
-	</Design.DataContext>
-	
+		ExtendClientAreaTitleBarHeightHint="40">
 	<DockPanel VerticalAlignment="Stretch">
-		<ContentControl DockPanel.Dock="Top" Name="TitleBar" Content="{Binding TitleBar}"/>
-		<TransitioningContentControl IsTransitionReversed="{Binding !SettingsOpen}" 
-									 VerticalAlignment="Stretch" 
-									 VerticalContentAlignment="Stretch" 
-									 HorizontalContentAlignment="Stretch"
-									 HorizontalAlignment="Stretch"
-									 Content="{Binding WindowCentralControl}">
-			<TransitioningContentControl.PageTransition>
-				<pagetransitions:SettingsPageTransition Easing="{DynamicResource AnimationEasing}" Duration="{DynamicResource AnimationDuration}"/>
-			</TransitioningContentControl.PageTransition>
-		</TransitioningContentControl>
-		
+		<ContentControl DockPanel.Dock="Top" Name="TitleBar" Content="{Binding TitleBar}" ZIndex="1000"/>
+		<Panel>
+			<ContentControl Name="SettingsMenu"
+			                Classes.IsOpen="{Binding SettingsOpen}"
+			                Content="{Binding Settings}" 
+			                ZIndex="900"/>
+			<ContentControl Name="WindowCentralControl"
+							Content="{Binding WindowCentralControl}"
+			                Classes.IsFaded="{Binding SettingsOpen}"/>
+		</Panel>
 		<DockPanel.Styles>
 			<Style Selector=":is(ToggleButton)#SettingsButton">
 				<Setter Property="IsChecked" Value="{Binding SettingsOpen}"/>
 			</Style>
 			<Style Selector=":is(Button)#LaminarButton">
 				<Setter Property="Command" Value="{Binding ToggleSidebar}"/>
+			</Style>
+			
+			<Style Selector="ContentControl#SettingsMenu">
+				<Setter Property="RenderTransform" Value="{Binding $parent[v:MainWindow].HiddenSettingsRenderTransform}"/>
+				<Setter Property="Transitions">
+					<Transitions>
+						<TransformOperationsTransition Property="RenderTransform" Duration="{DynamicResource AnimationDuration}" Easing="{DynamicResource AnimationEasing}"/>
+					</Transitions>
+				</Setter>
+				<Style Selector="^.IsOpen">
+					<Setter Property="RenderTransform">
+						<TransformGroup>
+							<TranslateTransform X="0" Y="0"/>
+						</TransformGroup>
+					</Setter>
+				</Style>
+			</Style>
+			
+			<Style Selector="ContentControl#WindowCentralControl">
+				<Setter Property="Opacity" Value="1.0"/>
+				<Setter Property="Transitions">
+					<Transitions>
+						<DoubleTransition Property="Opacity" Duration="{DynamicResource AnimationDuration}" Easing="{DynamicResource AnimationEasing}"/>
+					</Transitions>
+				</Setter>
+				<Style Selector="^.IsFaded">
+					<Setter Property="Opacity" Value="0.3"/>
+				</Style>
 			</Style>
 		</DockPanel.Styles>
 	</DockPanel>

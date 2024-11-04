@@ -3,20 +3,16 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:Laminar.Avalonia.ViewModels"
-             xmlns:v="using:Laminar.Avalonia.Views"
-             xmlns:local="using:Laminar.Avalonia"
-             xmlns:dd="using:Laminar.Avalonia.DragDrop"
+             xmlns:dvm="using:Laminar.Avalonia.ViewModels.Design"
              xmlns:asp="using:Laminar.Avalonia.AdjustableStackPanel"
              HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450" d:DataContext="{x:Static dvm:DesignViewModel.MainControl}"
              x:DataType="vm:MainControlViewModel"
-             x:Class="Laminar.Avalonia.Views.MainControlView">
-    <UserControl.Resources>
-        <dd:StackPanelDropAcceptor x:Key="StackPanelDropAcceptor"  ReceptacleAreaFraction="0.8"/>
-    </UserControl.Resources>
+             x:Class="Laminar.Avalonia.Views.MainControlView"
+             SidebarOpen="{Binding SidebarExpanded}">
     <DockPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
         <asp:AdjustableStackPanel DockPanel.Dock="Left" HorizontalAlignment="Left" VerticalAlignment="Stretch" Orientation="Horizontal" Name="SidebarStackPanel" TransitionDuration="{DynamicResource AnimationDuration}" TransitionEasing="{DynamicResource AnimationEasing}">
-            <v:FileNavigatorView Name="FileNavigator" DataContext="{Binding FileNavigator}"/>
+            <ContentControl Name="FileNavigator" Content="{Binding FileNavigator}"/>
         </asp:AdjustableStackPanel>
         <TextBlock Classes="h2" HorizontalAlignment="Center" VerticalAlignment="Center">The script editor</TextBlock>
         <DockPanel.Resources>
@@ -24,39 +20,14 @@
                 <Setter Property="Template">
                     <ControlTemplate>
                         <Panel ClipToBounds="False">
-                            <Rectangle Classes="Default"
-                                       Name="PART_DefaultResizeZone"
+                            <Rectangle Name="PART_DefaultResizeZone"
                                        MinHeight="2"
                                        MinWidth="2"
+                                       Cursor="SizeWestEast"
                                        Fill="#0000"/>
                         </Panel>
                     </ControlTemplate>
                 </Setter>
-
-                <Style Selector="^ /template/ Rectangle.Default">
-                    <Setter Property="RenderTransform" Value="Translate(0px,0px)"/>
-                    <Setter Property="Opacity" Value="0.6"/>
-                    <Setter Property="Transitions">
-                        <Setter.Value>
-                            <Transitions>
-                                <DoubleTransition Property="Opacity" Duration="0:0:0.4"/>
-                            </Transitions>
-                        </Setter.Value>
-                    </Setter>
-                </Style>
-
-
-                <Style Selector="^[Orientation=Vertical] /template/ Rectangle.Default">
-                    <Setter Property="Cursor" Value="SizeNorthSouth"/>
-                </Style>
-
-                <Style Selector="^[Orientation=Horizontal] /template/ Rectangle.Default">
-                    <Setter Property="Cursor" Value="SizeWestEast"/>
-                </Style>
-
-                <Style Selector="^:Default /template/ Rectangle.Default">
-                    <Setter Property="Opacity" Value="1.0"/>
-                </Style>
             </ControlTheme>
         </DockPanel.Resources>
     </DockPanel>
