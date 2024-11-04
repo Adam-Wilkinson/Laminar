@@ -9,10 +9,10 @@ namespace Laminar.Implementation.Base.UserInterface;
 
 internal class Display : IDisplay
 {
-    readonly IUserInterfaceProvider _userInterfaceProvider;
+    private readonly IUserInterfaceProvider _userInterfaceProvider;
 
-    object? _lastDisplayValue;
-    IUserInterfaceDefinition? _interfaceDefinition;
+    private object? _lastDisplayValue;
+    private IUserInterfaceDefinition? _interfaceDefinition;
 
     public Display(IDisplayValue displayValue, IUserInterfaceProvider userInterfaceProvider)
     {
@@ -24,8 +24,8 @@ internal class Display : IDisplay
 
     public event EventHandler<LaminarExecutionContext>? ExecutionStarted
     {
-        add { DisplayValue.ExecutionStarted += value; }
-        remove { DisplayValue.ExecutionStarted -= value; }
+        add => DisplayValue.ExecutionStarted += value;
+        remove => DisplayValue.ExecutionStarted -= value;
     }
 
     public IDisplayValue DisplayValue { get; }
@@ -51,11 +51,10 @@ internal class Display : IDisplay
             _lastDisplayValue = DisplayValue.Value;
         }
 
-        IUserInterfaceDefinition newDefinition = DisplayValue.InterfaceDefinition;
-        if (_interfaceDefinition != newDefinition)
-        {
-            _interfaceDefinition = newDefinition;
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Interface)));
-        }
+        var newDefinition = DisplayValue.InterfaceDefinition;
+        if (_interfaceDefinition == newDefinition) return;
+        
+        _interfaceDefinition = newDefinition;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Interface)));
     }
 }

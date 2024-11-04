@@ -6,7 +6,7 @@ namespace Laminar.Implementation.Base.UserInterface;
 
 public class UserInterfaceProvider : IUserInterfaceProvider
 {
-    readonly IReadOnlyUserInterfaceStore _store;
+    private readonly IReadOnlyUserInterfaceStore _store;
 
     public UserInterfaceProvider(IReadOnlyUserInterfaceStore interfaceStore)
     {
@@ -16,14 +16,14 @@ public class UserInterfaceProvider : IUserInterfaceProvider
     public object GetUserInterface(IUserInterfaceDefinition? definition)
     {
         if (definition is not null 
-            && _store.TryGetUserInterface(definition.GetType(), out Type userInterface)
-            && Activator.CreateInstance(userInterface) is object obj)
+            && _store.TryGetUserInterface(definition.GetType(), out var userInterface)
+            && Activator.CreateInstance(userInterface) is { } obj)
         {
             return obj;
         }
 
-        if (_store.TryGetUserInterface(typeof(DefaultViewer), out Type defaultViewer)
-            && Activator.CreateInstance(defaultViewer) is object defaultObj)
+        if (_store.TryGetUserInterface(typeof(DefaultViewer), out var defaultViewer)
+            && Activator.CreateInstance(defaultViewer) is { } defaultObj)
         {
             return defaultObj;
         }

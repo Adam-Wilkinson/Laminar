@@ -32,5 +32,5 @@ internal class UserPreferenceManager : IUserPreferenceManager
 
     public IReadOnlyItemCatagory<IUserPreference> Preferences => _userPreferences;
 
-    public IUserPreference<T> GetPreference<T>(string key) => _userPreferencesDictionary[key] as IUserPreference<T>;
+    public IUserPreference<T>? GetPreference<T>(string key) => _userPreferencesDictionary[key] as IUserPreference<T>;
 }

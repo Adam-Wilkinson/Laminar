@@ -4,7 +4,7 @@ namespace Laminar.Contracts.Base.Settings;
 
 public interface IUserPreferenceManager
 {
-    public IUserPreference<T> GetPreference<T>(string key);
+    public IUserPreference<T>? GetPreference<T>(string key);
 
     public IReadOnlyItemCatagory<IUserPreference> Preferences { get; }
 

@@ -14,9 +14,7 @@ internal static class EnvironmentServices
         serviceCollection.AddSingleton<ITypeInfoStore, TypeInfoStore>();
 
         serviceCollection.AddSingleton<IUserPreferenceManager, UserPreferenceManager>();
-
-        serviceCollection.AddSingleton<IClassInstancer, ClassInstancer>();
-
+        
         serviceCollection.AddSingleton<INotifyCollectionChangedHelper, NotifyCollectionChangedHelper>();
 
         return serviceCollection;

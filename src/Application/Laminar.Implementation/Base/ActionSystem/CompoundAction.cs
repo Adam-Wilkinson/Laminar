@@ -6,7 +6,7 @@ namespace Laminar.Implementation.Base.ActionSystem;
 
 public class CompoundAction : IUserAction
 {
-    readonly List<IUserAction> _actions;
+    private readonly List<IUserAction> _actions;
 
     public CompoundAction(params IUserAction[] actions)
     {
@@ -20,7 +20,7 @@ public class CompoundAction : IUserAction
 
     public bool Execute()
     {
-        foreach (IUserAction userAction in _actions)
+        foreach (var userAction in _actions)
         {
             userAction.Execute();
         }
@@ -30,8 +30,8 @@ public class CompoundAction : IUserAction
 
     public IUserAction GetInverse()
     {
-        IUserAction[] inverseList = new IUserAction[_actions.Count];
-        for (int i = 0; i < _actions.Count; i++)
+        var inverseList = new IUserAction[_actions.Count];
+        for (var i = 0; i < _actions.Count; i++)
         {
             inverseList[_actions.Count - 1 - i] = _actions[i].GetInverse();
         }

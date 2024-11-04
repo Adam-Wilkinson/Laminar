@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 
 namespace Laminar.Implementation.Base;
 
-class AppDataManager : IUserDataStore
+internal class AppDataManager : IUserDataStore
 {
     private static readonly string AppDataLocation = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Project Laminar");
     private static readonly JsonSerializerSettings JsonSettings = new()
@@ -26,12 +26,11 @@ class AppDataManager : IUserDataStore
 
     public IEnumerable<T> LoadAllFromFolder<T>(string folder, string fileType)
     {
-        if (Directory.Exists(Path.Combine(AppDataLocation, folder)))
+        if (!Directory.Exists(Path.Combine(AppDataLocation, folder))) yield break;
+        
+        foreach (var dir in Directory.EnumerateFiles(Path.Combine(AppDataLocation, folder), $"*.{fileType}"))
         {
-            foreach (string dir in Directory.EnumerateFiles(Path.Combine(AppDataLocation, folder), $"*.{fileType}"))
-            {
-                yield return Load<T>(dir);
-            }
+            yield return Load<T>(dir);
         }
     }
 
@@ -39,33 +38,34 @@ class AppDataManager : IUserDataStore
     {
         if (!File.Exists(Path.Combine(AppDataLocation, fileName)))
         {
-            Debug.WriteLine($"File {fileName} does not exist");
-            return default;
+            throw new FileNotFoundException($"The file {fileName} does not exist.");
         }
 
-        string json = File.ReadAllText(Path.Combine(AppDataLocation, fileName));
+        var json = File.ReadAllText(Path.Combine(AppDataLocation, fileName));
 
-        return JsonConvert.DeserializeObject<T>(json, new JsonSerializerSettings()
+        if (JsonConvert.DeserializeObject<T>(json, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto }) is not { } deserializeObject)
         {
-            TypeNameHandling = TypeNameHandling.Auto
-        });
+            throw new Exception($"The file {fileName} has not been deserialized.");
+        }
+        
+        return deserializeObject;
     }
 
     public void Save(string fileName, object toSave)
     {
-        string savePath = Path.Combine(AppDataLocation, fileName);
-        if (!Directory.Exists(Path.GetDirectoryName(savePath)))
+        var savePath = Path.Combine(AppDataLocation, fileName);
+        if (!Directory.Exists(Path.GetDirectoryName(savePath)) && Path.GetDirectoryName(savePath) is { } saveDirectory)
         {
-            Directory.CreateDirectory(Path.GetDirectoryName(savePath));
+            Directory.CreateDirectory(saveDirectory);
         }
 
-        string json = JsonConvert.SerializeObject(toSave, Formatting.Indented, JsonSettings);
+        var json = JsonConvert.SerializeObject(toSave, Formatting.Indented, JsonSettings);
 
         using var stream = File.CreateText(Path.Combine(AppDataLocation, fileName));
         stream.Write(json);
     }
-
-    public bool TryLoad<T>(string fileName, out T loaded)
+    
+    public bool TryLoad<T>(string fileName, out T? loaded)
     {
         if (!File.Exists(Path.Combine(AppDataLocation, fileName)))
         {
@@ -73,7 +73,7 @@ class AppDataManager : IUserDataStore
             return false;
         }
 
-        string json = File.ReadAllText(Path.Combine(AppDataLocation, fileName));
+        var json = File.ReadAllText(Path.Combine(AppDataLocation, fileName));
         loaded = JsonConvert.DeserializeObject<T>(json, JsonSettings);
         return true;
     }

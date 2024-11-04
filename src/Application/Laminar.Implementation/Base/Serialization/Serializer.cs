@@ -19,7 +19,7 @@ public class Serializer : ISerializer
 
     public ISerializedObject<T> Serialize<T>(T serializable)
     {
-        if (!(Serializers.TryGetValue(typeof(T), out object serializer) && serializer is IObjectSerializer<T> objectSerializer))
+        if (!(Serializers.TryGetValue(typeof(T), out var serializer) && serializer is IObjectSerializer<T> objectSerializer))
         {
             throw new NotImplementedException($"No serializable type found for type {typeof(T)}");
         }
@@ -29,7 +29,7 @@ public class Serializer : ISerializer
 
     public T Deserialize<T>(ISerializedObject<T> serialized, object deserializationContext)
     {
-        if (!(Serializers.TryGetValue(typeof(T), out object serializer) && serializer is IObjectSerializer<T> objectSerializer))
+        if (!(Serializers.TryGetValue(typeof(T), out var serializer) && serializer is IObjectSerializer<T> objectSerializer))
         {
             throw new NotSupportedException($"Cannot deserialize objects of type {serialized.GetType()}. It does not implement ISerializedObject or a valid Serializer was not found");
         }
@@ -44,7 +44,7 @@ public class Serializer : ISerializer
 
     public object TrySerializeObject(object toSerialize)
     {
-        if (Serializers.TryGetValue(toSerialize.GetType(), out object serializer))
+        if (Serializers.TryGetValue(toSerialize.GetType(), out var serializer))
         {
             return typeof(IObjectSerializer<>).MakeGenericType(toSerialize.GetType()).GetMethod(nameof(IObjectSerializer<object>.Serialize))!.Invoke(serializer, new object[] { toSerialize, this })!;
         }
@@ -62,8 +62,8 @@ public class Serializer : ISerializer
             }
         }
 
-        Type deserializedType = serialized.GetType().GetInterfaces().Where(x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(ISerializedObject<>)).FirstOrDefault()?.GetGenericArguments()[0];
-        if (deserializedType is not null && Serializers.TryGetValue(deserializedType, out object serializer))
+        var deserializedType = serialized.GetType().GetInterfaces().FirstOrDefault(x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(ISerializedObject<>))?.GetGenericArguments()[0];
+        if (deserializedType is not null && Serializers.TryGetValue(deserializedType, out var serializer))
         {
             return typeof(IObjectSerializer<>).MakeGenericType(deserializedType).GetMethod(nameof(IObjectSerializer<object>.DeSerialize))!.Invoke(serializer, new object[] { serialized, this, deserializationContext! })!;
         }
@@ -78,9 +78,9 @@ public class Serializer : ISerializer
 
     private void InitializeDictionaries()
     {
-        foreach (Type type in typeof(Serializer).Assembly.GetTypes())
+        foreach (var type in typeof(Serializer).Assembly.GetTypes())
         {
-            Type serializerType = type.GetInterfaces().Where(x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(IObjectSerializer<>)).FirstOrDefault();
+            var serializerType = type.GetInterfaces().FirstOrDefault(x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(IObjectSerializer<>));
             if (serializerType is not null)
             {
                 //object serializer = _factory.CreateInstance(type);
