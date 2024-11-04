@@ -1,6 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace Laminar.Avalonia.ViewModels;
-public class ViewModelBase : ObservableObject
+public abstract class ViewModelBase : ObservableObject
 {
 }

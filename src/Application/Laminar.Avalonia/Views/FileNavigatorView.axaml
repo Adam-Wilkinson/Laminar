@@ -1,0 +1,29 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:Laminar.Avalonia.ViewModels"
+             xmlns:dd="using:Laminar.Avalonia.DragDrop"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:DataType="vm:FileNavigatorViewModel"
+             x:Class="Laminar.Avalonia.Views.FileNavigatorView">
+    <Design.DataContext>
+        <vm:FileNavigatorViewModel/>
+    </Design.DataContext>
+    
+    <Panel Background="{DynamicResource LaminarBackgroundLighter}" MinWidth="1" Name="FileNavigator">
+        <TreeView ClipToBounds="False" ItemsSource="{Binding Files}">
+            <TreeView.ItemTemplate>
+                <TreeDataTemplate ItemsSource="{Binding SubNodes}">
+                    <StackPanel Orientation="Horizontal" 
+                                Background="{DynamicResource LaminarBackgroundAlt}" 
+                                HorizontalAlignment="Stretch" 
+                                dd:DragDropHandler.TriggerMouseButton="Left">
+                        <TextBlock Text="{Binding Title}"/>
+                        <Button Command="{Binding $parent[UserControl].((vm:FileNavigatorViewModel)DataContext).OpenFilePicker}">O</Button>
+                    </StackPanel>
+                </TreeDataTemplate>
+            </TreeView.ItemTemplate>
+        </TreeView>
+    </Panel>
+</UserControl>

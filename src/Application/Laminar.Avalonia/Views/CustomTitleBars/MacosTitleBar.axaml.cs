@@ -11,7 +11,6 @@ public partial class MacosTitleBar : LaminarTitleBar
     public MacosTitleBar()
     {
         InitializeComponent();
-        IsVisible = RuntimeInformation.IsOSPlatform(OSPlatform.OSX);
 
         MinimizeButton.Click += MinimizeWindow;
         ZoomButton.Click += MaximizeWindow;

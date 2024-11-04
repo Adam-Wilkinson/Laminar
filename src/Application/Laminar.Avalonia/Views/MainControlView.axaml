@@ -3,6 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:Laminar.Avalonia.ViewModels"
+             xmlns:v="using:Laminar.Avalonia.Views"
              xmlns:local="using:Laminar.Avalonia"
              xmlns:dd="using:Laminar.Avalonia.DragDrop"
              xmlns:asp="using:Laminar.Avalonia.AdjustableStackPanel"
@@ -15,18 +16,7 @@
     </UserControl.Resources>
     <DockPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
         <asp:AdjustableStackPanel DockPanel.Dock="Left" HorizontalAlignment="Left" VerticalAlignment="Stretch" Orientation="Horizontal" Name="SidebarStackPanel" TransitionDuration="{DynamicResource AnimationDuration}" TransitionEasing="{DynamicResource AnimationEasing}">
-            <Panel Background="{DynamicResource LaminarBackgroundLighter}" MinWidth="1" Name="FileNavigator">
-                <TreeView ClipToBounds="False" ItemsSource="{Binding Files}">
-                    <TreeView.ItemTemplate>
-                        <TreeDataTemplate ItemsSource="{Binding SubNodes}">
-                            <TextBlock Text="{Binding Title}"
-                                       dd:DragDropHandler.TriggerMouseButton="Left"
-                                       HorizontalAlignment="Stretch" 
-                                       Background="{DynamicResource LaminarBackgroundAlt}"/>
-                        </TreeDataTemplate>
-                    </TreeView.ItemTemplate>
-                </TreeView>
-            </Panel>
+            <v:FileNavigatorView Name="FileNavigator" DataContext="{Binding FileNavigator}"/>
         </asp:AdjustableStackPanel>
         <TextBlock Classes="h2" HorizontalAlignment="Center" VerticalAlignment="Center">The script editor</TextBlock>
         <DockPanel.Resources>

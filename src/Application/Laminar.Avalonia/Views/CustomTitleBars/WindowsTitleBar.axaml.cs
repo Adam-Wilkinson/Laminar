@@ -15,7 +15,6 @@ public partial class WindowsTitleBar : LaminarTitleBar
     public WindowsTitleBar()
     {
         InitializeComponent();
-        IsVisible = !RuntimeInformation.IsOSPlatform(OSPlatform.OSX);
 
         MinimizeButton.Click += MinimizeWindow;
         MaximizeButton.Click += MaximizeWindow;

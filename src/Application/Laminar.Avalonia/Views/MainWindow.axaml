@@ -1,7 +1,7 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:Laminar.Avalonia.ViewModels"
-		xmlns:titlebars="using:Laminar.Avalonia.Views.CustomTitleBars"
+        xmlns:local="using:Laminar.Avalonia"
 		xmlns:pagetransitions="using:Laminar.Avalonia.PageTransitions"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -12,15 +12,14 @@
         Title="Project: Laminar"
 		ExtendClientAreaToDecorationsHint="True"
 		ExtendClientAreaChromeHints="NoChrome"
-		ExtendClientAreaTitleBarHeightHint="{Binding #WindowsTitleBar.Height}">
+		ExtendClientAreaTitleBarHeightHint="{Binding #TitleBar.Height}">
 
-    <Design.DataContext>
-        <vm:MainWindowViewModel/>
-    </Design.DataContext>
-
+	<Design.DataContext>
+		<vm:MainWindowViewModel/>
+	</Design.DataContext>
+	
 	<DockPanel VerticalAlignment="Stretch">
-		<titlebars:WindowsTitleBar DockPanel.Dock="Top" Name="WindowsTitleBar" SidebarState="{Binding SidebarState}"/>
-		<titlebars:MacosTitleBar DockPanel.Dock="Top" Name="MacosTitleBar" SidebarState="{Binding SidebarState}"/>
+		<ContentControl DockPanel.Dock="Top" Name="TitleBar" Content="{Binding TitleBar}"/>
 		<TransitioningContentControl IsTransitionReversed="{Binding !SettingsOpen}" 
 									 VerticalAlignment="Stretch" 
 									 VerticalContentAlignment="Stretch" 
@@ -34,7 +33,7 @@
 		
 		<DockPanel.Styles>
 			<Style Selector=":is(ToggleButton)#SettingsButton">
-				<Setter Property="IsChecked" Value="{Binding SettingsOpen, Mode=TwoWay}"/>
+				<Setter Property="IsChecked" Value="{Binding SettingsOpen}"/>
 			</Style>
 			<Style Selector=":is(Button)#LaminarButton">
 				<Setter Property="Command" Value="{Binding ToggleSidebar}"/>

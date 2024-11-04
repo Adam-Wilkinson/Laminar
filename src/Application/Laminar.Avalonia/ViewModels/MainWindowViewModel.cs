@@ -1,26 +1,33 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using System.Runtime.InteropServices;
+using CommunityToolkit.Mvvm.ComponentModel;
 using Laminar.Avalonia.Views;
+using Laminar.Avalonia.Views.CustomTitleBars;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Laminar.Avalonia.ViewModels;
 
 public partial class MainWindowViewModel : ViewModelBase
 {
     private readonly SettingsViewModel _settings = new();
-    private readonly MainControlView _mainControl = new() { DataContext = new MainControlViewModel() };
+    private readonly MainControlView _mainControl;
     
     [ObservableProperty] private bool _settingsOpen;
     private bool _sidebarOpen = true;
     
-    public MainWindowViewModel()
+    public MainWindowViewModel(MainControlViewModel mainControlViewModel)
     {
+        _mainControl = new() { DataContext = mainControlViewModel };
         WindowCentralControl = _mainControl;
+        TitleBar.SidebarState = CurrentSidebarState();
     }
 
-    public SidebarState SidebarState => SettingsOpen
-        ? SidebarState.Unchangeable
-        : (_sidebarOpen ? SidebarState.Expanded : SidebarState.Closed);
+    public MainWindowViewModel() : this(App.Locator.GetRequiredService<MainControlViewModel>())
+    {
+    }
 
     public object WindowCentralControl { get; set; }
+
+    public LaminarTitleBar TitleBar { get; } = RuntimeInformation.IsOSPlatform(OSPlatform.OSX) ? new MacosTitleBar() : new WindowsTitleBar();
 
     public void ToggleSidebar()
     {
@@ -35,15 +42,20 @@ public partial class MainWindowViewModel : ViewModelBase
         {
             _mainControl.CloseFileNavigator();
         }
-        OnPropertyChanged(nameof(SidebarState));
+
+        TitleBar.SidebarState = CurrentSidebarState();
     }
 
-    partial void OnSettingsOpenChanged(bool oldValue, bool newValue)
+    partial void OnSettingsOpenChanged(bool value)
     {
-        WindowCentralControl = newValue ? _settings : _mainControl;
+        WindowCentralControl = value ? _settings : _mainControl;
         OnPropertyChanged(nameof(WindowCentralControl));
-        OnPropertyChanged(nameof(SidebarState));
+        TitleBar.SidebarState = CurrentSidebarState();
     }
+
+    private SidebarState CurrentSidebarState()
+        => SettingsOpen ? SidebarState.Unchangeable : 
+            _sidebarOpen ? SidebarState.Expanded : SidebarState.Closed;
 }
 
 public enum SidebarState
