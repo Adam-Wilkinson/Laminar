@@ -44,4 +44,8 @@
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Laminar.Implementation\Laminar.Implementation.csproj" />
+  </ItemGroup>
 </Project>
