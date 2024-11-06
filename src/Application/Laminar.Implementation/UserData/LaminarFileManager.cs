@@ -7,10 +7,7 @@ namespace Laminar.Implementation.UserData;
 
 public class LaminarFileManager(IPersistentDataManager dataManager) : ILaminarFileManager
 {
-    private readonly IPersistentDataManager _dataManager = dataManager;
-
-    private readonly IPersistentDataStore _rootFoldersDataStore =
-        dataManager.GetDataStore(CommonDataStoreKeys.PersistentData, PersistentDataType.Json);
+    private readonly IPersistentDataStore _rootFoldersDataStore = dataManager.GetDataStore(DataStoreKey.PersistentData);
     
     public ObservableCollection<ILaminarRootFolder> RootFolders { get; } = 
     [

@@ -12,7 +12,7 @@ public class PersistentDataManager(ISerializer serializer) : IPersistentDataMana
 {
     private static readonly string StaticPath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Project Laminar"); 
     private readonly ISerializer _serializer = serializer;
-    private readonly Dictionary<(string path, PersistentDataType dataType), IPersistentDataStore> _dataStores = new();
+    private readonly Dictionary<DataStoreKey, IPersistentDataStore> _dataStores = new();
     
     static PersistentDataManager()
     {
@@ -24,19 +24,23 @@ public class PersistentDataManager(ISerializer serializer) : IPersistentDataMana
 
     public string Path => StaticPath;
 
-    public IPersistentDataStore GetDataStore(string dataStoreName, PersistentDataType dataType)
+    public IPersistentDataStore GetDataStore(DataStoreKey dataStoreKey)
     {
-        if (_dataStores.TryGetValue((dataStoreName, dataType), out var dataStore))
+        if (_dataStores.TryGetValue(dataStoreKey, out var dataStore))
         {
             return dataStore;
         }
 
-        var newDataStore = dataType switch
-        {
-            PersistentDataType.Json => new JsonDataStore(_serializer, System.IO.Path.Combine(Path, dataStoreName)),
-            _ => throw new UnknownDataTypeException(dataType)
-        };
-        _dataStores[(dataStoreName, dataType)] = newDataStore;
+        var newDataStore = new PersistentDataStore(
+            _serializer, 
+            dataStoreKey.DataType switch
+            {
+                PersistentDataType.Json => new JsonFileSaver(),
+                var unknown => throw new UnknownDataTypeException(unknown),
+            }, 
+            System.IO.Path.Combine(Path, dataStoreKey.Name));
+        
+        _dataStores[dataStoreKey] = newDataStore;
         return newDataStore;
     }
 }

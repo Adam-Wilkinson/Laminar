@@ -10,5 +10,5 @@ public interface ISerializer
 
     public ISerialized<T>? TrySerialize<T>(T serializable);
 
-    public T? TryDeserialize<T>(ISerialized<T> serialized, object deserializationContext);
+    public T? TryDeserialize<T>(ISerialized<T> serialized, object? deserializationContext = null);
 }

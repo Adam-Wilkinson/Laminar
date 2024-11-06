@@ -4,7 +4,7 @@ namespace Laminar.Contracts.UserData;
 
 public interface IPersistentDataManager
 {
-    public IPersistentDataStore GetDataStore(string dataStoreName, PersistentDataType dataType);
+    public IPersistentDataStore GetDataStore(DataStoreKey dataStoreKey);
 
     public string Path { get; }
 }

@@ -6,19 +6,15 @@ using Newtonsoft.Json;
 
 namespace Laminar.Implementation.UserData;
 
-public class JsonDataStore : IPersistentDataStore
+public class PersistentDataStore : IPersistentDataStore
 {
     private readonly ISerializer _serializer;
-
-    private static readonly JsonSerializerSettings JsonSettings = new()
-    {
-        TypeNameHandling = TypeNameHandling.All,
-        TypeNameAssemblyFormatHandling = TypeNameAssemblyFormatHandling.Full,
-    };
-
-    public JsonDataStore(ISerializer serializer, string path)
+    private readonly IFileSaver _saver;
+    
+    public PersistentDataStore(ISerializer serializer, IFileSaver saver, string path)
     {
         _serializer = serializer;
+        _saver = saver;
         Path = path;
 
         if (!Directory.Exists(Path))
@@ -37,15 +33,13 @@ public class JsonDataStore : IPersistentDataStore
             return new DataReadResult<T>(default, DataIoStatus.FileDoesNotExist);
         }
 
-        var json = File.ReadAllText(filePath);
-
-        if (JsonConvert.DeserializeObject<ISerialized<T>>(json,
-                new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto }) is not { } fromJson)
+        var readResult = _saver.Load<ISerialized<T>>(filePath);
+        if (readResult.Status != DataIoStatus.Success || readResult.Result is not { } readObject)
         {
-            return new DataReadResult<T>(default, DataIoStatus.UnknownError);
+            return new DataReadResult<T>(default, readResult.Status);
         }
-
-        if (_serializer.TryDeserialize(fromJson, null) is not { } result)
+        
+        if (_serializer.TryDeserialize(readObject) is not { } result)
         {
             return new DataReadResult<T>(default, DataIoStatus.SerializerNotRegistered);
         }
@@ -60,16 +54,11 @@ public class JsonDataStore : IPersistentDataStore
             Directory.CreateDirectory(saveDirectory);
         }
 
-        if (_serializer.TrySerialize(value) is not { } serialzied)
+        if (_serializer.TrySerialize(value) is not { } serialized)
         {
             return new DataSaveResult(DataIoStatus.SerializerNotRegistered);
         }
 
-        var json = JsonConvert.SerializeObject(serialzied, Formatting.Indented, JsonSettings);
-
-        var savePath = System.IO.Path.Combine(Path, key);
-        using var stream = File.CreateText(savePath);
-        stream.Write(json);
-        return new DataSaveResult(DataIoStatus.Success);
+        return _saver.Save(System.IO.Path.Combine(Path, key), serialized);
     }
 }
