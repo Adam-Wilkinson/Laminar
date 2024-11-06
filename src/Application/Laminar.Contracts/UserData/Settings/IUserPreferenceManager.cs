@@ -1,6 +1,6 @@
 ﻿using Laminar.Domain;
 
-namespace Laminar.Contracts.Base.Settings;
+namespace Laminar.Contracts.UserData.Settings;
 
 public interface IUserPreferenceManager
 {

@@ -4,11 +4,11 @@ using Laminar.PluginFramework.NodeSystem;
 using Laminar.PluginFramework.UserInterface;
 using Laminar.PluginFramework.UserInterface.UserInterfaceDefinitions;
 
-namespace Laminar.Implementation.Base.Settings;
+namespace Laminar.Implementation.UserData.Settings;
 
-internal class DisplayValue<T> : IDisplayValue
+internal class SettingsDisplayValue<T> : IDisplayValue
 {
-    public DisplayValue(string name, T value)
+    public SettingsDisplayValue(string name, T value)
     {
         InterfaceDefinition = null;
         Name = name;

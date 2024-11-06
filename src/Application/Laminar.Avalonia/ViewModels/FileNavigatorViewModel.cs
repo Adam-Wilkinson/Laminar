@@ -1,41 +1,59 @@
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 using Avalonia.Platform.Storage;
+using Laminar.Contracts.Base;
 
 namespace Laminar.Avalonia.ViewModels;
-public class FileNavigatorViewModel(IStorageProvider storageProvider) : ViewModelBase
+public class FileNavigatorViewModel : ViewModelBase
 {
-    private readonly IStorageProvider _storageProvider = storageProvider;
-    
-    public ObservableCollection<TreeTester> Files { get; } =
-    [
-        new("Root File", [
-            new("Sub File One"), 
-            new("Sub File Two", [
-                new("Sub Sub File One"),
-                new("Sub Sub File Two")
-            ])
-        ])
-    ];
+    private readonly IStorageProvider _storageProvider;
+
+    public FileNavigatorViewModel(IStorageProvider storageProvider)
+    {
+        _storageProvider = storageProvider;
+    }
+
+    public ObservableCollection<IFileNavigatorItem> Files { get; } = new();
 
     public void OpenFilePicker()
     {
         _storageProvider.OpenFilePickerAsync(new FilePickerOpenOptions { AllowMultiple = false, Title = "Pick a file!"});
     }
-    
-    public class TreeTester
+
+    public interface IFileNavigatorItem
     {
-        public ObservableCollection<TreeTester>? SubNodes { get; }
-        public string Title { get; }
+        public ObservableCollection<IFileNavigatorItem>? Children { get; }
+        public string Name { get; }
+    }
 
-        public TreeTester(string title)
+    public class Folder : IFileNavigatorItem
+    {
+        public ObservableCollection<IFileNavigatorItem>? Children { get; }
+        public string Name { get; }
+
+        public Folder(IStorageFolder folder)
         {
-            Title = title;
+            Name = folder.Name;
+            Children = new ObservableCollection<IFileNavigatorItem>();
+            foreach (var item in folder.GetItemsAsync().ToBlockingEnumerable())
+            {
+                Children.Add(item switch
+                {
+                    IStorageFolder folderItem => new Folder(folderItem),
+                    IStorageFile fileItem => new File(fileItem),
+                });
+            }
         }
+    }
 
-        public TreeTester(string title, ObservableCollection<TreeTester> subNodes)
-            : this(title)
+    public class File : IFileNavigatorItem
+    {
+        public ObservableCollection<IFileNavigatorItem>? Children { get; } = null;
+        public string Name { get; }
+
+        public File(IStorageFile file)
         {
-            SubNodes = subNodes;
+            Name = file.Name;
         }
     }
 }

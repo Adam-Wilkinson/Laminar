@@ -38,7 +38,7 @@ public class PluginHost : IPluginHost
         _loadedNodeManager.AddNodeToCatagory(node, subItemName is null ? menuItemName : $"{menuItemName}{ItemCatagory<IWrappedNode>.SeparationChar}{subItemName}");
     }
 
-    public bool RegisterType<T>(string hexColour, string userFriendlyName, T defaultValue, IUserInterfaceDefinition defaultEditor, IUserInterfaceDefinition defaultDisplay, IObjectSerializer<T>? serializer)
+    public bool RegisterType<T>(string hexColour, string userFriendlyName, T defaultValue, IUserInterfaceDefinition defaultEditor, IUserInterfaceDefinition defaultDisplay, ITypeSerializer<T>? serializer)
     {
         if (serializer is not null)
         {

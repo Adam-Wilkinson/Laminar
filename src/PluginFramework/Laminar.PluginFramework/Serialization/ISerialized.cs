@@ -1,5 +1,5 @@
 ﻿namespace Laminar.PluginFramework.Serialization;
 
-public interface ISerializedObject<T>
+public interface ISerialized<T>
 {
 }

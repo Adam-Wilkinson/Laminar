@@ -5,7 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Xml;
 
-namespace Laminar.Implementation.Base.Settings;
+namespace Laminar.Implementation.UserData.Settings;
 
 public class Configs
 {

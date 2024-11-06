@@ -3,6 +3,8 @@ using System.Windows.Input;
 using Avalonia.Data;
 using Avalonia.Input;
 using Laminar.Contracts.Base.Settings;
+using Laminar.Contracts.Base.UserData.Settings;
+using Laminar.Contracts.UserData.Settings;
 using Laminar.Domain;
 using Microsoft.Extensions.DependencyInjection;
 

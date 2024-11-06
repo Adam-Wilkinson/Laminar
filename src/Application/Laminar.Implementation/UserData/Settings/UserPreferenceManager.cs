@@ -1,10 +1,9 @@
 ﻿using System.Collections.Generic;
-using Laminar.Contracts.Base.Settings;
 using Laminar.Contracts.Base.UserInterface;
+using Laminar.Contracts.UserData.Settings;
 using Laminar.Domain;
-using Laminar.PluginFramework.UserInterface;
 
-namespace Laminar.Implementation.Base.Settings;
+namespace Laminar.Implementation.UserData.Settings;
 
 internal class UserPreferenceManager : IUserPreferenceManager
 {

@@ -1,8 +1,8 @@
 ﻿using Laminar.Contracts.Base;
-using Laminar.Contracts.Base.Settings;
+using Laminar.Contracts.UserData.Settings;
 using Laminar.Domain.Notification;
 using Laminar.Implementation.Base;
-using Laminar.Implementation.Base.Settings;
+using Laminar.Implementation.UserData.Settings;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Laminar.Implementation.Extensions.ServiceInitializers;

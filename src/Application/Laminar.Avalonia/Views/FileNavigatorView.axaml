@@ -11,12 +11,12 @@
     <Panel Background="{DynamicResource LaminarBackgroundLighter}" MinWidth="1" Name="FileNavigator">
         <TreeView ClipToBounds="False" ItemsSource="{Binding Files}">
             <TreeView.ItemTemplate>
-                <TreeDataTemplate ItemsSource="{Binding SubNodes}">
+                <TreeDataTemplate ItemsSource="{Binding Children}">
                     <StackPanel Orientation="Horizontal" 
                                 Background="{DynamicResource LaminarBackgroundAlt}" 
                                 HorizontalAlignment="Stretch" 
                                 dd:DragDropHandler.TriggerMouseButton="Left">
-                        <TextBlock Text="{Binding Title}"/>
+                        <TextBlock Text="{Binding Name}"/>
                         <Button Command="{Binding $parent[UserControl].((vm:FileNavigatorViewModel)DataContext).OpenFilePicker}">O</Button>
                     </StackPanel>
                 </TreeDataTemplate>

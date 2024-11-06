@@ -151,5 +151,5 @@ public interface IPluginHost
         where TInterfaceDefinition : IUserInterfaceDefinition
         where TInterface : TFrontend, new();
 
-    bool RegisterType<T>(string hexColour, string userFriendlyName, T defaultValue, IUserInterfaceDefinition defaultEditor, IUserInterfaceDefinition defaultDisplay, IObjectSerializer<T>? serializer);
+    bool RegisterType<T>(string hexColour, string userFriendlyName, T defaultValue, IUserInterfaceDefinition defaultEditor, IUserInterfaceDefinition defaultDisplay, ITypeSerializer<T>? serializer);
 }
