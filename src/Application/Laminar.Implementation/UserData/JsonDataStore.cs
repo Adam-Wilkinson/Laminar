@@ -6,20 +6,32 @@ using Newtonsoft.Json;
 
 namespace Laminar.Implementation.UserData;
 
-public class JsonDataStore(ISerializer serializer, string path) : IPersistentDataStore
+public class JsonDataStore : IPersistentDataStore
 {
-    private readonly ISerializer _serializer = serializer;
-    private readonly string _path = path;
-    
+    private readonly ISerializer _serializer;
+
     private static readonly JsonSerializerSettings JsonSettings = new()
     {
         TypeNameHandling = TypeNameHandling.All,
         TypeNameAssemblyFormatHandling = TypeNameAssemblyFormatHandling.Full,
     };
+
+    public JsonDataStore(ISerializer serializer, string path)
+    {
+        _serializer = serializer;
+        Path = path;
+
+        if (!Directory.Exists(Path))
+        {
+            Directory.CreateDirectory(Path);
+        }
+    }
     
+    public string Path { get; }
+
     public DataReadResult<T> GetItem<T>(string key)
     {
-        var filePath = Path.Combine(_path, key);
+        var filePath = System.IO.Path.Combine(Path, key);
         if (!File.Exists(filePath))
         {
             return new DataReadResult<T>(default, DataIoStatus.FileDoesNotExist);
@@ -43,7 +55,7 @@ public class JsonDataStore(ISerializer serializer, string path) : IPersistentDat
 
     public DataSaveResult SetItem<T>(string key, T value)
     {
-        if (!Directory.Exists(Path.GetDirectoryName(_path)) && Path.GetDirectoryName(_path) is { } saveDirectory)
+        if (!Directory.Exists(System.IO.Path.GetDirectoryName(Path)) && System.IO.Path.GetDirectoryName(Path) is { } saveDirectory)
         {
             Directory.CreateDirectory(saveDirectory);
         }
@@ -55,7 +67,7 @@ public class JsonDataStore(ISerializer serializer, string path) : IPersistentDat
 
         var json = JsonConvert.SerializeObject(serialzied, Formatting.Indented, JsonSettings);
 
-        var savePath = Path.Combine(_path, key);
+        var savePath = System.IO.Path.Combine(Path, key);
         using var stream = File.CreateText(savePath);
         stream.Write(json);
         return new DataSaveResult(DataIoStatus.Success);

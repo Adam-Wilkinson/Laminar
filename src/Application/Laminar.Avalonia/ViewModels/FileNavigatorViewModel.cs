@@ -1,16 +1,23 @@
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using Avalonia.Platform.Storage;
-using Laminar.Contracts.Base;
+using Laminar.Contracts.UserData;
 
 namespace Laminar.Avalonia.ViewModels;
 public class FileNavigatorViewModel : ViewModelBase
 {
     private readonly IStorageProvider _storageProvider;
-
-    public FileNavigatorViewModel(IStorageProvider storageProvider)
+    private readonly ILaminarFileManager _fileManager;
+    
+    public FileNavigatorViewModel(IStorageProvider storageProvider, ILaminarFileManager fileManager)
     {
         _storageProvider = storageProvider;
+        _fileManager = fileManager;
+
+        foreach (var folder in _fileManager.RootFolders)
+        {
+            Files.Add(new Folder(storageProvider.TryGetFolderFromPathAsync(folder.Path).Result!));
+        }
     }
 
     public ObservableCollection<IFileNavigatorItem> Files { get; } = new();

@@ -11,6 +11,7 @@ public static class LaminarServices
     {
         services.AddSingleton<IPersistentDataManager, PersistentDataManager>();
         services.AddSingleton<ISerializer, Serializer>();
+        services.AddSingleton<ILaminarFileManager, LaminarFileManager>();
         return services;
     }
 }
