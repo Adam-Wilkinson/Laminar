@@ -4,7 +4,7 @@ namespace Laminar.Contracts.UserData;
 
 public interface IPersistentDataStore
 {
-    public string Path { get; }
+    public string FilePath { get; }
 
     public DataReadResult<T> GetItem<T>(string key);
     

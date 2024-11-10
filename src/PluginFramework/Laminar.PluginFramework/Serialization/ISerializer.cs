@@ -2,9 +2,9 @@
 
 public interface ISerializer
 {
-    public object? TrySerializeObject(object toSerialize);
+    public object TrySerializeObject(object toSerialize);
 
-    public object? TryDeserializeObject(object serialized, Type requestedType, object? context = null);
+    public object TryDeserializeObject(object serialized, Type requestedType, object? context = null);
     
     public void RegisterSerializer<T>(ITypeSerializer<T> serializer);
 }
