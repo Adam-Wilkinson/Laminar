@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using Laminar.PluginFramework.Serialization;
 using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
 
 namespace Laminar.Implementation.UserData;
 
@@ -35,7 +36,7 @@ public class Serializer : ISerializer
 
     public object? TrySerializeObject(object toSerialize)
     {
-        if (toSerialize.GetType().IsPrimitive)
+        if (toSerialize.GetType().IsPrimitive || toSerialize is string)
         {
             return toSerialize;
         }
@@ -45,8 +46,8 @@ public class Serializer : ISerializer
             return CallGenericSerialize(typeSerializer, toSerialize);
         }
 
-        if (toSerialize.GetType().GetInterfaces().Contains(typeof(IEnumerable))
-            && Activator.CreateInstance(typeof(EnumerableSerializer<>).MakeGenericType(toSerialize.GetType()), this) is { } enumerableSerializer)
+        if (toSerialize.GetType().GetInterfaces().FirstOrDefault(x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(IEnumerable<>)) is { } enumerableType
+            && Activator.CreateInstance(typeof(EnumerableSerializer<,>).MakeGenericType(enumerableType.GenericTypeArguments[0], toSerialize.GetType()), this) is { } enumerableSerializer)
         {
             _serializers.Add(toSerialize.GetType(), enumerableSerializer);
             return CallGenericSerialize(enumerableSerializer, toSerialize);            
@@ -57,7 +58,7 @@ public class Serializer : ISerializer
 
     public object? TryDeserializeObject(object serialized, Type requestedType, object? context)
     {
-        if (serialized.GetType().IsPrimitive)
+        if (serialized.GetType().IsPrimitive || serialized is string)
         {
             return serialized;
         }
@@ -67,15 +68,13 @@ public class Serializer : ISerializer
             return CallGenericDeSerialize(typeSerializer, serialized, requestedType, context);
         }
 
-        if (serialized.GetType().GetInterfaces().Contains(typeof(IEnumerable))
-            && Activator.CreateInstance(typeof(EnumerableSerializer<>).MakeGenericType(requestedType), this) is
+        if (serialized.GetType().GetInterfaces().FirstOrDefault(x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(IEnumerable<>)) is { } enumerableType
+            && Activator.CreateInstance(typeof(EnumerableSerializer<,>).MakeGenericType(enumerableType.GenericTypeArguments[0], requestedType), this) is
                 { } enumerableSerializer)
         {
             _serializers.Add(requestedType, enumerableSerializer);
-            var enumerableDeserialized =
-                CallGenericDeSerialize(enumerableSerializer, serialized, requestedType, context);
-            return typeof(Serializer).GetMethod(nameof(EnumerableToCollection), requestedType.GetGenericArguments())!
-                .Invoke(this, [enumerableDeserialized, requestedType, context]);
+            return CallGenericDeSerialize(enumerableSerializer, serialized, requestedType, context);
+            
         }
 
         return serialized;
@@ -94,36 +93,42 @@ public class Serializer : ISerializer
             .GetMethod(nameof(ITypeSerializer<object>.DeSerialize))!
             .Invoke(typeSerializer, [serialized, this, deserializationContext])!;
     }
-
-    private static object EnumerableToCollection<T>(IEnumerable<T> obj, Type requestedType)
-    {
-        if (requestedType.IsArray) return obj.ToArray();
-        if (requestedType.IsAssignableFrom(typeof(IList<T>))) return obj.ToList();
-        return obj;
-    }
     
-    private class EnumerableSerializer<T>(ISerializer serializer) : ITypeSerializer<IEnumerable<T>>
+    private class EnumerableSerializer<TElement, TEnumerable>(ISerializer serializer) : ITypeSerializer<TEnumerable>
+        where TEnumerable : IEnumerable<TElement>
     {
-        private readonly ISerializer _serializer = serializer; 
+        private readonly ISerializer _serializer = serializer;
+
+        public bool Match(TEnumerable enumerable)
+            => enumerable is List<TElement> or TElement[];
         
-        public ISerialized<IEnumerable<T>> Serialize(IEnumerable<T> toSerialize, ISerializer serializer)
+        public ISerialized<TEnumerable> Serialize(TEnumerable toSerialize, ISerializer serializer)
         {
-            return new SerializedEnumerable<T>(toSerialize.Select(x => _serializer.TrySerializeObject(x))!);
+            return new SerializedEnumerable<TEnumerable>(toSerialize.Select(x => _serializer.TrySerializeObject(x))!);
         }
 
-        public IEnumerable<T> DeSerialize(ISerialized<IEnumerable<T>> serialized, ISerializer serializer, object? deserializationContext)
+        public TEnumerable DeSerialize(ISerialized<TEnumerable> serialized, ISerializer serializer, object? context)
         {
-            if (serialized is not SerializedEnumerable<T> enumerable)
+            if (serialized is not SerializedEnumerable<TElement> enumerable)
             {
-                yield break;
+                throw new ArgumentException(nameof(serialized));
             }
 
-            foreach (var serializedElement in enumerable.Serialized)
-            {
-                yield return _serializer.TryDeserialize<T>(serializedElement, deserializationContext)!;
-            }
+            IEnumerable<TElement> deserializedEnumerable = enumerable
+                    .Select(x => _serializer.TryDeserialize<TElement>(x, context))
+                    .Where(x => x is not null)!;
+
+            if (typeof(TEnumerable).IsArray && deserializedEnumerable.ToArray() is TEnumerable array) return array;
+            if (typeof(TEnumerable).IsAssignableFrom(typeof(IList<TElement>)) && deserializedEnumerable.ToList() is TEnumerable list) return list;
+            throw new InvalidOperationException();
         }
     }
-    
-    private record SerializedEnumerable<T>(IEnumerable<object> Serialized) : ISerialized<IEnumerable<T>>;
+
+    private class SerializedEnumerable<TEnumerable>(IEnumerable<object> serialized)
+        : ISerialized<TEnumerable>, IEnumerable<object>
+    {
+        public IEnumerator<object> GetEnumerator() => serialized.GetEnumerator();
+
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+    }
 }

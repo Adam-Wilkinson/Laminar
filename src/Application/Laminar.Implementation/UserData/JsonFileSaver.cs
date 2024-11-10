@@ -9,8 +9,8 @@ public class JsonFileSaver : IFileSaver
 {
     private static readonly JsonSerializerSettings JsonSettings = new()
     {
-        TypeNameHandling = TypeNameHandling.All,
-        TypeNameAssemblyFormatHandling = TypeNameAssemblyFormatHandling.Full,
+        // TypeNameHandling = TypeNameHandling.All,
+        // TypeNameAssemblyFormatHandling = TypeNameAssemblyFormatHandling.Full,
     };
 
     public DataSaveResult Save<T>(string filePath, T objectToSave)
