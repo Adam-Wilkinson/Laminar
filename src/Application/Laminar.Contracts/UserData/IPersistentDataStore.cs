@@ -9,4 +9,6 @@ public interface IPersistentDataStore
     public DataReadResult<T> GetItem<T>(string key);
     
     public DataSaveResult SetItem<T>(string key, T value);
+
+    public IPersistentDataStore InitializeDefaultValue<T>(string key, T value);
 }

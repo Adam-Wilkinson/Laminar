@@ -10,7 +10,7 @@ namespace Laminar.Implementation.UserData;
 
 public class PersistentDataManager(ISerializer serializer) : IPersistentDataManager
 {
-    private static readonly string StaticPath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Project Laminar"); 
+    private static readonly string StaticPath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Project Laminar");
     private readonly ISerializer _serializer = serializer;
     private readonly Dictionary<DataStoreKey, IPersistentDataStore> _dataStores = new();
     

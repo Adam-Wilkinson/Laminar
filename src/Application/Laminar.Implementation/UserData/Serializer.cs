@@ -1,7 +1,11 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel.Design.Serialization;
 using System.Linq;
+using System.Reflection;
 using Laminar.PluginFramework.Serialization;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Laminar.Implementation.UserData;
 
@@ -11,7 +15,8 @@ public class Serializer : ISerializer
 
     public Serializer(IServiceProvider serviceProvider)
     {
-        foreach (var type in typeof(Serializer).Assembly.GetTypes())
+        var assembly = typeof(Serializer).Assembly;
+        foreach (var type in assembly.GetTypes())
         {
             if (type.GetInterfaces().FirstOrDefault(x =>
                     x.IsGenericType && x.GetGenericTypeDefinition() == typeof(ITypeSerializer<>)) is { } serializerType 
@@ -20,32 +25,7 @@ public class Serializer : ISerializer
             {
                 _serializers.Add(serializableType, serializer);
             }
-
-            if (type.IsPrimitive)
-            {
-                _serializers.Add(type, typeof(PrimitiveSerializer<>).MakeGenericType(type));
-            }
         }
-    }
-
-    public ISerialized<T>? TrySerialize<T>(T serializable)
-    {
-        if (!(_serializers.TryGetValue(typeof(T), out var serializer) && serializer is ITypeSerializer<T> objectSerializer))
-        {
-            return null;
-        }
-
-        return objectSerializer.Serialize(serializable, this);
-    }
-
-    public T? TryDeserialize<T>(ISerialized<T> serialized, object deserializationContext)
-    {
-        if (!(_serializers.TryGetValue(typeof(T), out var serializer) && serializer is ITypeSerializer<T> objectSerializer))
-        {
-            return default;
-        }
-
-        return objectSerializer.DeSerialize(serialized, this, deserializationContext);
     }
 
     public void RegisterSerializer<T>(ITypeSerializer<T> serializer)
@@ -53,52 +33,97 @@ public class Serializer : ISerializer
         _serializers.Add(typeof(T), serializer);
     }
 
-    public object TrySerializeObject(object toSerialize)
+    public object? TrySerializeObject(object toSerialize)
     {
-        if (_serializers.TryGetValue(toSerialize.GetType(), out var serializer))
+        if (toSerialize.GetType().IsPrimitive)
         {
-            return typeof(ITypeSerializer<>).MakeGenericType(toSerialize.GetType()).GetMethod(nameof(ITypeSerializer<object>.Serialize))!.Invoke(serializer, new object[] { toSerialize, this })!;
+            return toSerialize;
+        }
+        
+        if (_serializers.TryGetValue(toSerialize.GetType(), out var typeSerializer))
+        {
+            return CallGenericSerialize(typeSerializer, toSerialize);
+        }
+
+        if (toSerialize.GetType().GetInterfaces().Contains(typeof(IEnumerable))
+            && Activator.CreateInstance(typeof(EnumerableSerializer<>).MakeGenericType(toSerialize.GetType()), this) is { } enumerableSerializer)
+        {
+            _serializers.Add(toSerialize.GetType(), enumerableSerializer);
+            return CallGenericSerialize(enumerableSerializer, toSerialize);            
         }
 
         return toSerialize;
     }
 
-    public object TryDeserializeObject(object serialized, Type? requestedType, object? deserializationContext)
+    public object? TryDeserializeObject(object serialized, Type requestedType, object? context)
     {
-        if (requestedType is not null)
+        if (serialized.GetType().IsPrimitive)
         {
-            if (requestedType.IsEnum)
-            {
-                return Enum.ToObject(requestedType, serialized);
-            }
+            return serialized;
         }
 
-        var deserializedType = serialized.GetType().GetInterfaces().FirstOrDefault(x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(ISerialized<>))?.GetGenericArguments()[0];
-        if (deserializedType is not null && _serializers.TryGetValue(deserializedType, out var serializer))
+        if (_serializers.TryGetValue(requestedType, out var typeSerializer))
         {
-            return typeof(ITypeSerializer<>).MakeGenericType(deserializedType).GetMethod(nameof(ITypeSerializer<object>.DeSerialize))!.Invoke(serializer, new object[] { serialized, this, deserializationContext! })!;
+            return CallGenericDeSerialize(typeSerializer, serialized, requestedType, context);
         }
 
-
-        if (requestedType is not null)
+        if (serialized.GetType().GetInterfaces().Contains(typeof(IEnumerable))
+            && Activator.CreateInstance(typeof(EnumerableSerializer<>).MakeGenericType(requestedType), this) is
+                { } enumerableSerializer)
         {
+            _serializers.Add(requestedType, enumerableSerializer);
+            var enumerableDeserialized =
+                CallGenericDeSerialize(enumerableSerializer, serialized, requestedType, context);
+            return typeof(Serializer).GetMethod(nameof(EnumerableToCollection), requestedType.GetGenericArguments())!
+                .Invoke(this, [enumerableDeserialized, requestedType, context]);
         }
 
         return serialized;
     }
 
-    private class PrimitiveSerializer<T> : ITypeSerializer<T>
+    private object CallGenericSerialize(object typeSerializer, object toSerialize)
     {
-        public ISerialized<T> Serialize(T toSerialize, ISerializer serializer)
-        {
-            return new PrimitiveSerialized<T>(toSerialize);
-        }
-
-        public T DeSerialize(ISerialized<T> serialized, ISerializer serializer, object deserializationContext)
-        {
-            return (serialized as PrimitiveSerialized<T>)!.Value;
-        }
+        return typeof(ITypeSerializer<>).MakeGenericType(toSerialize.GetType())
+            .GetMethod(nameof(ITypeSerializer<object>.Serialize))!
+            .Invoke(typeSerializer, [toSerialize, this])!;
     }
 
-    private record PrimitiveSerialized<T>(T Value) : ISerialized<T>;
+    private object CallGenericDeSerialize(object typeSerializer, object serialized, Type deserializedType, object? deserializationContext)
+    {
+        return typeof(ITypeSerializer<>).MakeGenericType(deserializedType)
+            .GetMethod(nameof(ITypeSerializer<object>.DeSerialize))!
+            .Invoke(typeSerializer, [serialized, this, deserializationContext])!;
+    }
+
+    private static object EnumerableToCollection<T>(IEnumerable<T> obj, Type requestedType)
+    {
+        if (requestedType.IsArray) return obj.ToArray();
+        if (requestedType.IsAssignableFrom(typeof(IList<T>))) return obj.ToList();
+        return obj;
+    }
+    
+    private class EnumerableSerializer<T>(ISerializer serializer) : ITypeSerializer<IEnumerable<T>>
+    {
+        private readonly ISerializer _serializer = serializer; 
+        
+        public ISerialized<IEnumerable<T>> Serialize(IEnumerable<T> toSerialize, ISerializer serializer)
+        {
+            return new SerializedEnumerable<T>(toSerialize.Select(x => _serializer.TrySerializeObject(x))!);
+        }
+
+        public IEnumerable<T> DeSerialize(ISerialized<IEnumerable<T>> serialized, ISerializer serializer, object? deserializationContext)
+        {
+            if (serialized is not SerializedEnumerable<T> enumerable)
+            {
+                yield break;
+            }
+
+            foreach (var serializedElement in enumerable.Serialized)
+            {
+                yield return _serializer.TryDeserialize<T>(serializedElement, deserializationContext)!;
+            }
+        }
+    }
+    
+    private record SerializedEnumerable<T>(IEnumerable<object> Serialized) : ISerialized<IEnumerable<T>>;
 }
