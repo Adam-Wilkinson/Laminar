@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Threading.Tasks;
 using Avalonia.Platform.Storage;
 using Laminar.Contracts.UserData;
@@ -16,7 +17,12 @@ public class FileNavigatorViewModel : ViewModelBase
 
         foreach (var folder in _fileManager.RootFolders)
         {
-            Files.Add(new Folder(storageProvider.TryGetFolderFromPathAsync(folder.Path).Result!));
+            if (!Directory.Exists(folder))
+            {
+                Directory.CreateDirectory(folder);
+            }
+            
+            Files.Add(new Folder(storageProvider.TryGetFolderFromPathAsync(folder).Result!));
         }
     }
 

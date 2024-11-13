@@ -1,134 +1,103 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel.Design.Serialization;
 using System.Linq;
-using System.Reflection;
+using Laminar.Implementation.UserData.Serializers;
 using Laminar.PluginFramework.Serialization;
 using Microsoft.Extensions.DependencyInjection;
-using Newtonsoft.Json;
 
 namespace Laminar.Implementation.UserData;
 
-public class Serializer : ISerializer
+public class Serializer(IServiceProvider serviceProvider) : ISerializer
 {
-    private readonly Dictionary<Type, object> _serializers = new();
+    private readonly IServiceProvider _serviceProvider = serviceProvider;
+    
+    private Dictionary<Type, IConditionalSerializer>? _typeSerializers;
+    private List<IConditionalSerializer>? _conditionalSerializers;
+    private List<IConditionalSerializerFactory>? _conditionalSerializerFactories;
 
-    public Serializer(IServiceProvider serviceProvider)
+    public void RegisterSerializer(IConditionalSerializer serializer)
     {
+        EnsureSerializersInit();
+        switch (serializer)
+        {
+            case TypeSerializer typeSerializer:
+                _typeSerializers![typeSerializer.Type] = typeSerializer;
+                break;
+            default:
+                _conditionalSerializers!.Add(serializer);
+                break;
+        }
+    }
+
+    public void RegisterFactory(IConditionalSerializerFactory factory)
+    {
+        EnsureSerializersInit();
+        _conditionalSerializerFactories!.Add(factory);
+    }
+
+    public object SerializeObject(object toSerialize)
+        => GetSerializer(toSerialize.GetType()).Serialize(toSerialize);
+
+    public object DeserializeObject(object serialized, Type requestedType, object? context)
+        => GetSerializer(requestedType).DeSerialize(serialized);
+
+    public Type GetSerializedType(Type typeToSerialize)
+    {
+        return GetSerializer(typeToSerialize).SerializedTypeOrNull(typeToSerialize)!;
+    }
+    
+    private IConditionalSerializer GetSerializer(Type typeToSerialize)
+    {
+        EnsureSerializersInit();
+        
+        if (_typeSerializers!.TryGetValue(typeToSerialize, out var typeSerializer))
+        {
+            return typeSerializer;
+        }
+
+        foreach (var factory in _conditionalSerializerFactories!)
+        {
+            if (factory.TryCreateSerializerFor(typeToSerialize) is { } serializer)
+            {
+                _typeSerializers.Add(typeToSerialize, serializer);
+                return serializer;
+            }
+        }
+        
+        if (_conditionalSerializers!.FirstOrDefault(serializer => serializer.SerializedTypeOrNull(typeToSerialize) is not null) is
+            { } conditionalSerializer)
+        {
+            _typeSerializers.Add(typeToSerialize, conditionalSerializer);
+            return conditionalSerializer;
+        }
+
+        return new DefaultSerializer();
+    }
+
+    private void EnsureSerializersInit()
+    {
+        if (_conditionalSerializerFactories is not null && _conditionalSerializers is not null &&
+            _typeSerializers is not null)
+        {
+            return;
+        }
+
+        _conditionalSerializerFactories = [];
+        _typeSerializers = [];
+        _conditionalSerializers = [];
+        
         var assembly = typeof(Serializer).Assembly;
         foreach (var type in assembly.GetTypes())
         {
-            if (type.GetInterfaces().FirstOrDefault(x =>
-                    x.IsGenericType && x.GetGenericTypeDefinition() == typeof(ITypeSerializer<>)) is { } serializerType 
-                && serviceProvider.GetService(type) is { } serializer
-                && serializerType.GetGenericArguments().FirstOrDefault() is { } serializableType)
+            if (!type.ContainsGenericParameters && type.GetInterfaces().Contains(typeof(IConditionalSerializer)) && ActivatorUtilities.CreateInstance(_serviceProvider, type) is IConditionalSerializer conditionalSerializer)
             {
-                _serializers.Add(serializableType, serializer);
-            }
-        }
-    }
-
-    public void RegisterSerializer<T>(ITypeSerializer<T> serializer)
-    {
-        _serializers.Add(typeof(T), serializer);
-    }
-
-    public object? TrySerializeObject(object toSerialize)
-    {
-        if (toSerialize.GetType().IsPrimitive || toSerialize is string)
-        {
-            return toSerialize;
-        }
-        
-        if (_serializers.TryGetValue(toSerialize.GetType(), out var typeSerializer))
-        {
-            return CallGenericSerialize(typeSerializer, toSerialize);
-        }
-
-        if (toSerialize.GetType().GetInterfaces().FirstOrDefault(x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(IEnumerable<>)) is { } enumerableType
-            && Activator.CreateInstance(typeof(EnumerableSerializer<,>).MakeGenericType(enumerableType.GenericTypeArguments[0], toSerialize.GetType()), this) is { } enumerableSerializer)
-        {
-            _serializers.Add(toSerialize.GetType(), enumerableSerializer);
-            return CallGenericSerialize(enumerableSerializer, toSerialize);            
-        }
-
-        return toSerialize;
-    }
-
-    public object? TryDeserializeObject(object serialized, Type requestedType, object? context)
-    {
-        if (serialized.GetType().IsPrimitive || serialized is string)
-        {
-            return serialized;
-        }
-
-        if (_serializers.TryGetValue(requestedType, out var typeSerializer))
-        {
-            return CallGenericDeSerialize(typeSerializer, serialized, requestedType, context);
-        }
-
-        if (serialized.GetType().GetInterfaces().FirstOrDefault(x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(IEnumerable<>)) is { } enumerableType
-            && Activator.CreateInstance(typeof(EnumerableSerializer<,>).MakeGenericType(enumerableType.GenericTypeArguments[0], requestedType), this) is
-                { } enumerableSerializer)
-        {
-            _serializers.Add(requestedType, enumerableSerializer);
-            return CallGenericDeSerialize(enumerableSerializer, serialized, requestedType, context);
-            
-        }
-
-        return serialized;
-    }
-
-    private object CallGenericSerialize(object typeSerializer, object toSerialize)
-    {
-        return typeof(ITypeSerializer<>).MakeGenericType(toSerialize.GetType())
-            .GetMethod(nameof(ITypeSerializer<object>.Serialize))!
-            .Invoke(typeSerializer, [toSerialize, this])!;
-    }
-
-    private object CallGenericDeSerialize(object typeSerializer, object serialized, Type deserializedType, object? deserializationContext)
-    {
-        return typeof(ITypeSerializer<>).MakeGenericType(deserializedType)
-            .GetMethod(nameof(ITypeSerializer<object>.DeSerialize))!
-            .Invoke(typeSerializer, [serialized, this, deserializationContext])!;
-    }
-    
-    private class EnumerableSerializer<TElement, TEnumerable>(ISerializer serializer) : ITypeSerializer<TEnumerable>
-        where TEnumerable : IEnumerable<TElement>
-    {
-        private readonly ISerializer _serializer = serializer;
-
-        public bool Match(TEnumerable enumerable)
-            => enumerable is List<TElement> or TElement[];
-        
-        public ISerialized<TEnumerable> Serialize(TEnumerable toSerialize, ISerializer serializer)
-        {
-            return new SerializedEnumerable<TEnumerable>(toSerialize.Select(x => _serializer.TrySerializeObject(x))!);
-        }
-
-        public TEnumerable DeSerialize(ISerialized<TEnumerable> serialized, ISerializer serializer, object? context)
-        {
-            if (serialized is not SerializedEnumerable<TElement> enumerable)
-            {
-                throw new ArgumentException(nameof(serialized));
+                RegisterSerializer(conditionalSerializer);
             }
 
-            IEnumerable<TElement> deserializedEnumerable = enumerable
-                    .Select(x => _serializer.TryDeserialize<TElement>(x, context))
-                    .Where(x => x is not null)!;
-
-            if (typeof(TEnumerable).IsArray && deserializedEnumerable.ToArray() is TEnumerable array) return array;
-            if (typeof(TEnumerable).IsAssignableFrom(typeof(IList<TElement>)) && deserializedEnumerable.ToList() is TEnumerable list) return list;
-            throw new InvalidOperationException();
+            if (type.GetInterfaces().Contains(typeof(IConditionalSerializerFactory)) && ActivatorUtilities.CreateInstance(_serviceProvider, type) is IConditionalSerializerFactory factory)
+            {
+                _conditionalSerializerFactories!.Add(factory);
+            }
         }
-    }
-
-    private class SerializedEnumerable<TEnumerable>(IEnumerable<object> serialized)
-        : ISerialized<TEnumerable>, IEnumerable<object>
-    {
-        public IEnumerator<object> GetEnumerator() => serialized.GetEnumerator();
-
-        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
 }

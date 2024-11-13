@@ -1,21 +1,23 @@
 using System;
+using Laminar.Contracts.UserData;
 using Laminar.PluginFramework.Serialization;
 
 namespace Laminar.Implementation.UserData;
 
-public class PersistentValue
+public class PersistentValue : IPersistentDataValue
 {
     private readonly ISerializer _serializer;
+    private readonly object _defaultValue;
     
-    private object _defaultValue;
     private object _value;
+    private object _serializedValue;
     
     public PersistentValue(ISerializer serializer, object defaultValue)
     {
         _serializer = serializer;
         _value = defaultValue;
         _defaultValue = defaultValue;
-        SerializedValue = _serializer.TrySerializeObject(_value);
+        _serializedValue = _serializer.SerializeObject(_value);
         SerializedType = SerializedValue.GetType();
         ValueType = defaultValue.GetType();
     }
@@ -30,11 +32,19 @@ public class PersistentValue
         set
         {
             _value = value;
-            SerializedValue = _serializer.TrySerializeObject(_value);
+            _serializedValue = _serializer.SerializeObject(_value);
         }
     }
 
-    public object SerializedValue { get; private set; }
+    public object SerializedValue
+    {
+        get => _serializedValue;
+        set
+        {
+            _serializedValue = value;
+            _value = _serializer.DeserializeObject(_serializedValue, ValueType);
+        }
+    }
 
     public void ResetToDefault()
     {

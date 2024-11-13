@@ -10,9 +10,6 @@ public class LaminarFileManager(IPersistentDataManager dataManager) : ILaminarFi
 {
     private readonly IPersistentDataStore _rootFoldersDataStore = dataManager.GetDataStore(DataStoreKey.PersistentData)
         .InitializeDefaultValue("LaminarFileRoots", new List<string> { Path.Combine(dataManager.Path, "Default File Location") });
-    
-    public ObservableCollection<ILaminarRootFolder> RootFolders { get; } = 
-    [
-        new LaminarRootFolder(Path.Combine(dataManager.Path, "Files")),
-    ];
+
+    public List<string> RootFolders => _rootFoldersDataStore.GetItem<List<string>>("LaminarFileRoots").Result!;
 }

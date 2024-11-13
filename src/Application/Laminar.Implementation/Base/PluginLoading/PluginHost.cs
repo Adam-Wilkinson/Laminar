@@ -14,38 +14,30 @@ using Laminar.PluginFramework.UserInterface.UserInterfaceDefinitions;
 
 namespace Laminar.Implementation.Base.PluginLoading;
 
-public class PluginHost : IPluginHost
+public class PluginHost(
+    IRegisteredPlugin registeredPlugin,
+    ITypeInfoStore typeInfoStore,
+    ILoadedNodeManager loadedNodeManager,
+    IUserInterfaceStore userInterfaceStore,
+    ISerializer serializer)
+    : IPluginHost
 {
-    private readonly IRegisteredPlugin _registeredPlugin;
-    private readonly ITypeInfoStore _typeInfoStore;
-    private readonly ILoadedNodeManager _loadedNodeManager;
-    private readonly IUserInterfaceStore _userInterfaceStore;
-
-    public PluginHost(IRegisteredPlugin registeredPlugin, ITypeInfoStore typeInfoStore, ILoadedNodeManager loadedNodeManager, IUserInterfaceStore userInterfaceStore)
-    {
-        _registeredPlugin = registeredPlugin;
-        _typeInfoStore = typeInfoStore;
-        _loadedNodeManager = loadedNodeManager;
-        _userInterfaceStore = userInterfaceStore;
-
-        StaticRegistrations.Register(this);
-    }
-
     public void AddNodeToMenu<TNode>(string menuItemName, string? subItemName = null) where TNode : INode, new()
     {
         TNode node = new();
-        _registeredPlugin.RegisterNode(node);
-        _loadedNodeManager.AddNodeToCatagory(node, subItemName is null ? menuItemName : $"{menuItemName}{ItemCatagory<IWrappedNode>.SeparationChar}{subItemName}");
+        registeredPlugin.RegisterNode(node);
+        loadedNodeManager.AddNodeToCatagory(node, subItemName is null ? menuItemName : $"{menuItemName}{ItemCatagory<IWrappedNode>.SeparationChar}{subItemName}");
     }
 
-    public bool RegisterType<T>(string hexColour, string userFriendlyName, T defaultValue, IUserInterfaceDefinition defaultEditor, IUserInterfaceDefinition defaultDisplay, ITypeSerializer<T>? serializer)
+    public bool RegisterType<T>(string hexColour, string userFriendlyName, T defaultValue, IUserInterfaceDefinition defaultEditor, IUserInterfaceDefinition defaultDisplay, TypeSerializer<T>? serializer1)
+        where T : notnull
     {
-        if (serializer is not null)
+        if (serializer1 is not null)
         {
-            // _instance.Serializer.RegisterSerializer(serializer);
+            serializer.RegisterSerializer(serializer1);
         }
 
-        _typeInfoStore.RegisterType(typeof(T), new TypeInfo(userFriendlyName, defaultEditor, defaultDisplay, hexColour, defaultValue!));
+        typeInfoStore.RegisterType(typeof(T), new TypeInfo(userFriendlyName, defaultEditor, defaultDisplay, hexColour, defaultValue!));
         return true;
     }
 
@@ -56,7 +48,7 @@ public class PluginHost : IPluginHost
         where TInterface : TFrontend, new()
         where TInterfaceDefinition : IUserInterfaceDefinition
     {
-        _userInterfaceStore.AddUserInterfaceImplementation<TInterfaceDefinition, TInterface>();
+        userInterfaceStore.AddUserInterfaceImplementation<TInterfaceDefinition, TInterface>();
         return true;
     }
 

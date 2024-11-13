@@ -35,7 +35,7 @@ public class PersistentDataManager(ISerializer serializer) : IPersistentDataMana
             _serializer, 
             dataStoreKey.DataType switch
             {
-                PersistentDataType.Json => new JsonDataTranscoder(),
+                PersistentDataType.Json => new JsonPersistentDataTranscoder(),
                 var unknown => throw new UnknownDataTypeException(unknown),
             }, 
             System.IO.Path.Combine(Path, dataStoreKey.Name));

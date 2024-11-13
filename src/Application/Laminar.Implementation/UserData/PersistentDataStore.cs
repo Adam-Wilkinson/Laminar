@@ -10,18 +10,18 @@ namespace Laminar.Implementation.UserData;
 public class PersistentDataStore : IPersistentDataStore
 {
     private readonly ISerializer _serializer;
-    private readonly IDataTranscoder _dataTranscoder;
-
+    private readonly IPersistentDataTranscoder _persistentDataTranscoder;
     
-    private readonly Dictionary<string, PersistentValue> _serializedDataCache;
+    private Dictionary<string, IPersistentDataValue> _serializedDataCache = [];
+    private bool _fileIsDirty = false;
     
-    public PersistentDataStore(ISerializer serializer, IDataTranscoder dataTranscoder, string dataPath)
+    public PersistentDataStore(ISerializer serializer, IPersistentDataTranscoder persistentDataTranscoder, string dataPath)
     {
         _serializer = serializer;
-        _dataTranscoder = dataTranscoder;
-        FilePath = dataPath + _dataTranscoder.FileExtension;
+        _persistentDataTranscoder = persistentDataTranscoder;
+        FilePath = dataPath + _persistentDataTranscoder.FileExtension;
 
-        if (!(Directory.GetParent(FilePath) is { } dir && dir.Exists))
+        if (Directory.GetParent(FilePath) is not { Exists: true })
         {
             Directory.CreateDirectory(Directory.GetParent(FilePath)!.FullName);
         }
@@ -30,42 +30,45 @@ public class PersistentDataStore : IPersistentDataStore
         {
             File.Create(FilePath).Close();
         }
-
-        var data = File.ReadAllText(FilePath);
-        _serializedDataCache = _dataTranscoder.Decode<Dictionary<string, PersistentValue>>(data) ?? [];
     }
     
     public string FilePath { get; }
 
     public DataReadResult<T> GetItem<T>(string key)
+        where T : notnull
     {
-        if (!_serializedDataCache.TryGetValue(key, out var value))
+        if (_fileIsDirty)
+        {
+            var loadResult = LoadFromFile();
+            if (loadResult.Status != DataIoStatus.Success) return new DataReadResult<T>(default, loadResult.Status, loadResult.Exception);
+            var syncResult = SyncToFile();
+            if (syncResult.Status != DataIoStatus.Success) return new DataReadResult<T>(default, syncResult.Status, syncResult.Exception);
+            _fileIsDirty = false;
+        }
+        
+        if (!_serializedDataCache.TryGetValue(key, out var persistentData))
         {
             return new DataReadResult<T>(default, DataIoStatus.DataNotFound);
         }
-        
-        if (_serializer.TryDeserialize<T>(value) is not { } result)
-        {
-            return new DataReadResult<T>(default, DataIoStatus.SerializerNotRegistered);
-        }
 
-        return new DataReadResult<T>(result);
+        if (persistentData.ValueType != typeof(T))
+        {
+            return new DataReadResult<T>(default, DataIoStatus.UnknownError);
+        }
+        
+        return new DataReadResult<T>((T)persistentData.Value);
     }
 
     public DataSaveResult SetItem<T>(string key, T value)
+        where T : notnull
     {
-        if (value is null || _serializer.TrySerializeObject(value) is not { } serialized)
-        {
-            return new DataSaveResult(DataIoStatus.SerializerNotRegistered);
-        }
-
         if (!_serializedDataCache.TryGetValue(key, out var persistentValue))
         {
             return new DataSaveResult(DataIoStatus.DataNotFound);
         }
         
-        persistentValue.Value = serialized;
-        return SaveCache();
+        persistentValue.Value = value;
+        return SyncToFile();
     }
 
     public DataSaveResult ResetToDefault(string key)
@@ -76,22 +79,46 @@ public class PersistentDataStore : IPersistentDataStore
         }
         
         persistentValue.ResetToDefault();
-        return new DataSaveResult();
+        return SyncToFile();
     }
     
     public IPersistentDataStore InitializeDefaultValue<T>(string key, T value)
         where T : notnull
     {
         _serializedDataCache[key] = new PersistentValue(_serializer, value);
+        _fileIsDirty = true;
         return this;
     }
 
-    private DataSaveResult SaveCache()
+    private DataSaveResult LoadFromFile()
     {
         try
         {
-            var result = _dataTranscoder.Encode(_serializedDataCache);
-            using var stream = File.CreateText(FilePath + _dataTranscoder.FileExtension);
+            var rawFile = File.ReadAllText(FilePath);
+            if (rawFile is null or "")
+            {
+                return new DataSaveResult();
+            }
+            
+            if (_persistentDataTranscoder.Decode(rawFile, _serializedDataCache) is not { } decodeResult)
+            {
+                return new DataSaveResult(DataIoStatus.UnknownError);
+            }
+            _serializedDataCache = decodeResult;
+            return new DataSaveResult();
+        }
+        catch (Exception ex)
+        {
+            return new DataSaveResult(DataIoStatus.UnknownError, ex);
+        }
+    }
+    
+    private DataSaveResult SyncToFile()
+    {
+        try
+        {
+            var result = _persistentDataTranscoder.Encode(_serializedDataCache);
+            using var stream = File.CreateText(FilePath);
             stream.Write(result);
             return new DataSaveResult(DataIoStatus.Success);
         }
