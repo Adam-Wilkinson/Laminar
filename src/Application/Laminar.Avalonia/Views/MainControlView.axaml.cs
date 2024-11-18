@@ -1,21 +1,14 @@
-using System;
-using System.ComponentModel;
-using System.Diagnostics;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls;
-using Avalonia.Interactivity;
 using Laminar.Avalonia.AdjustableStackPanel;
-using Laminar.Avalonia.DragDrop;
-using Laminar.Avalonia.ViewModels;
 
 namespace Laminar.Avalonia.Views;
 
 public partial class MainControlView : UserControl
 {
     public static readonly StyledProperty<bool> SidebarOpenProperty = AvaloniaProperty.Register<MainControlView, bool>(nameof(SidebarOpen));
-
     public bool SidebarOpen
     {
         get => GetValue(SidebarOpenProperty);
@@ -54,11 +47,11 @@ public partial class MainControlView : UserControl
         FileNavigator.Transitions ??= [];
         _opacityTransition.Duration = SidebarStackPanel.TransitionDuration;
         FileNavigator.Transitions.Add(_opacityTransition);
-        _lastFileNavigatorSize = ResizeWidget.GetOrCreateResizer(FileNavigator).Size;
+        _lastFileNavigatorSize = ResizeWidget.GetTargetSize(FileNavigator);
 
         FileNavigator.ClipToBounds = true;
         FileNavigator.Opacity = 0;
-        ResizeWidget.GetOrCreateResizer(FileNavigator).SetSizeTo(0, true);
+        ResizeWidget.SetTargetSize(FileNavigator, 0);
     }
 
     private async void OpenFileNavigator()
@@ -67,8 +60,8 @@ public partial class MainControlView : UserControl
         {
             return;
         }
-        
-        ResizeWidget.GetOrCreateResizer(FileNavigator).SetSizeTo(_lastFileNavigatorSize, true);
+
+        ResizeWidget.SetTargetSize(FileNavigator, _lastFileNavigatorSize);
         FileNavigator.Opacity = 1;
 
         await Task.Delay(SidebarStackPanel.TransitionDuration);

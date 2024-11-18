@@ -36,10 +36,13 @@ public class JsonPersistentDataTranscoder : IPersistentDataTranscoder
     
     private class PersistentDataValueConverter : JsonConverter<Dictionary<string, IPersistentDataValue>>
     {
+        private readonly Dictionary<string, JsonElement> _notRecognisedData = [];
+        
         public Dictionary<string, IPersistentDataValue> TypeHints { get; set; } = [];
         
         public override Dictionary<string, IPersistentDataValue>? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
+            _notRecognisedData.Clear();
             if (reader.TokenType != JsonTokenType.StartObject)
             {
                 throw new JsonException();
@@ -57,13 +60,20 @@ public class JsonPersistentDataTranscoder : IPersistentDataTranscoder
                     throw new JsonException();
                 }
 
-                if (reader.GetString() is not { } propertyName || !TypeHints.TryGetValue(propertyName, out var dataVal))
+                if (reader.GetString() is not { } propertyName)
                 {
                     throw new JsonException();
                 }
-                
+
                 reader.Read();
-                if (JsonDocument.ParseValue(ref reader).Deserialize(dataVal.SerializedType, options) is not { } readValue)
+                var value = JsonElement.ParseValue(ref reader);
+                if (!TypeHints.TryGetValue(propertyName, out var dataVal))
+                {
+                    _notRecognisedData.Add(propertyName, value);
+                    continue;
+                }
+                
+                if (value.Deserialize(dataVal.SerializedType, options) is not { } readValue)
                 {
                     throw new JsonException();
                 }
@@ -82,6 +92,12 @@ public class JsonPersistentDataTranscoder : IPersistentDataTranscoder
             {
                 writer.WritePropertyName(options.PropertyNamingPolicy?.ConvertName(key) ?? key);
                 JsonSerializer.SerializeToElement(value.SerializedValue, options).WriteTo(writer);
+            }
+
+            foreach (var (key, unrecognisedElement) in _notRecognisedData)
+            {
+                writer.WritePropertyName(options.PropertyNamingPolicy?.ConvertName(key) ?? key);
+                unrecognisedElement.WriteTo(writer);
             }
             
             writer.WriteEndObject();

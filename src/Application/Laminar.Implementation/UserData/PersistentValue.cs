@@ -31,6 +31,11 @@ public class PersistentValue : IPersistentDataValue
         get => _value;
         set
         {
+            if (value.GetType() != ValueType)
+            {
+                throw new Exception("The new value type is not the same as the persistent data type");
+            }
+            
             _value = value;
             _serializedValue = _serializer.SerializeObject(_value);
         }
@@ -41,6 +46,11 @@ public class PersistentValue : IPersistentDataValue
         get => _serializedValue;
         set
         {
+            if (value.GetType() != SerializedType)
+            {
+                throw new ArgumentException("The value type is not the same as the serialized value type.");
+            }
+            
             _serializedValue = value;
             _value = _serializer.DeserializeObject(_serializedValue, ValueType);
         }
