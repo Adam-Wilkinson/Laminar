@@ -11,6 +11,7 @@ public class Serializer(IServiceProvider serviceProvider) : ISerializer
 {
     private readonly IServiceProvider _serviceProvider = serviceProvider;
     
+    private DefaultSerializerFactory? _defaultSerializerFactory; 
     private Dictionary<Type, IConditionalSerializer>? _typeSerializers;
     private List<IConditionalSerializer>? _conditionalSerializers;
     private List<IConditionalSerializerFactory>? _conditionalSerializerFactories;
@@ -71,7 +72,9 @@ public class Serializer(IServiceProvider serviceProvider) : ISerializer
             return conditionalSerializer;
         }
 
-        return new DefaultSerializer();
+        return _defaultSerializerFactory is not null
+            ? _defaultSerializerFactory.TryCreateSerializerFor(typeToSerialize)!
+            : new PrimitiveSerializer();
     }
 
     private void EnsureSerializersInit()
@@ -89,15 +92,23 @@ public class Serializer(IServiceProvider serviceProvider) : ISerializer
         var assembly = typeof(Serializer).Assembly;
         foreach (var type in assembly.GetTypes())
         {
-            if (!type.ContainsGenericParameters && type.GetInterfaces().Contains(typeof(IConditionalSerializer)) && ActivatorUtilities.CreateInstance(_serviceProvider, type) is IConditionalSerializer conditionalSerializer)
+            if (!type.ContainsGenericParameters 
+                && type != typeof(PrimitiveSerializer)
+                && type.GetInterfaces().Contains(typeof(IConditionalSerializer))
+                && ActivatorUtilities.CreateInstance(_serviceProvider, type) is IConditionalSerializer conditionalSerializer)
             {
                 RegisterSerializer(conditionalSerializer);
             }
 
-            if (type.GetInterfaces().Contains(typeof(IConditionalSerializerFactory)) && ActivatorUtilities.CreateInstance(_serviceProvider, type) is IConditionalSerializerFactory factory)
+            if (!type.ContainsGenericParameters 
+                && type.GetInterfaces().Contains(typeof(IConditionalSerializerFactory))
+                && type != typeof(DefaultSerializerFactory)
+                && ActivatorUtilities.CreateInstance(_serviceProvider, type) is IConditionalSerializerFactory factory)
             {
                 _conditionalSerializerFactories!.Add(factory);
             }
         }
+
+        _defaultSerializerFactory = new(this);
     }
 }

@@ -5,6 +5,8 @@ using Avalonia.Markup.Xaml;
 using Avalonia.Platform.Storage;
 using Laminar.Avalonia.ViewModels;
 using Laminar.Avalonia.Views;
+using Laminar.Contracts.UserData;
+using Laminar.Domain.DataManagement;
 using Laminar.Implementation.Extensions.ServiceInitializers;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -29,9 +31,15 @@ public partial class App : Application
                 .AddDescendantsTransient<ViewModelBase>();
                 
             desktop.MainWindow = new MainWindow();
-            collection.AddSingleton<IStorageProvider>(_ => desktop.MainWindow.StorageProvider);
+            collection.AddSingleton(desktop.MainWindow.StorageProvider);
             var services = collection.BuildServiceProvider();
-            desktop.MainWindow.DataContext = services.GetRequiredService<MainWindowViewModel>();
+
+            var mainWindowViewModel = services.GetRequiredService<MainWindowViewModel>();
+            ActivatorUtilities.CreateInstance<ViewModelSerializationHelper>(services)
+                .SerializeObservableProperties(mainWindowViewModel,
+                    services.GetRequiredService<IPersistentDataManager>().GetDataStore(DataStoreKey.PersistentData));
+            
+            desktop.MainWindow.DataContext = mainWindowViewModel;
         }
 
         base.OnFrameworkInitializationCompleted();

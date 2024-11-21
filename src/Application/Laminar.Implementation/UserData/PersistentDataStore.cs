@@ -13,7 +13,7 @@ public class PersistentDataStore : IPersistentDataStore
     private readonly IPersistentDataTranscoder _persistentDataTranscoder;
     
     private Dictionary<string, IPersistentDataValue> _serializedDataCache = [];
-    private bool _fileIsDirty = false;
+    private bool _fileIsDirty;
     
     public PersistentDataStore(ISerializer serializer, IPersistentDataTranscoder persistentDataTranscoder, string dataPath)
     {
@@ -37,30 +37,39 @@ public class PersistentDataStore : IPersistentDataStore
     public DataReadResult<T> GetItem<T>(string key)
         where T : notnull
     {
+        var objectRead = GetItem(key, typeof(T));
+        return new DataReadResult<T>(objectRead.Status == DataIoStatus.Success ? (T)objectRead.Result : default, objectRead.Status, objectRead.Exception);
+    }
+
+    public DataReadResult<object> GetItem(string key, Type type)
+    {
         if (_fileIsDirty)
         {
             var loadResult = LoadFromFile();
-            if (loadResult.Status != DataIoStatus.Success) return new DataReadResult<T>(default, loadResult.Status, loadResult.Exception);
+            if (loadResult.Status != DataIoStatus.Success) return new DataReadResult<object>(default, loadResult.Status, loadResult.Exception);
             var syncResult = SyncToFile();
-            if (syncResult.Status != DataIoStatus.Success) return new DataReadResult<T>(default, syncResult.Status, syncResult.Exception);
+            if (syncResult.Status != DataIoStatus.Success) return new DataReadResult<object>(default, syncResult.Status, syncResult.Exception);
             _fileIsDirty = false;
         }
         
         if (!_serializedDataCache.TryGetValue(key, out var persistentData))
         {
-            return new DataReadResult<T>(default, DataIoStatus.DataNotFound);
+            return new DataReadResult<object>(default, DataIoStatus.DataNotFound);
         }
 
-        if (persistentData.ValueType != typeof(T))
+        if (persistentData.ValueType != type)
         {
-            return new DataReadResult<T>(default, DataIoStatus.UnknownError);
+            return new DataReadResult<object>(default, DataIoStatus.UnknownError);
         }
         
-        return new DataReadResult<T>((T)persistentData.Value);
+        return new DataReadResult<object>(persistentData.Value);
     }
 
     public DataSaveResult SetItem<T>(string key, T value)
         where T : notnull
+        => SetItem(key, value, typeof(T));
+
+    public DataSaveResult SetItem(string key, object value, Type type)
     {
         if (!_serializedDataCache.TryGetValue(key, out var persistentValue))
         {
@@ -84,6 +93,13 @@ public class PersistentDataStore : IPersistentDataStore
     
     public IPersistentDataStore InitializeDefaultValue<T>(string key, T value)
         where T : notnull
+    {
+        _serializedDataCache[key] = new PersistentValue(_serializer, value);
+        _fileIsDirty = true;
+        return this;
+    }
+
+    public IPersistentDataStore InitializeDefaultValue(string key, object value, Type type)
     {
         _serializedDataCache[key] = new PersistentValue(_serializer, value);
         _fileIsDirty = true;

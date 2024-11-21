@@ -5,10 +5,12 @@
              xmlns:vm="using:Laminar.Avalonia.ViewModels"
              xmlns:dvm="using:Laminar.Avalonia.ViewModels.Design"
              xmlns:dd="using:Laminar.Avalonia.DragDrop"
+             xmlns:asp="using:Laminar.Avalonia.AdjustableStackPanel"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450" d:DataContext="{x:Static dvm:DesignViewModel.FileNavigator}"
              x:DataType="vm:FileNavigatorViewModel"
              x:Class="Laminar.Avalonia.Views.FileNavigatorView">
     <Panel Background="{DynamicResource LaminarBackgroundLighter}" MinWidth="1" Name="FileNavigator">
+        <StackPanel>
         <TreeView ClipToBounds="False" ItemsSource="{Binding Files}">
             <TreeView.ItemTemplate>
                 <TreeDataTemplate ItemsSource="{Binding Children}">
@@ -22,5 +24,7 @@
                 </TreeDataTemplate>
             </TreeView.ItemTemplate>
         </TreeView>
+            <TextBlock Text="{Binding $parent[ContentControl].(asp:ResizeWidget.TargetSize)}"></TextBlock>
+        </StackPanel>
     </Panel>
 </UserControl>

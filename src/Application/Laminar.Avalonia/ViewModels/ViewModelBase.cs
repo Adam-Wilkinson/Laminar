@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -16,9 +17,7 @@ public abstract class ViewModelBase : ObservableObject
     protected T GetPersistentData<T>(IPersistentDataStore dataStore, [CallerMemberName] string propertyName = "")
         where T : notnull
     {
-        var test = dataStore.GetItem<T>(propertyName).Result ?? default;
-        Debug.WriteLine($"Obtained {propertyName} as {test}");
-        return test!;
+        return (dataStore.GetItem<T>(propertyName).Result ?? default)!;
     }
 
     protected void SetPersistentData<T>(IPersistentDataStore dataStore, T value,
@@ -26,7 +25,6 @@ public abstract class ViewModelBase : ObservableObject
         where T : notnull
     {
         OnPropertyChanging(propertyName);
-        Debug.WriteLine($"Setting {propertyName} to {value}");
         dataStore.SetItem(propertyName, value);
         OnPropertyChanged(propertyName);
     }

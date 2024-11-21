@@ -18,8 +18,8 @@ public class PersistentValue : IPersistentDataValue
         _value = defaultValue;
         _defaultValue = defaultValue;
         _serializedValue = _serializer.SerializeObject(_value);
-        SerializedType = SerializedValue.GetType();
         ValueType = defaultValue.GetType();
+        SerializedType = _serializer.GetSerializedType(ValueType);
     }
     
     public Type ValueType { get; }

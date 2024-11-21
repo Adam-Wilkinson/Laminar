@@ -1,3 +1,5 @@
+using Laminar.Domain.DataManagement;
+
 namespace Laminar.Contracts.UserData;
 
 public interface IPersistentDataValue

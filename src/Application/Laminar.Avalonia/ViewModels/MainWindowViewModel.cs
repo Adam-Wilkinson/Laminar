@@ -9,7 +9,7 @@ public partial class MainWindowViewModel : ViewModelBase
     
     public MainWindowViewModel(MainControlViewModel mainControlViewModel)
     {
-        WindowCentralControl = mainControlViewModel;
+        MainControl = mainControlViewModel;
         TitleBar.SidebarState = CurrentSidebarState();
     }
 
@@ -17,13 +17,13 @@ public partial class MainWindowViewModel : ViewModelBase
 
     public SettingsViewModel Settings { get; } = new();
 
-    public MainControlViewModel WindowCentralControl { get; }
+    public MainControlViewModel MainControl { get; }
 
     public void ToggleSidebar()
     {
         if (SettingsOpen) return;
         
-        WindowCentralControl.SidebarExpanded = !WindowCentralControl.SidebarExpanded;
+        MainControl.SidebarExpanded = !MainControl.SidebarExpanded;
         TitleBar.SidebarState = CurrentSidebarState();
     }
 
@@ -34,7 +34,7 @@ public partial class MainWindowViewModel : ViewModelBase
 
     private SidebarState CurrentSidebarState()
         => SettingsOpen ? SidebarState.Unchangeable : 
-            WindowCentralControl.SidebarExpanded ? SidebarState.Expanded : SidebarState.Closed;
+            MainControl.SidebarExpanded ? SidebarState.Expanded : SidebarState.Closed;
 }
 
 public enum SidebarState

@@ -21,7 +21,7 @@
 			                Content="{Binding Settings}" 
 			                ZIndex="900"/>
 			<ContentControl Name="WindowCentralControl"
-							Content="{Binding WindowCentralControl}"
+							Content="{Binding MainControl}"
 			                Classes.IsFaded="{Binding SettingsOpen}"/>
 		</Panel>
 		<DockPanel.Styles>
