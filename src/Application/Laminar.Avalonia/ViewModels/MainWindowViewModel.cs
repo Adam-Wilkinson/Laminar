@@ -11,6 +11,11 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         MainControl = mainControlViewModel;
         TitleBar.SidebarState = CurrentSidebarState();
+        MainControl.PropertyChanged += (_, args) =>
+        {
+            if (args.PropertyName == nameof(MainControl.SidebarExpanded))
+                TitleBar.SidebarState = CurrentSidebarState();
+        };
     }
 
     public LaminarTitleBar TitleBar { get; } = RuntimeInformation.IsOSPlatform(OSPlatform.OSX) ? new MacosTitleBar() : new WindowsTitleBar();

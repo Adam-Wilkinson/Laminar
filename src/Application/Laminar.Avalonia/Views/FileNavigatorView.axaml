@@ -10,7 +10,6 @@
              x:DataType="vm:FileNavigatorViewModel"
              x:Class="Laminar.Avalonia.Views.FileNavigatorView">
     <Panel Background="{DynamicResource LaminarBackgroundLighter}" MinWidth="1" Name="FileNavigator">
-        <StackPanel>
         <TreeView ClipToBounds="False" ItemsSource="{Binding Files}">
             <TreeView.ItemTemplate>
                 <TreeDataTemplate ItemsSource="{Binding Children}">
@@ -24,7 +23,5 @@
                 </TreeDataTemplate>
             </TreeView.ItemTemplate>
         </TreeView>
-            <TextBlock Text="{Binding $parent[ContentControl].(asp:ResizeWidget.TargetSize)}"></TextBlock>
-        </StackPanel>
     </Panel>
 </UserControl>
