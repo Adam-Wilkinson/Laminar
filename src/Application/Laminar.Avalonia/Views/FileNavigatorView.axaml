@@ -10,9 +10,9 @@
              x:DataType="vm:FileNavigatorViewModel"
              x:Class="Laminar.Avalonia.Views.FileNavigatorView">
     <Panel Background="{DynamicResource LaminarBackgroundLighter}" MinWidth="1" Name="FileNavigator">
-        <TreeView ClipToBounds="False" ItemsSource="{Binding Files}">
+        <TreeView ClipToBounds="False" ItemsSource="{Binding RootFiles}">
             <TreeView.ItemTemplate>
-                <TreeDataTemplate ItemsSource="{Binding Children}">
+                <TreeDataTemplate ItemsSource="{Binding Contents}">
                     <StackPanel Orientation="Horizontal" 
                                 Background="{DynamicResource LaminarBackgroundAlt}" 
                                 HorizontalAlignment="Stretch" 
