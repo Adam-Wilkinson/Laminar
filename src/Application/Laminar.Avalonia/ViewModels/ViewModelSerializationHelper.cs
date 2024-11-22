@@ -41,7 +41,6 @@ public class ViewModelSerializationHelper(IServiceProvider serviceProvider)
         
         viewModel.PropertyChanged += (_, e) =>
         {
-            Debug.WriteLine($"Property {prefix + "." + e.PropertyName} was changed");
             if (e.PropertyName is null || !serializedPropertyInfos.TryGetValue(e.PropertyName, out var propertyInfo)) return;
             propertyInfo.PropertyToDataStore(prefix, viewModel, dataStore);
         };
