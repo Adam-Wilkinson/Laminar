@@ -4,6 +4,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
+using Avalonia.Input;
 using Avalonia.Media;
 
 namespace Laminar.Avalonia.Commands;
@@ -81,8 +82,8 @@ public static class LaminarCommandVisualExtensions
         => new()
         {
             Command = command,
-            DataTemplate = new FuncDataTemplate<LaminarCommandWithParameter?>(
+            DataTemplate = new FuncDataTemplate<LaminarCommandWithParameter>(
                 _ => true, 
-                controlFactory!)
+                controlFactory)
         };
 }

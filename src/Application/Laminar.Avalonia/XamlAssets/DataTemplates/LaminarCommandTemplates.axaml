@@ -22,20 +22,16 @@
         </Setter>
     </ControlTheme>
     
-    <DataTemplate x:Key="LaminarCommandSwitchTemplate" x:DataType="{x:Type lc:LaminarCommandSwitch}">
-        <ToggleSwitch
-            IsChecked="{Binding IsOn}"/>
-    </DataTemplate>
-    
     <DataTemplate x:Key="LaminarCommandIcon" x:DataType="{x:Type lc:LaminarCommandWithParameter}">
-        <ContentControl 
+        <ContentControl IsEnabled="{Binding CanExecute}" 
             Content="{Binding}"
             ContentTemplate="{Binding CommandVisual.DataTemplate}"
             ToolTip.Tip="{Binding CommandVisual.Command.Tooltip}"/>
     </DataTemplate>
     
     <DataTemplate x:Key="LaminarCommandMenuItem" x:DataType="{x:Type lc:LaminarCommandWithParameter}">
-        <DockPanel ToolTip.Tip="{Binding CommandVisual.Command.Tooltip}">
+        <DockPanel ToolTip.Tip="{Binding CommandVisual.Command.Tooltip}"
+                   IsEnabled="{Binding CanExecute}">
             <ContentControl DockPanel.Dock="Left"
                             Content="{Binding}"
                             ContentTemplate="{Binding CommandVisual.DataTemplate}"

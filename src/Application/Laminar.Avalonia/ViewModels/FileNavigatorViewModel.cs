@@ -1,6 +1,7 @@
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
@@ -14,6 +15,7 @@ using Laminar.Avalonia.Commands;
 using Laminar.Contracts.Base.ActionSystem;
 using Laminar.Contracts.UserData;
 using Laminar.Domain.DataManagement.FileNavigation;
+using Laminar.Domain.Extensions;
 
 namespace Laminar.Avalonia.ViewModels;
 public class FileNavigatorViewModel(
@@ -29,14 +31,13 @@ public class FileNavigatorViewModel(
             item => item.IsEnabled = !item.IsEnabled,
             item => item.IsEnabled = !item.IsEnabled,
             canExecute: item => item.ParentIsEffectivelyEnabled,
+            canExecuteChanged: item => item.FilterPropertyChanged(nameof(ILaminarStorageItem.ParentIsEffectivelyEnabled)),
             description: "Enable/disable",
             keyGesture: new KeyGesture(Key.E, KeyModifiers.Alt)
         ).WithVisual(commandWithParameter =>
         {
             var newSwitch = new LaminarCommandSwitch
             {
-                [!InputElement.IsEnabledProperty] = 
-                    new Binding { Source = commandWithParameter.Parameter, Path = nameof(ILaminarStorageItem.ParentIsEffectivelyEnabled), },
                 [!LaminarCommandSwitch.IsOnProperty] = 
                     new Binding { Source = commandWithParameter.Parameter, Path = nameof(ILaminarStorageItem.IsEffectivelyEnabled) },
             };

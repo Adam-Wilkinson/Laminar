@@ -1,9 +1,11 @@
 using System;
+using System.ComponentModel;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.VisualTree;
 using Laminar.Contracts.Base.ActionSystem;
+using Laminar.Domain.Notification;
 
 namespace Laminar.Avalonia.Commands;
 
@@ -28,10 +30,12 @@ public class LaminarCommandFactory
         Func<object?, bool> execute, 
         Func<object?, bool> undo,
         Func<object?, bool>? canExecute = null,
+        Func<INotifyPropertyChanged, INotificationSource>? canExecuteChanged = null,
         string description = "",
         KeyGesture? keyGesture = null)
     {
-        var newCommand = new LaminarCommand(_userActionManager, execute, undo, canExecute)
+        canExecute ??= _ => true;
+        var newCommand = new LaminarCommand(_userActionManager, execute, undo, canExecute, canExecuteChanged)
         {
             Name = name,
             Description = description,
@@ -47,9 +51,10 @@ public class LaminarCommandFactory
         Func<T, bool> execute,
         Func<T, bool> undo,
         Func<T, bool>? canExecute = null,
+        Func<INotifyPropertyChanged, INotificationSource>? canExecuteChanged = null,
         string description = "",
         KeyGesture? keyGesture = null)
-        => CreateCommand(name, TypeCheck(execute), TypeCheck(undo), TypeCheck(canExecute), description, keyGesture);
+        => CreateCommand(name, TypeCheck(execute), TypeCheck(undo), TypeCheck(canExecute), canExecuteChanged, description, keyGesture);
 
     private void BindCommand(LaminarCommand command)
     {
@@ -60,8 +65,8 @@ public class LaminarCommandFactory
         });
     }
     
-    private static Func<object?, bool> TypeCheck<T>(Func<T, bool>? typedAction)
+    private static Func<object?, TOutput?> TypeCheck<TInput, TOutput>(Func<TInput, TOutput>? typedAction)
     {
-        return obj => obj is T typedObject && (typedAction is null || typedAction(typedObject));
+        return obj => obj is TInput typedObject && typedAction is not null ? typedAction(typedObject) : default;
     }
 }
