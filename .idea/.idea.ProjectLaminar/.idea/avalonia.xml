@@ -4,6 +4,9 @@
     <option name="projectPerEditor">
       <map>
         <entry key="src/Application/Laminar.Avalonia/App.axaml" value="src/Application/Laminar.Avalonia/Laminar.Avalonia.csproj" />
+        <entry key="src/Application/Laminar.Avalonia/Styles/FontStyles.axaml" value="src/Application/Laminar.Avalonia/Laminar.Avalonia.csproj" />
+        <entry key="src/Application/Laminar.Avalonia/Styles/StyleIncludes.axaml" value="src/Application/Laminar.Avalonia/Laminar.Avalonia.csproj" />
+        <entry key="src/Application/Laminar.Avalonia/Styles/ToggleButtonStyles.axaml" value="src/Application/Laminar.Avalonia/Laminar.Avalonia.csproj" />
         <entry key="src/Application/Laminar.Avalonia/Views/CustomTitleBars/FileNavigatorView.axaml" value="src/Application/Laminar.Avalonia/Laminar.Avalonia.csproj" />
         <entry key="src/Application/Laminar.Avalonia/Views/CustomTitleBars/WindowsTitleBar.axaml" value="src/Application/Laminar.Avalonia/Laminar.Avalonia.csproj" />
         <entry key="src/Application/Laminar.Avalonia/Views/FIleNavigator.axaml" value="src/Application/Laminar.Avalonia/Laminar.Avalonia.csproj" />
@@ -13,6 +16,10 @@
         <entry key="src/Application/Laminar.Avalonia/Views/MainWindow.axaml" value="src/Application/Laminar.Avalonia/Laminar.Avalonia.csproj" />
         <entry key="src/Application/Laminar.Avalonia/Views/SettingsOverlay.axaml" value="src/Application/Laminar.Avalonia/Laminar.Avalonia.csproj" />
         <entry key="src/Application/Laminar.Avalonia/Views/SettingsView.axaml" value="src/Application/Laminar.Avalonia/Laminar.Avalonia.csproj" />
+        <entry key="src/Application/Laminar.Avalonia/XamlAssets/DataTemplates/LaminarCommandTemplates.axaml" value="src/Application/Laminar.Avalonia/Laminar.Avalonia.csproj" />
+        <entry key="src/Application/Laminar.Avalonia/XamlAssets/LaminarColorResources.axaml" value="src/Application/Laminar.Avalonia/Laminar.Avalonia.csproj" />
+        <entry key="src/Application/Laminar.Avalonia/XamlAssets/Styles/SettingsResources.axaml" value="src/Application/Laminar.Avalonia/Laminar.Avalonia.csproj" />
+        <entry key="src/Application/Laminar.Avalonia/XamlAssets/Themes/ToggleButtonThemes.axaml" value="src/Application/Laminar.Avalonia/Laminar.Avalonia.csproj" />
       </map>
     </option>
   </component>

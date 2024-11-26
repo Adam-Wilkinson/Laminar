@@ -1,32 +1,52 @@
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+
 namespace Laminar.Domain.DataManagement.FileNavigation;
 
-public abstract class LaminarStorageItem
+public abstract class LaminarStorageItem<T> : ILaminarStorageItem
+    where T : FileSystemInfo
 {
-    private bool _parentIsEffectivelyEnabled;
-    protected DirectoryInfo DirectoryInfo;
+    private bool _isEnabled = true;
+    private bool _parentIsEffectivelyEnabled = true;
 
-    protected LaminarStorageItem(DirectoryInfo directoryInfo)
+    protected LaminarStorageItem(T fileSystemInfo)
     {
-        DirectoryInfo = directoryInfo;
-        Name = DirectoryInfo.Name;
-        Path = DirectoryInfo.FullName;
+        FileSystemInfo = fileSystemInfo;
+        Name = FileSystemInfo.Name;
+        Path = FileSystemInfo.FullName;
     }
-    
-    protected LaminarStorageItem(string path) : this(new DirectoryInfo(path))
+
+    protected T FileSystemInfo { get; }
+
+    public bool ParentIsEffectivelyEnabled
     {
+        get => _parentIsEffectivelyEnabled;
+        set
+        {
+            SetField(ref _parentIsEffectivelyEnabled, value);
+            OnPropertyChanged(nameof(IsEffectivelyEnabled));
+        }
     }
-    
+
     public string Path { get; }
 
     public string Name { get; }
 
-    public virtual bool IsEnabled { get; set; }
+    public virtual bool IsEnabled
+    {
+        get => _isEnabled;
+        set
+        {
+            SetField(ref _isEnabled, value);
+            OnPropertyChanged(nameof(IsEffectivelyEnabled));
+        }
+    }
 
-    public bool IsEffectivelyEnabled => IsEnabled && _parentIsEffectivelyEnabled;
+    public bool IsEffectivelyEnabled => IsEnabled && ParentIsEffectivelyEnabled;
 
     public override bool Equals(object? obj)
     {
-        return obj is LaminarStorageItem storageItem && storageItem.Path == Path;
+        return obj is LaminarStorageItem<T> storageItem && storageItem.Path == Path;
     }
 
     public override int GetHashCode()
@@ -34,8 +54,23 @@ public abstract class LaminarStorageItem
         return Path.GetHashCode();
     }
 
-    internal virtual void ParentEnabledChange(bool newValue)
+    public void Delete()
     {
-        _parentIsEffectivelyEnabled = newValue;
+        FileSystemInfo.Delete();
+    }
+
+    public event PropertyChangedEventHandler? PropertyChanged;
+
+    protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
+
+    protected bool SetField<TField>(ref TField field, TField value, [CallerMemberName] string? propertyName = null)
+    {
+        if (EqualityComparer<TField>.Default.Equals(field, value)) return false;
+        field = value;
+        OnPropertyChanged(propertyName);
+        return true;
     }
 }

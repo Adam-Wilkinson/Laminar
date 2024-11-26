@@ -1,10 +1,8 @@
 <Application xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:s="using:System"
              x:Class="Laminar.Avalonia.App"
              xmlns:local="using:Laminar.Avalonia"
              xmlns:conv="using:Laminar.Avalonia.Converters"
-             xmlns:dd="using:Laminar.Avalonia.DragDrop"
              RequestedThemeVariant="Default">
 
     <Application.DataTemplates>
@@ -13,91 +11,19 @@
   
     <Application.Styles>
         <FluentTheme />
-        <Style Selector="TextBlock.h1">
-	        <Setter Property="FontSize" Value="{DynamicResource H1FontSize}"/>
-	        <Setter Property="FontWeight" Value="DemiBold"/>
-        </Style>
-        
-        <Style Selector="TextBlock.h2">
-	        <Setter Property="FontSize" Value="{DynamicResource H2FontSize}"/>
-	        <Setter Property="FontWeight" Value="Medium"/>
-        </Style>
-        
-        <Style Selector="TextBlock">
-	        <Setter Property="FontSize" Value="{DynamicResource B1FontSize}"/>
-	        <Setter Property="FontWeight" Value="Normal"/>
-        </Style>
-        
-        <Style Selector="TextBlock.b2">
-	        <Setter Property="FontSize" Value="{DynamicResource B2FontSize}"/>
-	        <Setter Property="FontWeight" Value="SemiLight"/>
-        </Style>
-        
-        <Style Selector=":is(TemplatedControl).h1">
-	        <Setter Property="FontSize" Value="{DynamicResource H1FontSize}"/>
-	        <Setter Property="FontWeight" Value="DemiBold"/>
-        </Style>
-        
-        <Style Selector=":is(TemplatedControl).h2">
-	        <Setter Property="FontSize" Value="{DynamicResource H2FontSize}"/>
-	        <Setter Property="FontWeight" Value="Medium"/>
-        </Style>
-        
-        <Style Selector=":is(TemplatedControl)">
-	        <Setter Property="FontSize" Value="{DynamicResource B1FontSize}"/>
-	        <Setter Property="FontWeight" Value="Normal"/>
-        </Style>
-        
-        <Style Selector=":is(TemplatedControl).b2">
-	        <Setter Property="FontSize" Value="{DynamicResource B2FontSize}"/>
-	        <Setter Property="FontWeight" Value="SemiLight"/>
-        </Style>
-        
-        <Style Selector="Window">
-	        <Setter Property="Foreground" Value="{DynamicResource LaminarForeground}"/>
-	        <Setter Property="Background" Value="{DynamicResource LaminarBackground}"/>
-	        <Setter Property="FontFamily" Value="{DynamicResource AreaKilometer}"/>
-        </Style>
+        <StyleInclude Source="XamlAssets/Styles/FontStyles.axaml"/>
     </Application.Styles>
 
 	<Application.Resources>
 		<ResourceDictionary>
-			<FontFamily x:Key="LaminarIcons">/Assets/Fonts/IconWorksRegular.ttf#Icon-Works</FontFamily>
-			<!-- <FontFamily x:Key="AreaKilometer">/Assets/Fonts/AreaKilometer50.ttf#a Area Kilometer 50</FontFamily> -->
-			<FontFamily x:Key="Abyssinica">/Assets/Fonts/AbyssinicaSIL-Regular.ttf#Abyssinica SIL</FontFamily>
-			
-			<s:Double x:Key="H1FontSize">34</s:Double>
-			<s:Double x:Key="H2FontSize">24</s:Double>
-			<s:Double x:Key="B1FontSize">18</s:Double>
-			<s:Double x:Key="B2FontSize">14</s:Double>
-			
-			<s:TimeSpan x:Key="AnimationDuration">0:0:0.2</s:TimeSpan>
-			<Easing x:Key="AnimationEasing">QuadraticEaseInOut</Easing>
-			
-			<ResourceDictionary.ThemeDictionaries>
-				<ResourceDictionary x:Key="Dark">
-					<Color x:Key='LaminarForeground'>#dbe5ff</Color>
-					<Color x:Key='LaminarBackground'>#010103</Color>
-					<Color x:Key='LaminarBackgroundLighter'>#07070e</Color>
-					<Color x:Key='LaminarBackgroundAlt'>#0c0c1f</Color>
-					<Color x:Key='LaminarPrimary'>#242ee0</Color>
-					<Color x:Key='LaminarSecondary'>#000c2e</Color>
-					<Color x:Key='LaminarAccent'>#4c1867</Color>
-				</ResourceDictionary>
-				<ResourceDictionary x:Key="Light">
-					<Color x:Key='LaminarForeground'>#000a24</Color>
-					<Color x:Key='LaminarBackground'>#fafaff</Color>
-					<Color x:Key='LaminarBackgroundLighter'>#efefff</Color>
-					<Color x:Key='LaminarBackgroundAlt'>#e2e2f2</Color>
-					<Color x:Key='LaminarPrimary'>#1f29db</Color>
-					<Color x:Key='LaminarSecondary'>#d1ddff</Color>
-					<Color x:Key='LaminarAccent'>#ab98e7</Color>
-				</ResourceDictionary>
-			</ResourceDictionary.ThemeDictionaries>
+			<ResourceDictionary.MergedDictionaries>
+				<ResourceInclude Source="XamlAssets/Resources/LaminarColorResources.axaml"/>
+				<ResourceInclude Source="XamlAssets/Resources/SettingsResources.axaml"/>
+				<ResourceInclude Source="XamlAssets/Themes/ToggleButtonThemes.axaml"/>
+				<ResourceInclude Source="XamlAssets/DataTemplates/LaminarCommandTemplates.axaml"/>
+			</ResourceDictionary.MergedDictionaries>
 			
 			<conv:ScaleNameConverter x:Key="ScaleNameConverter"/>
-			
-			<dd:DropHandler x:Key="DefaultDropHandler"/>
 		</ResourceDictionary>
 	</Application.Resources>
 </Application>

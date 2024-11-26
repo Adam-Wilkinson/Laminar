@@ -1,8 +1,9 @@
 using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
-using Avalonia.Platform.Storage;
+using Laminar.Avalonia.Commands;
 using Laminar.Avalonia.ViewModels;
 using Laminar.Avalonia.Views;
 using Laminar.Contracts.UserData;
@@ -25,16 +26,18 @@ public partial class App : Application
             // Line below is needed to remove Avalonia data validation.
             // Without this line you will get duplicate validations from both Avalonia and CT
             BindingPlugins.DataValidators.RemoveAt(0);
-
-            var collection = new ServiceCollection()
-                .AddLaminarServices()
-                .AddDescendantsTransient<ViewModelBase>();
-                
             desktop.MainWindow = new MainWindow();
-            collection.AddSingleton(desktop.MainWindow.StorageProvider);
-            var services = collection.BuildServiceProvider();
 
+            var services = new ServiceCollection()
+                .AddLaminarServices()
+                .AddDescendantsTransient<ViewModelBase>()
+                .AddSingleton<LaminarCommandFactory>()
+                .AddSingleton(desktop.MainWindow.StorageProvider)
+                .AddSingleton<TopLevel>(desktop.MainWindow)
+                .BuildServiceProvider();
+            
             var mainWindowViewModel = services.GetRequiredService<MainWindowViewModel>();
+            
             ActivatorUtilities.CreateInstance<ViewModelSerializationHelper>(services)
                 .SerializeObservableProperties(mainWindowViewModel,
                     services.GetRequiredService<IPersistentDataManager>().GetDataStore(DataStoreKey.PersistentData));

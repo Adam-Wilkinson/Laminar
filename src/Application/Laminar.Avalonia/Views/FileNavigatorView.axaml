@@ -5,23 +5,41 @@
              xmlns:vm="using:Laminar.Avalonia.ViewModels"
              xmlns:dvm="using:Laminar.Avalonia.ViewModels.Design"
              xmlns:dd="using:Laminar.Avalonia.DragDrop"
-             xmlns:asp="using:Laminar.Avalonia.AdjustableStackPanel"
+             xmlns:fn="using:Laminar.Domain.DataManagement.FileNavigation"
+             xmlns:lc="using:Laminar.Avalonia.Commands"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450" d:DataContext="{x:Static dvm:DesignViewModel.FileNavigator}"
              x:DataType="vm:FileNavigatorViewModel"
              x:Class="Laminar.Avalonia.Views.FileNavigatorView">
     <Panel Background="{DynamicResource LaminarBackgroundLighter}" MinWidth="1" Name="FileNavigator">
         <TreeView ClipToBounds="False" ItemsSource="{Binding RootFiles}">
             <TreeView.ItemTemplate>
-                <TreeDataTemplate ItemsSource="{Binding Contents}">
-                    <StackPanel Orientation="Horizontal" 
-                                Background="{DynamicResource LaminarBackgroundAlt}" 
-                                HorizontalAlignment="Stretch" 
-                                dd:DragDropHandler.TriggerMouseButton="Left">
-                        <TextBlock Text="{Binding Name}"/>
-                        <Button Command="{Binding $parent[UserControl].((vm:FileNavigatorViewModel)DataContext).OpenFilePicker}">O</Button>
-                    </StackPanel>
+                <TreeDataTemplate DataType="{x:Type fn:LaminarStorageFolder}" ItemsSource="{Binding Contents}">
+                    <DockPanel Background="{DynamicResource LaminarBackgroundAlt}" 
+                               HorizontalAlignment="Stretch" 
+                               dd:DragDropHandler.TriggerMouseButton="Left">
+                        <ContentControl ContentTemplate="{StaticResource LaminarCommandIcon}" DockPanel.Dock="Right">
+                            <lc:LaminarCommandWithParameter CommandVisual="{Binding $parent[UserControl].((vm:FileNavigatorViewModel)DataContext).ToggleEnable}"
+                                                            Parameter="{Binding}"/>
+                        </ContentControl>
+                        <TextBlock DockPanel.Dock="Right" IsVisible="{Binding IsEffectivelyEnabled}">x</TextBlock>
+                        <TextBlock VerticalAlignment="Center" Text="{Binding Name}"/>
+                    </DockPanel>
                 </TreeDataTemplate>
             </TreeView.ItemTemplate>
+            
+            <TreeView.DataTemplates>
+                <DataTemplate DataType="{x:Type fn:LaminarStorageFile}">
+                    <DockPanel Background="{DynamicResource LaminarAccent}"
+                               HorizontalAlignment="Stretch"
+                               dd:DragDropHandler.TriggerMouseButton="Left">
+                        <ContentControl ContentTemplate="{StaticResource LaminarCommandMenuItem}" DockPanel.Dock="Right">
+                            <lc:LaminarCommandWithParameter CommandVisual="{Binding $parent[UserControl].((vm:FileNavigatorViewModel)DataContext).ToggleEnable}"
+                                                            Parameter="{Binding}"/>
+                        </ContentControl>
+                        <TextBlock VerticalAlignment="Center" Text="{Binding Name}"/>
+                    </DockPanel>
+                </DataTemplate>
+            </TreeView.DataTemplates>
         </TreeView>
     </Panel>
 </UserControl>

@@ -1,0 +1,53 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:lc="using:Laminar.Avalonia.Commands">
+    <ControlTheme x:Key="{x:Type lc:LaminarCommandSwitch}" TargetType="{x:Type lc:LaminarCommandSwitch}">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <ToggleSwitch IsChecked="{TemplateBinding IsOn, Mode=TwoWay}"/>
+            </ControlTemplate>
+        </Setter>
+    </ControlTheme>
+    
+    <ControlTheme x:Key="{x:Type lc:LaminarCommandIcon}" TargetType="{x:Type lc:LaminarCommandIcon}">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Button Command="{Binding Command.CommandVisual.Command, RelativeSource={RelativeSource TemplatedParent}}"
+                        CommandParameter="{Binding Command.Parameter, RelativeSource={RelativeSource TemplatedParent}}">
+                    <Path Data="{TemplateBinding IconData}" 
+                          Stroke="{DynamicResource LaminarAccent}" 
+                          StrokeThickness="3"/>
+                </Button>
+            </ControlTemplate>
+        </Setter>
+    </ControlTheme>
+    
+    <DataTemplate x:Key="LaminarCommandSwitchTemplate" x:DataType="{x:Type lc:LaminarCommandSwitch}">
+        <ToggleSwitch
+            IsChecked="{Binding IsOn}"/>
+    </DataTemplate>
+    
+    <DataTemplate x:Key="LaminarCommandIcon" x:DataType="{x:Type lc:LaminarCommandWithParameter}">
+        <ContentControl 
+            Content="{Binding}"
+            ContentTemplate="{Binding CommandVisual.DataTemplate}"
+            ToolTip.Tip="{Binding CommandVisual.Command.Tooltip}"/>
+    </DataTemplate>
+    
+    <DataTemplate x:Key="LaminarCommandMenuItem" x:DataType="{x:Type lc:LaminarCommandWithParameter}">
+        <DockPanel ToolTip.Tip="{Binding CommandVisual.Command.Tooltip}">
+            <ContentControl DockPanel.Dock="Left"
+                            Content="{Binding}"
+                            ContentTemplate="{Binding CommandVisual.DataTemplate}"
+                            IsHitTestVisible="False"/>
+            <TextBlock DockPanel.Dock="Right"
+                       VerticalAlignment="Center"
+                       Classes="b2"
+                       Text="{Binding CommandVisual.Command.Gesture}"
+                       Opacity="0.4"/>
+            <TextBlock Text="{Binding CommandVisual.Command.Name}"
+                       VerticalAlignment="Center"
+                       Padding="8"/>
+        </DockPanel>
+    </DataTemplate>
+</ResourceDictionary>

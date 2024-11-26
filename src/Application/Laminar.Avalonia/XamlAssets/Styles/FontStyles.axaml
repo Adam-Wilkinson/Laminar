@@ -1,0 +1,61 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Design.PreviewWith>
+        <Border Padding="20">
+            <!-- Add Controls for Previewer Here -->
+        </Border>
+    </Design.PreviewWith>
+
+    <!-- Add Styles Here -->
+    <Style Selector="TextBlock.h1">
+        <Setter Property="FontSize" Value="{DynamicResource H1FontSize}"/>
+        <Setter Property="FontWeight" Value="DemiBold"/>
+    </Style>
+        
+    <Style Selector="TextBlock.h2">
+        <Setter Property="FontSize" Value="{DynamicResource H2FontSize}"/>
+        <Setter Property="FontWeight" Value="Medium"/>
+    </Style>
+        
+    <Style Selector="TextBlock">
+        <Setter Property="FontSize" Value="{DynamicResource B1FontSize}"/>
+        <Setter Property="FontWeight" Value="Normal"/>
+    </Style>
+        
+    <Style Selector="TextBlock.b2">
+        <Setter Property="FontSize" Value="{DynamicResource B2FontSize}"/>
+        <Setter Property="FontWeight" Value="SemiLight"/>
+    </Style>
+        
+    <Style Selector=":is(TemplatedControl).h1">
+        <Setter Property="FontSize" Value="{DynamicResource H1FontSize}"/>
+        <Setter Property="FontWeight" Value="DemiBold"/>
+    </Style>
+        
+    <Style Selector=":is(TemplatedControl).h2">
+        <Setter Property="FontSize" Value="{DynamicResource H2FontSize}"/>
+        <Setter Property="FontWeight" Value="Medium"/>
+    </Style>
+        
+    <Style Selector=":is(TemplatedControl)">
+        <Setter Property="FontSize" Value="{DynamicResource B1FontSize}"/>
+        <Setter Property="FontWeight" Value="Normal"/>
+    </Style>
+        
+    <Style Selector=":is(TemplatedControl).b2">
+        <Setter Property="FontSize" Value="{DynamicResource B2FontSize}"/>
+        <Setter Property="FontWeight" Value="SemiLight"/>
+    </Style>
+        
+    <Style Selector="Window">
+        <Style.Resources>
+            <FontFamily x:Key="LaminarIcons">/Assets/Fonts/IconWorksRegular.ttf#Icon-Works</FontFamily>
+            <FontFamily x:Key="AreaKilometer">/Assets/Fonts/AreaKilometer50.ttf#a Area Kilometer 50</FontFamily>
+            <FontFamily x:Key="Abyssinica">/Assets/Fonts/AbyssinicaSIL-Regular.ttf#Abyssinica SIL</FontFamily>
+        </Style.Resources>
+        
+        <Setter Property="Foreground" Value="{DynamicResource LaminarForeground}"/>
+        <Setter Property="Background" Value="{DynamicResource LaminarBackground}"/>
+        <Setter Property="FontFamily" Value="{DynamicResource  Abyssinica}"/>
+    </Style>
+</Styles>
