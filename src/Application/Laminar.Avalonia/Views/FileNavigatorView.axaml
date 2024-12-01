@@ -18,8 +18,8 @@
                                HorizontalAlignment="Stretch" 
                                dd:DragDropHandler.TriggerMouseButton="Left">
                         <ContentControl ContentTemplate="{StaticResource LaminarCommandIcon}" DockPanel.Dock="Right">
-                            <lc:LaminarCommandWithParameter CommandVisual="{Binding $parent[UserControl].((vm:FileNavigatorViewModel)DataContext).ToggleEnable}"
-                                                            Parameter="{Binding}"/>
+                            <lc:LaminarCommandInstance Command="{Binding $parent[UserControl].((vm:FileNavigatorViewModel)DataContext).ToggleEnable}"
+                                                       Parameter="{Binding}"/>
                         </ContentControl>
                         <TextBlock DockPanel.Dock="Right" IsVisible="{Binding IsEffectivelyEnabled}">x</TextBlock>
                         <TextBlock VerticalAlignment="Center" Text="{Binding Name}"/>
@@ -33,8 +33,8 @@
                                HorizontalAlignment="Stretch"
                                dd:DragDropHandler.TriggerMouseButton="Left">
                         <ContentControl ContentTemplate="{StaticResource LaminarCommandMenuItem}" DockPanel.Dock="Right">
-                            <lc:LaminarCommandWithParameter CommandVisual="{Binding $parent[UserControl].((vm:FileNavigatorViewModel)DataContext).ToggleEnable}"
-                                                            Parameter="{Binding}"/>
+                            <lc:LaminarCommandInstance Command="{Binding $parent[UserControl].((vm:FileNavigatorViewModel)DataContext).ToggleEnable}"
+                                                       Parameter="{Binding}"/>
                         </ContentControl>
                         <TextBlock VerticalAlignment="Center" Text="{Binding Name}"/>
                     </DockPanel>

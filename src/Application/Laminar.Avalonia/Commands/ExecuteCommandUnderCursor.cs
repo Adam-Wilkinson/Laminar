@@ -6,7 +6,7 @@ using Avalonia.VisualTree;
 
 namespace Laminar.Avalonia.Commands;
 
-public class ExecuteLaminarCommandUnderCursor(LaminarCommand laminarCommand, LaminarCommandFactory factory) : ICommand
+public class ExecuteCommandUnderCursor(ICommand command, LaminarCommandFactory factory) : ICommand
 {
     public bool CanExecute(object? parameter)
     {
@@ -16,7 +16,7 @@ public class ExecuteLaminarCommandUnderCursor(LaminarCommand laminarCommand, Lam
     public void Execute(object? parameter)
     {
         if (!TryGetCurrentParameter(out var currentParameter)) return;
-        laminarCommand.Execute(currentParameter);
+        command.Execute(currentParameter);
     }
 
     public event EventHandler? CanExecuteChanged;
@@ -33,13 +33,13 @@ public class ExecuteLaminarCommandUnderCursor(LaminarCommand laminarCommand, Lam
         {
             switch (visual)
             {
-                case object obj when laminarCommand.CanExecute(obj):
+                case object obj when command.CanExecute(obj):
                     parameter = visual;
                     return true;
-                case ContentControl contentControl when laminarCommand.CanExecute(contentControl.Content):
+                case ContentControl contentControl when command.CanExecute(contentControl.Content):
                     parameter = contentControl.Content;
                     return true;
-                case ContentPresenter contentPresenter when laminarCommand.CanExecute(contentPresenter.Content):
+                case ContentPresenter contentPresenter when command.CanExecute(contentPresenter.Content):
                     parameter = contentPresenter.Content;
                     return true;
             }

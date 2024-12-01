@@ -7,7 +7,7 @@ public static class NotifyPropertyChangedExtensions
 {
     private static readonly Dictionary<INotifyPropertyChanged, PropertyChangedFilterHolder> Holders = [];
     
-    public static FilteredPropertyChangedEventSource FilterPropertyChanged(this INotifyPropertyChanged notifyPropertyChanged,
+    public static INotificationSource FilterPropertyChanged(this INotifyPropertyChanged notifyPropertyChanged,
         string propertyName)
     {
         if (Holders.TryGetValue(notifyPropertyChanged, out var holder))

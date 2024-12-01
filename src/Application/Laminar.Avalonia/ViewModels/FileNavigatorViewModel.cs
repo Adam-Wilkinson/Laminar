@@ -2,6 +2,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Text;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
@@ -16,6 +17,7 @@ using Laminar.Contracts.Base.ActionSystem;
 using Laminar.Contracts.UserData;
 using Laminar.Domain.DataManagement.FileNavigation;
 using Laminar.Domain.Extensions;
+using Laminar.Domain.Notification;
 
 namespace Laminar.Avalonia.ViewModels;
 public class FileNavigatorViewModel(
@@ -25,28 +27,19 @@ public class FileNavigatorViewModel(
 {
     private readonly IStorageProvider _storageProvider = storageProvider;
 
-    public LaminarCommandVisual ToggleEnable { get; } =
-        commandFactory.CreateCommand<ILaminarStorageItem>(
+    public LaminarCommand ToggleEnable { get; } = commandFactory.CreateParameterCommand<ILaminarStorageItem>(
             "Toggle Enabled",
             item => item.IsEnabled = !item.IsEnabled,
             item => item.IsEnabled = !item.IsEnabled,
-            canExecute: item => item.ParentIsEffectivelyEnabled,
-            canExecuteChanged: item => item.FilterPropertyChanged(nameof(ILaminarStorageItem.ParentIsEffectivelyEnabled)),
-            description: "Enable/disable",
-            keyGesture: new KeyGesture(Key.E, KeyModifiers.Alt)
-        ).WithVisual(commandWithParameter =>
-        {
-            var newSwitch = new LaminarCommandSwitch
-            {
-                [!LaminarCommandSwitch.IsOnProperty] = 
-                    new Binding { Source = commandWithParameter.Parameter, Path = nameof(ILaminarStorageItem.IsEffectivelyEnabled) },
-            };
-
-            newSwitch.Tapped += (_, _) => commandWithParameter.Execute();
-            
-            return newSwitch;
-        });
-            
+            ToggleEnabledDataTemplate,
+            new ReactiveFunc<ILaminarStorageItem, string>(item => new StringBuilder(4)
+                .Append("Click to ")
+                .Append(item.IsEffectivelyEnabled ? "disable" : "enable")
+                .Append(" this ")
+                .Append(item is LaminarStorageFolder ? "folder" : "item").ToString()),
+            new ReactiveFunc<ILaminarStorageItem, bool>(item => item.ParentIsEffectivelyEnabled),
+            new KeyGesture(Key.E, KeyModifiers.Alt)
+        );
     
     [Serialize]
     public ObservableCollection<ILaminarStorageItem> RootFiles { get; set; } = [ new LaminarStorageFolder(Path.Combine(dataManager.Path, "Default")) ];
@@ -55,4 +48,23 @@ public class FileNavigatorViewModel(
     {
         _storageProvider.OpenFilePickerAsync(new FilePickerOpenOptions { AllowMultiple = false, Title = "Pick a file!"});
     }
+
+    private static readonly IDataTemplate ToggleEnabledDataTemplate =
+        new FuncDataTemplate<LaminarCommandInstance>(
+            _ => true,
+            commandInstance =>
+            {
+                var newSwitch = new LaminarCommandSwitch
+                {
+                    [!LaminarCommandSwitch.IsOnProperty] =
+                        new Binding
+                        {
+                            Source = commandInstance.Parameter, Path = nameof(ILaminarStorageItem.IsEffectivelyEnabled)
+                        },
+                };
+
+                newSwitch.Tapped += (_, _) => commandInstance.Execute();
+
+                return newSwitch;
+            });
 }

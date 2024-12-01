@@ -1,11 +1,12 @@
 using System;
-using System.ComponentModel;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Templates;
 using Avalonia.Input;
 using Avalonia.VisualTree;
 using Laminar.Contracts.Base.ActionSystem;
 using Laminar.Domain.Notification;
+using Laminar.Domain.ValueObjects;
 
 namespace Laminar.Avalonia.Commands;
 
@@ -26,47 +27,52 @@ public class LaminarCommandFactory
 
     public Visual? VisualUnderCursor { get; private set; }
 
-    public LaminarCommand CreateCommand(string name, 
-        Func<object?, bool> execute, 
-        Func<object?, bool> undo,
-        Func<object?, bool>? canExecute = null,
-        Func<INotifyPropertyChanged, INotificationSource>? canExecuteChanged = null,
-        string description = "",
-        KeyGesture? keyGesture = null)
+    public LaminarCommand CreateCommand(
+        string name,
+        Func<bool> execute,
+        Func<bool> undo,
+        IDataTemplate iconDataTemplate,
+        IObservableValue<string> description,
+        IObservableValue<bool>? canExecute = null,
+        KeyGesture? gesture = null)
     {
-        canExecute ??= _ => true;
-        var newCommand = new LaminarCommand(_userActionManager, execute, undo, canExecute, canExecuteChanged)
+        var result = new LaminarCommand(_userActionManager, name, _ => execute(), _ => undo(), description, canExecute)
         {
-            Name = name,
-            Description = description,
-            Gesture = keyGesture
+            Gesture = gesture,
+            IconTemplate = iconDataTemplate
         };
         
-        BindCommand(newCommand);
-        
-        return newCommand;
+        BindCommand(result);
+
+        return result;
     }
 
-    public LaminarCommand CreateCommand<T>(string name,
+    public ParameterCommand<T> CreateParameterCommand<T>(
+        string name,
         Func<T, bool> execute,
         Func<T, bool> undo,
-        Func<T, bool>? canExecute = null,
-        Func<INotifyPropertyChanged, INotificationSource>? canExecuteChanged = null,
-        string description = "",
-        KeyGesture? keyGesture = null)
-        => CreateCommand(name, TypeCheck(execute), TypeCheck(undo), TypeCheck(canExecute), canExecuteChanged, description, keyGesture);
+        IDataTemplate iconTemplate,
+        ReactiveFunc<T, string> descriptionFactory,
+        ReactiveFunc<T, bool>? canExecute = null,
+        KeyGesture? gesture = null)
+    {
+        var result = new ParameterCommand<T>(_userActionManager, name, execute, undo, canExecute ?? new ReactiveFunc<T, bool>(_ => true), descriptionFactory)
+        {
+            Gesture = gesture,
+            IconTemplate = iconTemplate,
+        };
+        
+        BindCommand(result);
 
+        return result;
+    }
+    
     private void BindCommand(LaminarCommand command)
     {
         _topLevel.KeyBindings.Add(new KeyBinding()
         {
-            Command = new ExecuteLaminarCommandUnderCursor(command, this),
+            Command = new ExecuteCommandUnderCursor(command, this),
             [!KeyBinding.GestureProperty] = command[!LaminarCommand.GestureProperty],
         });
-    }
-    
-    private static Func<object?, TOutput?> TypeCheck<TInput, TOutput>(Func<TInput, TOutput>? typedAction)
-    {
-        return obj => obj is TInput typedObject && typedAction is not null ? typedAction(typedObject) : default;
     }
 }

@@ -39,7 +39,7 @@ public class WrappedNode<T> : IWrappedNode where T : INode, new()
 
     public IReadOnlyObservableCollection<INodeRow> Rows { get; set; }
 
-    public ObservableValue<Point> Location { get; set; } = new ObservableValue<Point>(new Point { X = 0, Y = 0 });
+    public ObservableValue<Point> Location { get; set; } = new(new Point { X = 0, Y = 0 });
 
     public Identifier<IWrappedNode> Id { get; } = Identifier<IWrappedNode>.New();
 

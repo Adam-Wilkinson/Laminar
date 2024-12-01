@@ -1,52 +1,47 @@
 using System;
-using System.ComponentModel;
 using System.Windows.Input;
 using Avalonia;
 using Avalonia.Controls.Templates;
-using Avalonia.Media;
 using Avalonia.Input;
 using Laminar.Contracts.Base.ActionSystem;
-using Laminar.Domain.Notification;
+using Laminar.Domain.ValueObjects;
 using Laminar.Implementation.Base.ActionSystem;
 
 namespace Laminar.Avalonia.Commands;
 
 public class LaminarCommand(
     IUserActionManager userActionManager,
-    Func<object?, bool> executeAction,
-    Func<object?, bool> undoAction,
-    Func<object?, bool> canExecute,
-    Func<INotifyPropertyChanged, INotificationSource> canExecuteChanged) : AvaloniaObject, ICommand
+    string name,
+    Func<object?, bool> execute,
+    Func<object?, bool> undo,
+    IObservableValue<string>? descriptionObservable = null,
+    IObservableValue<bool>? canExecuteObservable = null) : AvaloniaObject, ICommand
 {
     public static readonly StyledProperty<KeyGesture?> GestureProperty =
         AvaloniaProperty.Register<LaminarCommand, KeyGesture?>(nameof(Gesture));
-
-    [Obsolete($"Use the CanExecuteChanged event handler on a specific {nameof(LaminarCommandWithParameter)} instance instead to avoid unnecessary invocations")]
-    public event EventHandler? CanExecuteChanged;
+    
+    private readonly IObservableValue<string> _descriptionObservable = descriptionObservable ?? new ObservableValue<string>("");
+    private readonly IObservableValue<bool> _canExecuteObservable = canExecuteObservable ?? new ObservableValue<bool>(true);
 
     public KeyGesture? Gesture
     {
         get => GetValue(GestureProperty);
         set => SetValue(GestureProperty, value);
     }
-    
-    public required string Name { get; init; }
-    
-    public string Description { get; init; } = "";
-    
-    public string Tooltip => Description + "\n" + (Gesture is not null ? $"Currently bound to {Gesture}" : "Press Alt+B to bind");
-    
-    public INotificationSource CanExecuteChangedFor(INotifyPropertyChanged notifyObject)
-        => canExecuteChanged(notifyObject);
-    
-    public bool Execute(object? parameter)
-    {
-        return userActionManager.ExecuteAction(new AutoAction()
-            { ExecuteAction = () => executeAction(parameter), UndoAction = () => undoAction(parameter) });
-    }
 
-    public bool CanExecute(object? parameter) => canExecute(parameter);
+    public string Name { get; } = name;
 
-    void ICommand.Execute(object? parameter)
-        => Execute(parameter);
+    public required IDataTemplate IconTemplate { get; init; }
+
+    public virtual IObservableValue<string> GetDescription(object? parameter) => _descriptionObservable;
+
+    public virtual IObservableValue<bool> CanExecute(object? parameter) => _canExecuteObservable;
+
+    bool ICommand.CanExecute(object? parameter) => CanExecute(parameter).Value;
+
+    public void Execute(object? parameter) =>
+        userActionManager.ExecuteAction(new AutoAction
+            { ExecuteAction = () => execute(parameter), UndoAction = () => undo(parameter) });
+
+    public event EventHandler? CanExecuteChanged;
 }

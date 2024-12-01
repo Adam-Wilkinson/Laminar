@@ -6,27 +6,36 @@ namespace Laminar.Domain.ValueObjects;
 /// A lightweight implementation of <see cref="INotifyPropertyChanged"/>
 /// </summary>
 /// <typeparam name="T">The type of the child value</typeparam>
-public class ObservableValue<T> : INotifyPropertyChanged
+public class ObservableValue<T> : IObservableValue<T>
 {
-    private T _value;
+    private T _value = default!;
 
-    public ObservableValue(T initialValue)
+    public ObservableValue(T value) : this()
     {
-        _value = initialValue;
+        Value = value;
     }
 
+    public ObservableValue()
+    {
+    }
+    
     public T Value
     {
         get => _value;
         set
         {
-            if (!EqualityComparer<T>.Default.Equals(_value, value))
-            {
-                _value = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Value)));
-            }
+            if (EqualityComparer<T>.Default.Equals(_value, value))
+                return;
+            
+            _value = value;
+            ValueChanged?.Invoke(this, _value);
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Value)));
         }
     }
 
+    public event EventHandler<T>? ValueChanged;
+    
     public event PropertyChangedEventHandler? PropertyChanged;
+
+    public static implicit operator T(ObservableValue<T> observableValue) => observableValue.Value;
 }

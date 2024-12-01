@@ -12,8 +12,8 @@
     <ControlTheme x:Key="{x:Type lc:LaminarCommandIcon}" TargetType="{x:Type lc:LaminarCommandIcon}">
         <Setter Property="Template">
             <ControlTemplate>
-                <Button Command="{Binding Command.CommandVisual.Command, RelativeSource={RelativeSource TemplatedParent}}"
-                        CommandParameter="{Binding Command.Parameter, RelativeSource={RelativeSource TemplatedParent}}">
+                <Button Command="{Binding CommandInstance.Command , RelativeSource={RelativeSource TemplatedParent}}"
+                        CommandParameter="{Binding CommandInstance.Parameter, RelativeSource={RelativeSource TemplatedParent}}">
                     <Path Data="{TemplateBinding IconData}" 
                           Stroke="{DynamicResource LaminarAccent}" 
                           StrokeThickness="3"/>
@@ -22,26 +22,39 @@
         </Setter>
     </ControlTheme>
     
-    <DataTemplate x:Key="LaminarCommandIcon" x:DataType="{x:Type lc:LaminarCommandWithParameter}">
+    <DataTemplate x:Key="LaminarCommandIcon" x:DataType="{x:Type lc:LaminarCommandInstance}">
         <ContentControl IsEnabled="{Binding CanExecute}" 
             Content="{Binding}"
-            ContentTemplate="{Binding CommandVisual.DataTemplate}"
-            ToolTip.Tip="{Binding CommandVisual.Command.Tooltip}"/>
+            ContentTemplate="{Binding Command.IconTemplate}">
+            <ToolTip.Tip>
+                <StackPanel>
+                    <TextBlock Classes="b2" Text="{Binding  Description}"/>
+                    <TextBlock Classes="b2" Text="{Binding Command.Gesture, StringFormat='Currently bound to {0}', FallbackValue='Nothing'}"/>
+                    <TextBlock Classes="b2">Press Ctrl+B to change binding</TextBlock>
+                </StackPanel>
+            </ToolTip.Tip>
+        </ContentControl>
     </DataTemplate>
     
-    <DataTemplate x:Key="LaminarCommandMenuItem" x:DataType="{x:Type lc:LaminarCommandWithParameter}">
-        <DockPanel ToolTip.Tip="{Binding CommandVisual.Command.Tooltip}"
-                   IsEnabled="{Binding CanExecute}">
+    <DataTemplate x:Key="LaminarCommandMenuItem" x:DataType="{x:Type lc:LaminarCommandInstance}">
+        <DockPanel IsEnabled="{Binding CanExecute}">
+            <ToolTip.Tip>
+                <StackPanel>
+                    <TextBlock Classes="b2" Text="{Binding  Description}"/>
+                    <TextBlock Classes="b2" Text="{Binding Command.Gesture, StringFormat='Currently bound to {0}', FallbackValue='Nothing'}"/>
+                    <TextBlock Classes="b2">Press Ctrl+B to change binding</TextBlock>
+                </StackPanel>
+            </ToolTip.Tip>
             <ContentControl DockPanel.Dock="Left"
                             Content="{Binding}"
-                            ContentTemplate="{Binding CommandVisual.DataTemplate}"
+                            ContentTemplate="{Binding Command.IconTemplate}"
                             IsHitTestVisible="False"/>
             <TextBlock DockPanel.Dock="Right"
                        VerticalAlignment="Center"
                        Classes="b2"
-                       Text="{Binding CommandVisual.Command.Gesture}"
+                       Text="{Binding Command.Gesture}"
                        Opacity="0.4"/>
-            <TextBlock Text="{Binding CommandVisual.Command.Name}"
+            <TextBlock Text="{Binding Command.Name}"
                        VerticalAlignment="Center"
                        Padding="8"/>
         </DockPanel>
