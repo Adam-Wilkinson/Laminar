@@ -4,7 +4,13 @@
     <ControlTheme x:Key="{x:Type lc:LaminarCommandSwitch}" TargetType="{x:Type lc:LaminarCommandSwitch}">
         <Setter Property="Template">
             <ControlTemplate>
-                <ToggleSwitch IsChecked="{TemplateBinding IsOn, Mode=TwoWay}"/>
+                <ToggleSwitch IsChecked="{TemplateBinding IsOn, Mode=TwoWay}" OnContent="" OffContent="" Foreground="{DynamicResource LaminarAccent}">
+                    <ToggleSwitch.Resources>
+                        <ResourceDictionary>
+                            <SolidColorBrush x:Key="ToggleSwitchFillOn" Color="{DynamicResource LaminarAccent}"/>
+                        </ResourceDictionary>
+                    </ToggleSwitch.Resources>
+                </ToggleSwitch>
             </ControlTemplate>
         </Setter>
     </ControlTheme>
@@ -13,10 +19,12 @@
         <Setter Property="Template">
             <ControlTemplate>
                 <Button Command="{Binding CommandInstance.Command , RelativeSource={RelativeSource TemplatedParent}}"
-                        CommandParameter="{Binding CommandInstance.Parameter, RelativeSource={RelativeSource TemplatedParent}}">
-                    <Path Data="{TemplateBinding IconData}" 
-                          Stroke="{DynamicResource LaminarAccent}" 
-                          StrokeThickness="3"/>
+                        CommandParameter="{Binding CommandInstance.Parameter, RelativeSource={RelativeSource TemplatedParent}}"
+                        VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+                        Background="{DynamicResource LaminarAccent}"
+                        VerticalContentAlignment="Center" HorizontalContentAlignment="Center">
+                    <PathIcon Data="{TemplateBinding IconData}" VerticalAlignment="Center" HorizontalAlignment="Center"
+                              Foreground="{DynamicResource LaminarForeground}"/>
                 </Button>
             </ControlTemplate>
         </Setter>
@@ -41,7 +49,6 @@
             <ToolTip.Tip>
                 <StackPanel>
                     <TextBlock Classes="b2" Text="{Binding  Description}"/>
-                    <TextBlock Classes="b2" Text="{Binding Command.Gesture, StringFormat='Currently bound to {0}', FallbackValue='Nothing'}"/>
                     <TextBlock Classes="b2">Press Ctrl+B to change binding</TextBlock>
                 </StackPanel>
             </ToolTip.Tip>

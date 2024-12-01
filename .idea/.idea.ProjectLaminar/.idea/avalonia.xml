@@ -18,6 +18,7 @@
         <entry key="src/Application/Laminar.Avalonia/Views/SettingsView.axaml" value="src/Application/Laminar.Avalonia/Laminar.Avalonia.csproj" />
         <entry key="src/Application/Laminar.Avalonia/XamlAssets/DataTemplates/LaminarCommandTemplates.axaml" value="src/Application/Laminar.Avalonia/Laminar.Avalonia.csproj" />
         <entry key="src/Application/Laminar.Avalonia/XamlAssets/LaminarColorResources.axaml" value="src/Application/Laminar.Avalonia/Laminar.Avalonia.csproj" />
+        <entry key="src/Application/Laminar.Avalonia/XamlAssets/Resources/LaminarColorResources.axaml" value="src/Application/Laminar.Avalonia/Laminar.Avalonia.csproj" />
         <entry key="src/Application/Laminar.Avalonia/XamlAssets/Styles/SettingsResources.axaml" value="src/Application/Laminar.Avalonia/Laminar.Avalonia.csproj" />
         <entry key="src/Application/Laminar.Avalonia/XamlAssets/Themes/ToggleButtonThemes.axaml" value="src/Application/Laminar.Avalonia/Laminar.Avalonia.csproj" />
       </map>

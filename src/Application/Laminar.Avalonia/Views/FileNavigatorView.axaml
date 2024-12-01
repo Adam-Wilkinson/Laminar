@@ -17,11 +17,22 @@
                     <DockPanel Background="{DynamicResource LaminarBackgroundAlt}" 
                                HorizontalAlignment="Stretch" 
                                dd:DragDropHandler.TriggerMouseButton="Left">
-                        <ContentControl ContentTemplate="{StaticResource LaminarCommandIcon}" DockPanel.Dock="Right">
-                            <lc:LaminarCommandInstance Command="{Binding $parent[UserControl].((vm:FileNavigatorViewModel)DataContext).ToggleEnable}"
-                                                       Parameter="{Binding}"/>
-                        </ContentControl>
-                        <TextBlock DockPanel.Dock="Right" IsVisible="{Binding IsEffectivelyEnabled}">x</TextBlock>
+                        <ItemsControl DockPanel.Dock="Right" 
+                                      ItemsSource="{Binding $parent[UserControl].((vm:FileNavigatorViewModel)DataContext).FolderQuickAccess}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Orientation="Horizontal" Spacing="4"/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <ContentControl Width="30" Height="30" ContentTemplate="{StaticResource LaminarCommandIcon}">
+                                        <lc:LaminarCommandInstance Command="{Binding}" 
+                                                                   Parameter="{Binding $parent[DockPanel].((fn:LaminarStorageFolder)DataContext)}"/>
+                                    </ContentControl>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
                         <TextBlock VerticalAlignment="Center" Text="{Binding Name}"/>
                     </DockPanel>
                 </TreeDataTemplate>
@@ -29,7 +40,7 @@
             
             <TreeView.DataTemplates>
                 <DataTemplate DataType="{x:Type fn:LaminarStorageFile}">
-                    <DockPanel Background="{DynamicResource LaminarAccent}"
+                    <DockPanel Background="{DynamicResource ScriptSignatureColor}"
                                HorizontalAlignment="Stretch"
                                dd:DragDropHandler.TriggerMouseButton="Left">
                         <ContentControl ContentTemplate="{StaticResource LaminarCommandMenuItem}" DockPanel.Dock="Right">

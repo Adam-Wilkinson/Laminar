@@ -9,15 +9,17 @@
             <Color x:Key='LaminarPrimary'>#242ee0</Color>
             <Color x:Key='LaminarSecondary'>#000c2e</Color>
             <Color x:Key='LaminarAccent'>#4c1867</Color>
+            <Color x:Key="ScriptSignatureColor">#1c0807</Color>
         </ResourceDictionary>
         <ResourceDictionary x:Key="Light">
             <Color x:Key='LaminarForeground'>#000a24</Color>
             <Color x:Key='LaminarBackground'>#fafaff</Color>
             <Color x:Key='LaminarBackgroundLighter'>#efefff</Color>
-            <Color x:Key='LaminarBackgroundAlt'>#e2e2f2</Color>
+            <Color x:Key='LaminarBackgroundAlt'>#d2e2ff</Color>
             <Color x:Key='LaminarPrimary'>#1f29db</Color>
             <Color x:Key='LaminarSecondary'>#d1ddff</Color>
-            <Color x:Key='LaminarAccent'>#ab98e7</Color>
+            <Color x:Key='LaminarAccent'>#cbb8f7</Color>
+            <Color x:Key="ScriptSignatureColor">#fec5e5</Color>
         </ResourceDictionary>
     </ResourceDictionary.ThemeDictionaries>
 </ResourceDictionary>

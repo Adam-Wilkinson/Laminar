@@ -13,7 +13,7 @@ public class LaminarCommand(
     IUserActionManager userActionManager,
     string name,
     Func<object?, bool> execute,
-    Func<object?, bool> undo,
+    Func<object?, bool>? undo = null,
     IObservableValue<string>? descriptionObservable = null,
     IObservableValue<bool>? canExecuteObservable = null) : AvaloniaObject, ICommand
 {
@@ -39,9 +39,18 @@ public class LaminarCommand(
 
     bool ICommand.CanExecute(object? parameter) => CanExecute(parameter).Value;
 
-    public void Execute(object? parameter) =>
-        userActionManager.ExecuteAction(new AutoAction
-            { ExecuteAction = () => execute(parameter), UndoAction = () => undo(parameter) });
+    public void Execute(object? parameter)
+    {
+        if (undo is null)
+        {
+            execute(parameter);
+        }
+        else
+        {
+            userActionManager.ExecuteAction(new AutoAction
+                { ExecuteAction = () => execute(parameter), UndoAction = () => undo(parameter) });
+        }
+    }
 
     public event EventHandler? CanExecuteChanged;
 }

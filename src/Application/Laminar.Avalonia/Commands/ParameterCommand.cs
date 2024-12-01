@@ -9,7 +9,7 @@ public class ParameterCommand<T>(
     IUserActionManager actionManager,
     string name,
     Func<T, bool> executeFunc,
-    Func<T, bool> undoFunc,
+    Func<T, bool>? undoFunc,
     ReactiveFunc<T, bool> canExecute,
     ReactiveFunc<T, string> description)
     : LaminarCommand(actionManager, name, TypeCheck(executeFunc), TypeCheck(undoFunc))
