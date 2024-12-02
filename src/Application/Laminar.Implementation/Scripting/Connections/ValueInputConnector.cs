@@ -7,18 +7,11 @@ using Laminar.PluginFramework.NodeSystem.IO.Value;
 
 namespace Laminar.Implementation.Scripting.Connections;
 
-internal class ValueInputConnector<T> : IInputConnector<IValueInput<T>>
+internal class ValueInputConnector<T>(ITypeInfoStore typeInfoStore) : IInputConnector<IValueInput<T>>
 {
-    readonly ITypeInfoStore _typeInfoStore;
-
     public event PropertyChangedEventHandler? PropertyChanged;
 
-    public ValueInputConnector(ITypeInfoStore typeInfoStore)
-    {
-        _typeInfoStore = typeInfoStore;
-    }
-
-    public string ColorHex => _typeInfoStore.GetTypeInfoOrBlank(Input.InterfaceDefinition.ValueType).HexColor;
+    public string ColorHex => typeInfoStore.GetTypeInfoOrBlank(Input.InterfaceDefinition.ValueType).HexColor;
 
     public required IValueInput<T> Input { get; init; }
 
@@ -29,19 +22,15 @@ internal class ValueInputConnector<T> : IInputConnector<IValueInput<T>>
         Input.SetValueProvider(null);
     }
 
+    public bool CanConnectTo(IOutputConnector connector)
+        => connector is IOutputConnector<IValueOutput<T>>;
+
     public bool TryConnectTo(IOutputConnector connector)
     {
-        if (connector is IOutputConnector<IValueOutput<T>> outputConnector)
-        {
-            Input.SetValueProvider(outputConnector.Output);
-            return true;
-        }
+        if (connector is not IOutputConnector<IValueOutput<T>> outputConnector) return false;
+        
+        Input.SetValueProvider(outputConnector.Output);
+        return true;
 
-        return false;
-    }
-
-    public static PassUpdateOption PassUpdate(ExecutionFlags executionFlags)
-    {
-        return executionFlags.HasValueFlag() ? PassUpdateOption.AlwaysPasses : PassUpdateOption.NeverPasses;
     }
 }

@@ -4,30 +4,14 @@ using Laminar.Domain.ValueObjects;
 
 namespace Laminar.Implementation.Scripting.Actions;
 
-public class MoveNodeAction : IUserAction
+public class MoveNodeAction(IWrappedNode items, Point locationDelta) : IUserAction
 {
-    readonly IWrappedNode _items;
-    readonly Point _locationDelta;
+    public IObservableValue<bool> CanExecute { get; } = new ObservableValue<bool>(true);
 
-    public MoveNodeAction(IWrappedNode items, Point locationDelta)
-    {
-        _items = items;
-        _locationDelta = locationDelta;
-    }
-
-    public bool Execute()
-    {
-        if (_locationDelta.X == 0 && _locationDelta.Y == 0)
-        {
-            return false;
-        }
-
-        _items.Location.Value += _locationDelta;
-        return true;
-    }
+    public void Execute() => items.Location.Value += locationDelta;
 
     public IUserAction GetInverse()
     {
-        return new MoveNodeAction(_items, -_locationDelta);
+        return new MoveNodeAction(items, -locationDelta);
     }
 }

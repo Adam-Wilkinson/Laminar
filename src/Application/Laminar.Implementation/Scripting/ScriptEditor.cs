@@ -16,8 +16,8 @@ internal class ScriptEditor : IScriptEditor
 {
     private readonly IEnumerable<IConnectionBridger> _connectionBridgers;
 
-    public ScriptEditor
-        (IUserActionManager userActionManager,
+    public ScriptEditor(
+        IUserActionManager userActionManager,
         IEnumerable<IConnectionBridger> connectionBridgers)
     {
         UserActionManager = userActionManager;

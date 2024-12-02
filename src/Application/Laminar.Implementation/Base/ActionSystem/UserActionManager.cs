@@ -5,15 +5,17 @@ namespace Laminar.Implementation.Base.ActionSystem;
 
 internal class UserActionManager : IUserActionManager
 {
-    private readonly List<IUserAction> _undoList = new();
-    private readonly List<IUserAction> _redoList = new();
+    private readonly List<IUserAction> _undoList = [];
+    private readonly List<IUserAction> _redoList = [];
 
     private int _compoundNestDepth = 0;
     private CompoundAction? _currentCompoundAction;
 
     public bool ExecuteAction(IUserAction action)
     {
-        if (!action.Execute()) return false;
+        if (!action.CanExecute.Value) return false;
+        
+        action.Execute();
         
         if (_compoundNestDepth > 0 && _currentCompoundAction is not null)
         {
@@ -32,10 +34,11 @@ internal class UserActionManager : IUserActionManager
         var successfulAction = false;
         while (!successfulAction && _undoList.Count > 0)
         {
-            successfulAction = _undoList[^1].Execute();
-            if (successfulAction)
+            if (_undoList[^1].CanExecute.Value)
             {
+                _undoList[^1].Execute();
                 _redoList.Add(_undoList[^1].GetInverse());
+                successfulAction = true;
             }
 
             _undoList.RemoveAt(_undoList.Count - 1);
@@ -47,10 +50,11 @@ internal class UserActionManager : IUserActionManager
         var successfulAction = false;
         while (!successfulAction && _redoList.Count > 0)
         {
-            successfulAction = _redoList[^1].Execute();
-            if (successfulAction)
+            if (_redoList[^1].CanExecute.Value)
             {
+                _redoList[^1].Execute();
                 _undoList.Add(_redoList[^1].GetInverse());
+                successfulAction = true;
             }
 
             _redoList.RemoveAt(_redoList.Count - 1);
@@ -61,7 +65,7 @@ internal class UserActionManager : IUserActionManager
     {
         if (_compoundNestDepth == 0)
         {
-            _currentCompoundAction = new();
+            _currentCompoundAction = new CompoundAction();
         }
 
         _compoundNestDepth++;
@@ -76,9 +80,9 @@ internal class UserActionManager : IUserActionManager
         _currentCompoundAction = null;
     }
 
-    public void ResetCompountAction()
+    public void ResetCompoundAction()
     {
         _currentCompoundAction?.GetInverse().Execute();
-        _currentCompoundAction = new();
+        _currentCompoundAction = new CompoundAction();
     }
 }

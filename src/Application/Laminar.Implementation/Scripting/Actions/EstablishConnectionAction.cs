@@ -2,49 +2,37 @@
 using System.Collections.Generic;
 using Laminar.Contracts.Base.ActionSystem;
 using Laminar.Contracts.Scripting.Connection;
+using Laminar.Domain.ValueObjects;
 using Laminar.Implementation.Scripting.Connections;
 using Laminar.PluginFramework.NodeSystem.Connectors;
 
 namespace Laminar.Implementation.Scripting.Actions;
 
-public class EstablishConnectionAction : IUserAction
+public class EstablishConnectionAction(
+    IOutputConnector connectorOne,
+    IInputConnector connectorTwo,
+    ICollection<IConnection> connectionCollection)
+    : IUserAction
 {
-    private readonly IOutputConnector _outputConnector;
-    private readonly IInputConnector _inputConnector;
-    private readonly ICollection<IConnection> _connectionCollection;
+    private IConnection? _connection;
 
-    IConnection? _connection;
+    public IObservableValue<bool> CanExecute { get; } =
+        new ObservableValue<bool>(connectorOne.CanConnectTo(connectorTwo) || connectorTwo.CanConnectTo(connectorOne));
 
-    public EstablishConnectionAction(IOutputConnector connectorOne, IInputConnector connectorTwo, ICollection<IConnection> connectionCollection)
+    void IUserAction.Execute()
     {
-        _outputConnector = connectorOne;
-        _inputConnector = connectorTwo;
-        _connectionCollection = connectionCollection;
-    }
-
-    public bool Execute()
-    {
-        if (_outputConnector.TryConnectTo(_inputConnector) || _inputConnector.TryConnectTo(_outputConnector))
+        if (!connectorOne.TryConnectTo(connectorTwo) && !connectorTwo.TryConnectTo(connectorOne)) return;
+        
+        _connection = new Connection
         {
-            _connection = new Connection
-            {
-                OutputConnector = _outputConnector,
-                InputConnector = _inputConnector
-            };
-            _connectionCollection.Add(_connection);
-            return true;
-        }
-
-        return false;
+            OutputConnector = connectorOne,
+            InputConnector = connectorTwo
+        };
+        connectionCollection.Add(_connection);
     }
 
     public IUserAction GetInverse()
     {
-        if (_connection is null)
-        {
-            throw new InvalidOperationException("Cannot get the sever action for a connection that hasn't been made");
-        }
-
-        return new SeverConnectionAction(_connection, _connectionCollection);
+        return new SeverConnectionAction(_connection, connectionCollection);
     }
 }

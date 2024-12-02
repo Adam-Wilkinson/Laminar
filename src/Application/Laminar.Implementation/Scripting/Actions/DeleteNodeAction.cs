@@ -2,28 +2,23 @@
 using Laminar.Contracts.Base.ActionSystem;
 using Laminar.Contracts.Base.UserInterface;
 using Laminar.Contracts.Scripting.NodeWrapping;
+using Laminar.Domain.ValueObjects;
 using Laminar.PluginFramework.NodeSystem.Components;
 
 namespace Laminar.Implementation.Scripting.Actions;
 
-public class DeleteNodeAction : IUserAction
+public class DeleteNodeAction(IWrappedNode node, ICollection<IWrappedNode> nodeCollection)
+    : IUserAction
 {
-    readonly IWrappedNode _node;
-    private readonly ICollection<IWrappedNode> _nodeCollection;
+    public IObservableValue<bool> CanExecute { get; } = new ObservableValue<bool>(nodeCollection.Contains(node));
 
-    public DeleteNodeAction(IWrappedNode node, ICollection<IWrappedNode> nodeCollection)
+    public void Execute()
     {
-        _node = node;
-        _nodeCollection = nodeCollection;
-    }
-
-    public bool Execute()
-    {
-        return _nodeCollection.Remove(_node);
+        nodeCollection.Remove(node);
     }
 
     public IUserAction GetInverse()
     {
-        return new AddNodeAction(_node, _nodeCollection);
+        return new AddNodeAction(node, nodeCollection);
     }
 }

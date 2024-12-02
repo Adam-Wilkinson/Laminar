@@ -8,21 +8,14 @@ using Laminar.PluginFramework.NodeSystem.IO.Value;
 
 namespace Laminar.Implementation.Scripting.Connections;
 
-internal class ValueOutputConnector<T> : IOutputConnector<IValueOutput<T>>
+internal class ValueOutputConnector<T>(ITypeInfoStore typeInfoStore, IValueOutput<T> output)
+    : IOutputConnector<IValueOutput<T>>
 {
-    readonly ITypeInfoStore _typeInfoStore;
-
-    public ValueOutputConnector(ITypeInfoStore typeInfoStore, IValueOutput<T> output)
-    {
-        _typeInfoStore = typeInfoStore;
-        Output = output;
-    }
-
     public event PropertyChangedEventHandler? PropertyChanged;
 
-    public string ColorHex => _typeInfoStore.GetTypeInfoOrBlank(Output.InterfaceDefinition.ValueType).HexColor;
+    public string ColorHex => typeInfoStore.GetTypeInfoOrBlank(Output.InterfaceDefinition.ValueType).HexColor;
 
-    public IValueOutput<T> Output { get; }
+    public IValueOutput<T> Output { get; } = output;
 
     public Action? PreEvaluateAction => Output.PreEvaluateAction;
 
@@ -30,29 +23,20 @@ internal class ValueOutputConnector<T> : IOutputConnector<IValueOutput<T>>
     {
     }
 
+    public bool CanConnectTo(IInputConnector connector)
+        => connector is IInputConnector<IValueInput<T>>; 
+    
     public bool TryConnectTo(IInputConnector connector)
     {
-        if (connector is IInputConnector<IValueInput<T>> inputConnector)
-        {
-            inputConnector.Input.SetValueProvider(Output);
-            return true;
-        }
+        if (connector is not IInputConnector<IValueInput<T>> inputConnector) return false;
+        inputConnector.Input.SetValueProvider(Output);
+        return true;
 
-        return false;
     }
 
     public PassUpdateOption PassUpdate(ExecutionFlags executionFlags)
     {
-        if (executionFlags.HasValueFlag())
-        {
-            if (Output.AlwaysPassUpdate)
-            {
-                return PassUpdateOption.AlwaysPasses;
-            }
-
-            return PassUpdateOption.CurrentlyDoesNotPass;
-        }
-
-        return PassUpdateOption.NeverPasses;
+        if (!executionFlags.HasValueFlag()) return PassUpdateOption.NeverPasses;
+        return Output.AlwaysPassUpdate ? PassUpdateOption.AlwaysPasses : PassUpdateOption.CurrentlyDoesNotPass;
     }
 }

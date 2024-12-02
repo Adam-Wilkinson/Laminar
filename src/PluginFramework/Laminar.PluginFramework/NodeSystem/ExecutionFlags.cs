@@ -1,8 +1,8 @@
 ﻿namespace Laminar.PluginFramework.NodeSystem;
 
-public struct ExecutionFlags
+public readonly struct ExecutionFlags
 {
-    private static int HighestIndex = -1;
+    private static int _highestIndex = -1;
 
     private ExecutionFlags(int intValue)
     {
@@ -11,7 +11,7 @@ public struct ExecutionFlags
 
     public int AsNumber { get; }
 
-    public static int ReserveNextFlagValue() => 1 << HighestIndex++;
+    public static int ReserveNextFlagValue() => 1 << _highestIndex++;
 
     public static bool HasFlag(ExecutionFlags flags, int flagValue) => (flags.AsNumber & flagValue) != 0;
 

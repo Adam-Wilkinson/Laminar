@@ -21,7 +21,7 @@ public interface IObservableValue<T> : INotifyPropertyChanged
         if (observableValue is not null)
         {
             observableValue.ValueChanged += valueChangedHandler;
-            valueChangedHandler.Invoke(newObservableValue, newObservableValue.Value);
+            valueChangedHandler.Invoke(observableValue, observableValue.Value);
         }
     }
 }

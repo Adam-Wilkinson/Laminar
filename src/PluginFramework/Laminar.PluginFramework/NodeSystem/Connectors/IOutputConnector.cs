@@ -6,5 +6,7 @@ public interface IOutputConnector : IIOConnector
 
     public bool TryConnectTo(IInputConnector connector);
 
+    public bool CanConnectTo(IInputConnector connector);
+
     public void OnDisconnectedFrom(IInputConnector connector);
 }

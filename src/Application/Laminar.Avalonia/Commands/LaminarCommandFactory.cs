@@ -8,6 +8,8 @@ using Avalonia.VisualTree;
 using Laminar.Contracts.Base.ActionSystem;
 using Laminar.Domain.Notification;
 using Laminar.Domain.ValueObjects;
+using Laminar.Implementation.Base.ActionSystem;
+using Laminar.PluginFramework;
 
 namespace Laminar.Avalonia.Commands;
 
@@ -27,7 +29,37 @@ public class LaminarCommandFactory
     }
 
     public Visual? VisualUnderCursor { get; private set; }
+    
+    public class ToolBuilder<T>(IUserActionManager actionManager, string name, ReactiveFunc<T, string> descriptionGenerator, IDataTemplate iconDataTemplate, KeyGesture gesture)
+    {
+        public ParameterCommand<T> AsCommand(Func<T, IUserAction> parameterAction)
+            => AsCommand(item => actionManager.ExecuteAction(parameterAction(item)));
 
+        public ParameterCommand<T> AsCommand(IUserAction action)
+            => AsCommand(_ => actionManager.ExecuteAction(action));
+        
+        public ParameterCommand<T> AsCommand(Action execute, Action? undo)
+            => undo switch
+            {
+                null => AsCommand(_ => execute()),
+                _ => AsCommand(_ => execute(), _ => undo()) 
+            };
+
+        public ParameterCommand<T> AsCommand(Action<T> execute)
+        {
+            
+        }
+        
+        public ParameterCommand<T> AsCommand(Action<T> execute, Action<T> undo)
+            => AsCommand(parameter => new AutoAction
+                { ExecuteAction = () => execute(parameter), UndoAction = () => undo(parameter) });
+
+        public LaminarToolbox<T> AsToolbox(params LaminarTool<T>[] tools)
+        {
+            None
+        }
+    }
+    
     public LaminarCommand CreateCommand(
         string name,
         Func<bool> execute,

@@ -21,6 +21,22 @@ public class FileNavigatorViewModel : ViewModelBase
         LaminarCommandFactory commandFactory)
     {
         _storageProvider = storageProvider;
+
+        TestTool = toolFactory
+            .DefineTool("Test Tool", TestDataTemplate, new KeyGesture(Key.E, KeyModifiers.Alt))
+            .AsCommand(() => true, () => nothing);
+
+        editingToolbox = toolFactory
+            .DefineTool("Edit actions", "Actions used to edit", TestDataTemplate, new KeyGesture(Key.E, KeyModifiers.Control))
+            .AsToolbox(
+                toolFactory.DefineTool("Undo").AsCommand(() => Undo()),
+                toolFactory.DefineTool("Redo").AsCommand(() => Redo()));
+        
+        addTool = toolFactory.DefineTool("Add", item => $"Add a {ItemTypeName(item)}", 
+            LaminarCommandIcon.Template(PathData.AddIcon), new KeyGesture(Key.A, KeyModifiers.Alt))
+            .AsToolbox(
+                toolFactory.DefineTool("Add folder").AsCommand);
+        
         ToggleEnable = commandFactory.CreateParameterCommand("Toggle Enabled", 
             item => item.IsEnabled = !item.IsEnabled, item => item.IsEnabled = !item.IsEnabled,
             ToggleEnabledDataTemplate,
@@ -32,8 +48,7 @@ public class FileNavigatorViewModel : ViewModelBase
             new ReactiveFunc<ILaminarStorageItem, bool>(item => item.ParentIsEffectivelyEnabled),
             new KeyGesture(Key.E, KeyModifiers.Alt)
         );
-        AddItem = commandFactory.CreateParameterCommand(
-            "Add Item", _ => false, null,
+        AddItem = commandFactory.CreateParameterCommand("Add Item", _ => false, null,
             LaminarCommandIcon.Template(PathData.AddIcon),
             new ReactiveFunc<LaminarStorageFolder, string>(_ => "Add a new file or folder"),
             children:

@@ -1,4 +1,4 @@
-﻿namespace Laminar.PluginFramework.NodeSystem.Components;
+﻿namespace Laminar.PluginFramework;
 
 /// <summary>
 /// Stub class used for null generic arguments

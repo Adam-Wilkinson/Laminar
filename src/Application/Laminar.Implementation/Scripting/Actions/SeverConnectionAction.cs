@@ -1,31 +1,28 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Laminar.Contracts.Base.ActionSystem;
 using Laminar.Contracts.Scripting.Connection;
+using Laminar.Domain.ValueObjects;
 
 namespace Laminar.Implementation.Scripting.Actions;
 
-public class SeverConnectionAction : IUserAction
+public class SeverConnectionAction(IConnection? connection, ICollection<IConnection> connectionCollection)
+    : IUserAction
 {
-    readonly IConnection _connection;
-    readonly ICollection<IConnection> _connectionCollection;
+    public IObservableValue<bool> CanExecute { get; } = new ObservableValue<bool>(connection is not null);
 
-    public SeverConnectionAction(IConnection connection, ICollection<IConnection> connectionCollection)
+    public void Execute()
     {
-        _connection = connection;
-        _connectionCollection = connectionCollection;
-    }
-
-    public bool Execute()
-    {
-        _connection.InputConnector.OnDisconnectedFrom(_connection.OutputConnector);
-        _connection.OutputConnector.OnDisconnectedFrom(_connection.InputConnector);
-        _connectionCollection.Remove(_connection);
-        _connection.Break();
-        return true;
+        ArgumentNullException.ThrowIfNull(connection);
+        connection.InputConnector.OnDisconnectedFrom(connection.OutputConnector);
+        connection.OutputConnector.OnDisconnectedFrom(connection.InputConnector);
+        connectionCollection.Remove(connection);
+        connection.Break();
     }
 
     public IUserAction GetInverse()
     {
-        return new EstablishConnectionAction(_connection.OutputConnector, _connection.InputConnector, _connectionCollection);
+        ArgumentNullException.ThrowIfNull(connection);
+        return new EstablishConnectionAction(connection.OutputConnector, connection.InputConnector, connectionCollection);
     }
 }
