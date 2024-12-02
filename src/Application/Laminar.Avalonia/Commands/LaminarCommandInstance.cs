@@ -1,3 +1,6 @@
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using Avalonia;
 using Laminar.Domain.ValueObjects;
 
@@ -16,11 +19,23 @@ public class LaminarCommandInstance : AvaloniaObject
     
     public static readonly DirectProperty<LaminarCommandInstance, string> DescriptionProperty = 
         AvaloniaProperty.RegisterDirect<LaminarCommandInstance, string>("Description", o => o.Description);
+
+    public static readonly DirectProperty<LaminarCommandInstance, IEnumerable<LaminarCommandInstance>?>
+        ChildCommandsProperty =
+            AvaloniaProperty.RegisterDirect<LaminarCommandInstance, IEnumerable<LaminarCommandInstance>?>(
+                "ChildCommands", o => o.ChildCommands);
     
     private IObservableValue<string>? _descriptionObservable;
     private IObservableValue<bool>? _canExecuteObservable;
     private bool _canExecute;
     private string _description = "";
+    private IEnumerable<LaminarCommandInstance>? _childCommands;
+
+    static LaminarCommandInstance()
+    {
+        CommandProperty.Changed.AddClassHandler<LaminarCommandInstance>((o, _) => o.Update());
+        ParameterProperty.Changed.AddClassHandler<LaminarCommandInstance>((o, _) => o.Update());
+    }
     
     public LaminarCommand? Command
     {
@@ -32,12 +47,6 @@ public class LaminarCommandInstance : AvaloniaObject
     {
         get => GetValue(ParameterProperty);
         set => SetValue(ParameterProperty, value);
-    }
-
-    static LaminarCommandInstance()
-    {
-        CommandProperty.Changed.AddClassHandler<LaminarCommandInstance>((o, _) => o.Update());
-        ParameterProperty.Changed.AddClassHandler<LaminarCommandInstance>((o, _) => o.Update());
     }
 
     public string Description
@@ -52,6 +61,12 @@ public class LaminarCommandInstance : AvaloniaObject
         set => SetAndRaise(CanExecuteProperty, ref _canExecute, value);
     }
 
+    public IEnumerable<LaminarCommandInstance>? ChildCommands
+    {
+        get => _childCommands;
+        set => SetAndRaise(ChildCommandsProperty, ref _childCommands, value);
+    }
+    
     public void Execute()
     {
         if (CanExecute && Command is not null) Command.Execute(Parameter);
@@ -61,6 +76,11 @@ public class LaminarCommandInstance : AvaloniaObject
     {
         IObservableValue<string>.TransferObservable(ref _descriptionObservable, Command?.GetDescription(Parameter), SetDescription);
         IObservableValue<bool>.TransferObservable(ref _canExecuteObservable, Command?.CanExecute(Parameter), SetCanExecute);
+        ChildCommands = Command?.ChildCommands?.Select(x => new LaminarCommandInstance
+        {
+            Command = x,
+            Parameter = Parameter
+        });
     }
 
     private void SetDescription(object? sender, string? description)

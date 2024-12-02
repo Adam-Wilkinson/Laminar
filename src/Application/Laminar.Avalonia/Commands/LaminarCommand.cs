@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Windows.Input;
 using Avalonia;
 using Avalonia.Controls.Templates;
@@ -33,10 +34,12 @@ public class LaminarCommand(
 
     public required IDataTemplate IconTemplate { get; init; }
 
+    public IEnumerable<LaminarCommand>? ChildCommands { get; init; }
+
     public virtual IObservableValue<string> GetDescription(object? parameter) => _descriptionObservable;
 
     public virtual IObservableValue<bool> CanExecute(object? parameter) => _canExecuteObservable;
-
+    
     bool ICommand.CanExecute(object? parameter) => CanExecute(parameter).Value;
 
     public void Execute(object? parameter)

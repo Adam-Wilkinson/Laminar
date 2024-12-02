@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
@@ -34,12 +35,14 @@ public class LaminarCommandFactory
         IDataTemplate iconDataTemplate,
         IObservableValue<string> description,
         IObservableValue<bool>? canExecute = null,
-        KeyGesture? gesture = null)
+        KeyGesture? gesture = null,
+        IEnumerable<LaminarCommand>? children = null)
     {
         var result = new LaminarCommand(_userActionManager, name, _ => execute(), _ => undo(), description, canExecute)
         {
             Gesture = gesture,
-            IconTemplate = iconDataTemplate
+            IconTemplate = iconDataTemplate,
+            ChildCommands = children
         };
         
         BindCommand(result);
@@ -50,16 +53,18 @@ public class LaminarCommandFactory
     public ParameterCommand<T> CreateParameterCommand<T>(
         string name,
         Func<T, bool> execute,
-        Func<T, bool> undo,
+        Func<T, bool>? undo,
         IDataTemplate iconTemplate,
         ReactiveFunc<T, string> descriptionFactory,
         ReactiveFunc<T, bool>? canExecute = null,
-        KeyGesture? gesture = null)
+        KeyGesture? gesture = null,
+        IEnumerable<ParameterCommand<T>>? children = null)
     {
         var result = new ParameterCommand<T>(_userActionManager, name, execute, undo, canExecute ?? new ReactiveFunc<T, bool>(_ => true), descriptionFactory)
         {
             Gesture = gesture,
             IconTemplate = iconTemplate,
+            ChildCommands = children
         };
         
         BindCommand(result);

@@ -4,12 +4,7 @@
     <ControlTheme x:Key="{x:Type lc:LaminarCommandSwitch}" TargetType="{x:Type lc:LaminarCommandSwitch}">
         <Setter Property="Template">
             <ControlTemplate>
-                <ToggleSwitch IsChecked="{TemplateBinding IsOn, Mode=TwoWay}" OnContent="" OffContent="" Foreground="{DynamicResource LaminarAccent}">
-                    <ToggleSwitch.Resources>
-                        <ResourceDictionary>
-                            <SolidColorBrush x:Key="ToggleSwitchFillOn" Color="{DynamicResource LaminarAccent}"/>
-                        </ResourceDictionary>
-                    </ToggleSwitch.Resources>
+                <ToggleSwitch IsChecked="{TemplateBinding IsOn, Mode=TwoWay}" OnContent="" OffContent="">
                 </ToggleSwitch>
             </ControlTemplate>
         </Setter>
@@ -18,22 +13,21 @@
     <ControlTheme x:Key="{x:Type lc:LaminarCommandIcon}" TargetType="{x:Type lc:LaminarCommandIcon}">
         <Setter Property="Template">
             <ControlTemplate>
-                <Button Command="{Binding CommandInstance.Command , RelativeSource={RelativeSource TemplatedParent}}"
-                        CommandParameter="{Binding CommandInstance.Parameter, RelativeSource={RelativeSource TemplatedParent}}"
-                        VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
-                        Background="{DynamicResource LaminarAccent}"
-                        VerticalContentAlignment="Center" HorizontalContentAlignment="Center">
-                    <PathIcon Data="{TemplateBinding IconData}" VerticalAlignment="Center" HorizontalAlignment="Center"
-                              Foreground="{DynamicResource LaminarForeground}"/>
-                </Button>
+                <PathIcon Data="{TemplateBinding IconData}" 
+                          VerticalAlignment="Center" HorizontalAlignment="Center"
+                          Foreground="{DynamicResource LaminarForeground}"/>
             </ControlTemplate>
         </Setter>
     </ControlTheme>
     
     <DataTemplate x:Key="LaminarCommandIcon" x:DataType="{x:Type lc:LaminarCommandInstance}">
-        <ContentControl IsEnabled="{Binding CanExecute}" 
-            Content="{Binding}"
-            ContentTemplate="{Binding Command.IconTemplate}">
+        <Button IsEnabled="{Binding CanExecute}" 
+                Background="{DynamicResource LaminarAccent}"
+                Classes.HasFlyout="{Binding Command.ChildCommands, Converter={x:Static ObjectConverters.IsNotNull}}"
+                Command="{Binding Command}"
+                HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                CommandParameter="{Binding Parameter}">
             <ToolTip.Tip>
                 <StackPanel>
                     <TextBlock Classes="b2" Text="{Binding  Description}"/>
@@ -41,29 +35,48 @@
                     <TextBlock Classes="b2">Press Ctrl+B to change binding</TextBlock>
                 </StackPanel>
             </ToolTip.Tip>
-        </ContentControl>
+            <Button.Styles>
+                <Style Selector="Button.HasFlyout">
+                    <Setter Property="Flyout">
+                        <MenuFlyout ItemsSource="{Binding ChildCommands}"
+                                    ItemTemplate="{DynamicResource LaminarCommandMenuItem}"/>
+                    </Setter>
+                </Style>
+            </Button.Styles>
+            <Viewbox>
+                <ContentPresenter ContentTemplate="{Binding Command.IconTemplate}"
+                                  Content="{Binding}"/>
+            </Viewbox>
+        </Button>
     </DataTemplate>
     
     <DataTemplate x:Key="LaminarCommandMenuItem" x:DataType="{x:Type lc:LaminarCommandInstance}">
-        <DockPanel IsEnabled="{Binding CanExecute}">
+        <MenuItem Command="{Binding Command}" 
+                  CommandParameter="{Binding Parameter}"
+                  HorizontalAlignment="Stretch"
+                  IsEnabled="{Binding CanExecute}">
+            <MenuItem.Icon>
+                <ContentControl Content="{Binding}" 
+                                ContentTemplate="{Binding Command.IconTemplate}"
+                                IsHitTestVisible="False"/>
+            </MenuItem.Icon>
             <ToolTip.Tip>
                 <StackPanel>
                     <TextBlock Classes="b2" Text="{Binding  Description}"/>
                     <TextBlock Classes="b2">Press Ctrl+B to change binding</TextBlock>
                 </StackPanel>
             </ToolTip.Tip>
-            <ContentControl DockPanel.Dock="Left"
-                            Content="{Binding}"
-                            ContentTemplate="{Binding Command.IconTemplate}"
-                            IsHitTestVisible="False"/>
-            <TextBlock DockPanel.Dock="Right"
-                       VerticalAlignment="Center"
-                       Classes="b2"
-                       Text="{Binding Command.Gesture}"
-                       Opacity="0.4"/>
-            <TextBlock Text="{Binding Command.Name}"
-                       VerticalAlignment="Center"
-                       Padding="8"/>
-        </DockPanel>
+            <MenuItem.Header>
+                <DockPanel HorizontalAlignment="Stretch">
+                    <TextBlock DockPanel.Dock="Right"
+                               VerticalAlignment="Center"
+                               Classes="b2"
+                               Text="{Binding Command.Gesture}"
+                               Opacity="0.4"/>
+                    <TextBlock Text="{Binding Command.Name}"
+                               VerticalAlignment="Center"/>
+                </DockPanel>
+            </MenuItem.Header>
+        </MenuItem>
     </DataTemplate>
 </ResourceDictionary>
