@@ -16,12 +16,13 @@ public class EstablishConnectionAction(
 {
     private IConnection? _connection;
 
-    public IObservableValue<bool> CanExecute { get; } =
-        new ObservableValue<bool>(connectorOne.CanConnectTo(connectorTwo) || connectorTwo.CanConnectTo(connectorOne));
+    public event EventHandler? CanExecuteChanged;
 
-    void IUserAction.Execute()
+    public bool CanExecute { get; } = connectorOne.CanConnectTo(connectorTwo) || connectorTwo.CanConnectTo(connectorOne);
+
+    public IUserAction Execute()
     {
-        if (!connectorOne.TryConnectTo(connectorTwo) && !connectorTwo.TryConnectTo(connectorOne)) return;
+        if (!connectorOne.TryConnectTo(connectorTwo) && !connectorTwo.TryConnectTo(connectorOne)) return IUserAction.Pass;
         
         _connection = new Connection
         {
@@ -29,6 +30,8 @@ public class EstablishConnectionAction(
             InputConnector = connectorTwo
         };
         connectionCollection.Add(_connection);
+
+        return new SeverConnectionAction(_connection, connectionCollection);
     }
 
     public IUserAction GetInverse()

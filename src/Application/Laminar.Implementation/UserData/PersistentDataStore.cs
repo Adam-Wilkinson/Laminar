@@ -45,10 +45,8 @@ public class PersistentDataStore : IPersistentDataStore
     {
         if (_fileIsDirty)
         {
-            var loadResult = LoadFromFile();
-            if (loadResult.Status != DataIoStatus.Success) return new DataReadResult<object>(default, loadResult.Status, loadResult.Exception);
-            var syncResult = SyncToFile();
-            if (syncResult.Status != DataIoStatus.Success) return new DataReadResult<object>(default, syncResult.Status, syncResult.Exception);
+            LoadFromFile();
+            SyncToFile();
             _fileIsDirty = false;
         }
         

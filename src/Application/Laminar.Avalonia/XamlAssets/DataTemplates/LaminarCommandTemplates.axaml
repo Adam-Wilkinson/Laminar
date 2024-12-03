@@ -20,18 +20,18 @@
         </Setter>
     </ControlTheme>
     
-    <DataTemplate x:Key="LaminarCommandIcon" x:DataType="{x:Type lc:LaminarCommandInstance}">
+    <DataTemplate x:Key="LaminarCommandIcon" x:DataType="{x:Type lc:LaminarToolInstance}">
         <Button IsEnabled="{Binding CanExecute}" 
                 Background="{DynamicResource LaminarAccent}"
-                Classes.HasFlyout="{Binding Command.ChildCommands, Converter={x:Static ObjectConverters.IsNotNull}}"
-                Command="{Binding Command}"
+                Classes.HasFlyout="{Binding Tool.ChildTools, Converter={x:Static ObjectConverters.IsNotNull}}"
+                Command="{Binding Tool}"
                 HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
                 HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                 CommandParameter="{Binding Parameter}">
             <ToolTip.Tip>
                 <StackPanel>
                     <TextBlock Classes="b2" Text="{Binding  Description}"/>
-                    <TextBlock Classes="b2" Text="{Binding Command.Gesture, StringFormat='Currently bound to {0}', FallbackValue='Nothing'}"/>
+                    <TextBlock Classes="b2" Text="{Binding Tool.Gesture, StringFormat='Currently bound to {0}', FallbackValue='Nothing'}"/>
                     <TextBlock Classes="b2">Press Ctrl+B to change binding</TextBlock>
                 </StackPanel>
             </ToolTip.Tip>
@@ -44,20 +44,20 @@
                 </Style>
             </Button.Styles>
             <Viewbox>
-                <ContentPresenter ContentTemplate="{Binding Command.IconTemplate}"
+                <ContentPresenter ContentTemplate="{Binding Tool.IconTemplate}"
                                   Content="{Binding}"/>
             </Viewbox>
         </Button>
     </DataTemplate>
     
-    <DataTemplate x:Key="LaminarCommandMenuItem" x:DataType="{x:Type lc:LaminarCommandInstance}">
-        <MenuItem Command="{Binding Command}" 
+    <DataTemplate x:Key="LaminarCommandMenuItem" x:DataType="{x:Type lc:LaminarToolInstance}">
+        <MenuItem Command="{Binding Tool}" 
                   CommandParameter="{Binding Parameter}"
                   HorizontalAlignment="Stretch"
                   IsEnabled="{Binding CanExecute}">
             <MenuItem.Icon>
                 <ContentControl Content="{Binding}" 
-                                ContentTemplate="{Binding Command.IconTemplate}"
+                                ContentTemplate="{Binding Tool.IconTemplate}"
                                 IsHitTestVisible="False"/>
             </MenuItem.Icon>
             <ToolTip.Tip>
@@ -71,9 +71,9 @@
                     <TextBlock DockPanel.Dock="Right"
                                VerticalAlignment="Center"
                                Classes="b2"
-                               Text="{Binding Command.Gesture}"
+                               Text="{Binding Tool.Gesture}"
                                Opacity="0.4"/>
-                    <TextBlock Text="{Binding Command.Name}"
+                    <TextBlock Text="{Binding Tool.Name}"
                                VerticalAlignment="Center"/>
                 </DockPanel>
             </MenuItem.Header>

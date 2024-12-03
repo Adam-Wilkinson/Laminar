@@ -1,7 +1,10 @@
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Runtime.CompilerServices;
+using Laminar.Contracts.UserData.FileNavigation;
 
-namespace Laminar.Domain.DataManagement.FileNavigation;
+namespace Laminar.Implementation.UserData.FileNavigation;
 
 public abstract class LaminarStorageItem<T> : ILaminarStorageItem
     where T : FileSystemInfo
@@ -58,6 +61,10 @@ public abstract class LaminarStorageItem<T> : ILaminarStorageItem
     {
         FileSystemInfo.Delete();
     }
+
+    public abstract void MoveTo(string newPath);
+
+    public abstract ILaminarStorageFolder ParentFolder { get; }
 
     public event PropertyChangedEventHandler? PropertyChanged;
 

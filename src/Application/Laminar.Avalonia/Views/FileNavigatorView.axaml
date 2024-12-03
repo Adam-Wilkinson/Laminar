@@ -5,8 +5,8 @@
              xmlns:vm="using:Laminar.Avalonia.ViewModels"
              xmlns:dvm="using:Laminar.Avalonia.ViewModels.Design"
              xmlns:dd="using:Laminar.Avalonia.DragDrop"
-             xmlns:fn="using:Laminar.Domain.DataManagement.FileNavigation"
              xmlns:lc="using:Laminar.Avalonia.Commands"
+             xmlns:fn="clr-namespace:Laminar.Implementation.UserData.FileNavigation;assembly=Laminar.Implementation"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450" d:DataContext="{x:Static dvm:DesignViewModel.FileNavigator}"
              x:DataType="vm:FileNavigatorViewModel"
              x:Class="Laminar.Avalonia.Views.FileNavigatorView">
@@ -27,7 +27,7 @@
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
                                     <ContentControl Width="30" Height="30" ContentTemplate="{StaticResource LaminarCommandIcon}">
-                                        <lc:LaminarCommandInstance Command="{Binding}" 
+                                        <lc:LaminarToolInstance Tool="{Binding}" 
                                                                    Parameter="{Binding $parent[DockPanel].((fn:LaminarStorageFolder)DataContext)}"/>
                                     </ContentControl>
                                 </DataTemplate>
@@ -44,7 +44,7 @@
                                HorizontalAlignment="Stretch"
                                dd:DragDropHandler.TriggerMouseButton="Left">
                         <ContentControl ContentTemplate="{StaticResource LaminarCommandMenuItem}" DockPanel.Dock="Right">
-                            <lc:LaminarCommandInstance Command="{Binding $parent[UserControl].((vm:FileNavigatorViewModel)DataContext).ToggleEnable}"
+                            <lc:LaminarToolInstance Tool="{Binding $parent[UserControl].((vm:FileNavigatorViewModel)DataContext).ToggleEnable}"
                                                        Parameter="{Binding}"/>
                         </ContentControl>
                         <TextBlock VerticalAlignment="Center" Text="{Binding Name}"/>

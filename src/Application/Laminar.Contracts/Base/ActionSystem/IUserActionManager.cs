@@ -7,10 +7,4 @@ public interface IUserActionManager
     public void Undo();
 
     public void Redo();
-
-    public void BeginCompoundAction();
-
-    public void ResetCompoundAction();
-
-    public void EndCompoundAction();
 }

@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
@@ -8,8 +7,6 @@ using Avalonia.VisualTree;
 using Laminar.Contracts.Base.ActionSystem;
 using Laminar.Domain.Notification;
 using Laminar.Domain.ValueObjects;
-using Laminar.Implementation.Base.ActionSystem;
-using Laminar.PluginFramework;
 
 namespace Laminar.Avalonia.Commands;
 
@@ -29,87 +26,89 @@ public class LaminarCommandFactory
     }
 
     public Visual? VisualUnderCursor { get; private set; }
+
+    public ToolBuilder DefineTool(string name, string description, IDataTemplate iconTemplate, KeyGesture? gesture = null)
+        => DefineTool(name, new ObservableValue<string>(description), iconTemplate, gesture); 
     
-    public class ToolBuilder<T>(IUserActionManager actionManager, string name, ReactiveFunc<T, string> descriptionGenerator, IDataTemplate iconDataTemplate, KeyGesture gesture)
-    {
-        public ParameterCommand<T> AsCommand(Func<T, IUserAction> parameterAction)
-            => AsCommand(item => actionManager.ExecuteAction(parameterAction(item)));
+    public ToolBuilder DefineTool(string name, IObservableValue<string> description, IDataTemplate iconTemplate,
+        KeyGesture? gesture = null)
+        => new(this, name, description, iconTemplate, gesture);
 
-        public ParameterCommand<T> AsCommand(IUserAction action)
-            => AsCommand(_ => actionManager.ExecuteAction(action));
-        
-        public ParameterCommand<T> AsCommand(Action execute, Action? undo)
-            => undo switch
-            {
-                null => AsCommand(_ => execute()),
-                _ => AsCommand(_ => execute(), _ => undo()) 
-            };
-
-        public ParameterCommand<T> AsCommand(Action<T> execute)
-        {
-            
-        }
-        
-        public ParameterCommand<T> AsCommand(Action<T> execute, Action<T> undo)
-            => AsCommand(parameter => new AutoAction
-                { ExecuteAction = () => execute(parameter), UndoAction = () => undo(parameter) });
-
-        public LaminarToolbox<T> AsToolbox(params LaminarTool<T>[] tools)
-        {
-            None
-        }
-    }
+    public ToolBuilder<T> DefineTool<T>(string name, string description, IDataTemplate iconTemplate,
+        KeyGesture? gesture = null)
+        => DefineTool(name, new ReactiveFunc<T, string>(_ => description), iconTemplate, gesture);
     
-    public LaminarCommand CreateCommand(
+    public ToolBuilder<T> DefineTool<T>(string name, Func<T, string> autoDescriptionGenerator, IDataTemplate iconTemplate, KeyGesture? gesture = null)
+        => DefineTool(name, new ReactiveFunc<T, string>(autoDescriptionGenerator), iconTemplate, gesture);
+    
+    public ToolBuilder<T> DefineTool<T>(string name, ReactiveFunc<T, string> descriptionGenerator,
+        IDataTemplate iconTemplate, KeyGesture? gesture = null) 
+        => new(this, name, descriptionGenerator, iconTemplate, gesture);
+
+    public class ToolBuilder(
+        LaminarCommandFactory factory,
         string name,
-        Func<bool> execute,
-        Func<bool> undo,
+        IObservableValue<string> descriptionObservable,
         IDataTemplate iconDataTemplate,
-        IObservableValue<string> description,
-        IObservableValue<bool>? canExecute = null,
-        KeyGesture? gesture = null,
-        IEnumerable<LaminarCommand>? children = null)
+        KeyGesture? gesture)
     {
-        var result = new LaminarCommand(_userActionManager, name, _ => execute(), _ => undo(), description, canExecute)
-        {
-            Gesture = gesture,
-            IconTemplate = iconDataTemplate,
-            ChildCommands = children
-        };
+        public Command AsCommand(Action action, IObservableValue<bool>? canExecute = null)
+            => factory.BindTool(new Command(action, descriptionObservable, canExecute ?? new ObservableValue<bool>(true))
+            {
+                Name = name,
+                IconTemplate = iconDataTemplate,
+                Gesture = gesture,
+            });
+
+        public Command AsCommand(IUserAction action)
+            => factory.BindTool(new Command(() => factory._userActionManager.ExecuteAction(action), descriptionObservable, action.CanExecuteObservable())
+            {
+                Name = name,
+                IconTemplate = iconDataTemplate,
+                Gesture = gesture,
+            });
         
-        BindCommand(result);
-
-        return result;
-    }
-
-    public ParameterCommand<T> CreateParameterCommand<T>(
-        string name,
-        Func<T, bool> execute,
-        Func<T, bool>? undo,
-        IDataTemplate iconTemplate,
-        ReactiveFunc<T, string> descriptionFactory,
-        ReactiveFunc<T, bool>? canExecute = null,
-        KeyGesture? gesture = null,
-        IEnumerable<ParameterCommand<T>>? children = null)
-    {
-        var result = new ParameterCommand<T>(_userActionManager, name, execute, undo, canExecute ?? new ReactiveFunc<T, bool>(_ => true), descriptionFactory)
-        {
-            Gesture = gesture,
-            IconTemplate = iconTemplate,
-            ChildCommands = children
-        };
-        
-        BindCommand(result);
-
-        return result;
+        public Toolbox AsToolbox(params LaminarTool[] children)
+            => factory.BindTool(new Toolbox(children, descriptionObservable)
+            {
+                Name = name,
+                IconTemplate = iconDataTemplate,
+                Gesture = gesture,
+            });
     }
     
-    private void BindCommand(LaminarCommand command)
+    public class ToolBuilder<TParameter>(
+        LaminarCommandFactory factory,
+        string name, 
+        ReactiveFunc<TParameter, string> descriptionGenerator, 
+        IDataTemplate iconDataTemplate, 
+        KeyGesture? gesture)
     {
-        _topLevel.KeyBindings.Add(new KeyBinding()
+        public Command<TParameter> AsCommand(IParameterAction<TParameter> action)
+            => factory.BindTool(new Command<TParameter>(action, factory._userActionManager, descriptionGenerator)
+            {
+                Name = name,
+                IconTemplate = iconDataTemplate,
+                Gesture = gesture
+            });
+
+        public Toolbox<TParameter> AsToolbox(params LaminarTool<TParameter>[] children)
+            => factory.BindTool(new Toolbox<TParameter>(children, descriptionGenerator)
+            {
+                Name = name,
+                IconTemplate = iconDataTemplate,
+                Gesture = gesture,
+            });
+    }
+    
+    private T BindTool<T>(T tool) where T : LaminarTool 
+    {
+        _topLevel.KeyBindings.Add(new KeyBinding
         {
-            Command = new ExecuteCommandUnderCursor(command, this),
-            [!KeyBinding.GestureProperty] = command[!LaminarCommand.GestureProperty],
+            Command = new ExecuteCommandUnderCursor(tool, this),
+            [!KeyBinding.GestureProperty] = tool[!LaminarTool.GestureProperty],
         });
+
+        return tool;
     }
 }

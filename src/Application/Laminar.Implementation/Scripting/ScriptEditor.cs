@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Laminar.Contracts.Base.ActionSystem;
 using Laminar.Contracts.Scripting;
 using Laminar.Contracts.Scripting.Connection;
@@ -37,14 +38,8 @@ internal class ScriptEditor : IScriptEditor
     public void DeleteNodes(IScript script, IEnumerable<IWrappedNode> nodes)
     {
         IEditableScript editableScript = MakeEditable(script);
-        UserActionManager.BeginCompoundAction();
-        foreach (IWrappedNode node in nodes)
-        {
-            RemoveConnectionsTo(editableScript, node);
-            UserActionManager.ExecuteAction(new DeleteNodeAction(node, editableScript.Nodes));
-        }
-
-        UserActionManager.EndCompoundAction();
+        UserActionManager.ExecuteAction(
+            new CompoundAction(nodes.Select(x => new DeleteNodeAction(x, editableScript.Nodes))));
     }
 
     public void MoveNodes(IScript script, IEnumerable<IWrappedNode> nodes, Point delta)

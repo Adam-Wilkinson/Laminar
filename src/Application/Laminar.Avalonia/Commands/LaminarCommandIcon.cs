@@ -10,8 +10,8 @@ public class LaminarCommandIcon : TemplatedControl
     public static readonly StyledProperty<Geometry> IconDataProperty =
         AvaloniaProperty.Register<LaminarCommandIcon, Geometry>(nameof(IconData));
 
-    public static readonly StyledProperty<LaminarCommandInstance> CommandInstanceProperty =
-        AvaloniaProperty.Register<LaminarCommandIcon, LaminarCommandInstance>(nameof(CommandInstance));
+    public static readonly StyledProperty<LaminarToolInstance> CommandInstanceProperty =
+        AvaloniaProperty.Register<LaminarCommandIcon, LaminarToolInstance>(nameof(ToolInstance));
     
     public Geometry IconData
     {
@@ -19,17 +19,17 @@ public class LaminarCommandIcon : TemplatedControl
         set => SetValue(IconDataProperty, value);
     }
 
-    public LaminarCommandInstance CommandInstance
+    public LaminarToolInstance ToolInstance
     {
         get => GetValue(CommandInstanceProperty);
         set => SetValue(CommandInstanceProperty, value);
     }
 
-    public static IDataTemplate Template(Geometry iconData) => new FuncDataTemplate<LaminarCommandInstance>(
+    public static IDataTemplate Template(Geometry iconData) => new FuncDataTemplate<LaminarToolInstance>(
         _ => true,
         commandInstance => new LaminarCommandIcon
         {
             IconData = iconData,
-            CommandInstance = commandInstance,
+            ToolInstance = commandInstance,
         });
 }

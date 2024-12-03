@@ -8,105 +8,72 @@ using Avalonia.Platform.Storage;
 using Laminar.Avalonia.Commands;
 using Laminar.Avalonia.Shapes;
 using Laminar.Contracts.UserData;
-using Laminar.Domain.DataManagement.FileNavigation;
-using Laminar.Domain.Notification;
+using Laminar.Contracts.UserData.FileNavigation;
+using Laminar.Implementation.UserData.FileNavigation;
+using Laminar.Implementation.UserData.FileNavigation.UserActions;
 
 namespace Laminar.Avalonia.ViewModels;
 public class FileNavigatorViewModel : ViewModelBase
 {
     private readonly IStorageProvider _storageProvider;
     
-    public FileNavigatorViewModel(IStorageProvider storageProvider, 
+    public FileNavigatorViewModel(
+        IStorageProvider storageProvider, 
         IPersistentDataManager dataManager, 
+        ILaminarStorageItemFactory storageItemFactory,
         LaminarCommandFactory commandFactory)
     {
         _storageProvider = storageProvider;
-
-        TestTool = toolFactory
-            .DefineTool("Test Tool", TestDataTemplate, new KeyGesture(Key.E, KeyModifiers.Alt))
-            .AsCommand(() => true, () => nothing);
-
-        editingToolbox = toolFactory
-            .DefineTool("Edit actions", "Actions used to edit", TestDataTemplate, new KeyGesture(Key.E, KeyModifiers.Control))
-            .AsToolbox(
-                toolFactory.DefineTool("Undo").AsCommand(() => Undo()),
-                toolFactory.DefineTool("Redo").AsCommand(() => Redo()));
+        ToggleEnable = commandFactory
+            .DefineTool<ILaminarStorageItem>("Toggle Enabled",
+                item => new StringBuilder(4).Append("Click to ").Append(item.IsEnabled ? "disable" : "enable")
+                    .Append(" this ").Append(ItemTypeName(item)).ToString(),
+                LaminarCommandSwitch.Template(instance => new Binding
+                    { Source = instance.Parameter, Path = nameof(ILaminarStorageItem.IsEffectivelyEnabled) }),
+                new KeyGesture(Key.E, KeyModifiers.Alt)).AsCommand(new ToggleEnabledParameterAction());
         
-        addTool = toolFactory.DefineTool("Add", item => $"Add a {ItemTypeName(item)}", 
-            LaminarCommandIcon.Template(PathData.AddIcon), new KeyGesture(Key.A, KeyModifiers.Alt))
+        AddItem = commandFactory
+            .DefineTool<ILaminarStorageFolder>("Add item", "Add item", 
+                LaminarCommandIcon.Template(PathData.AddIcon), new KeyGesture(Key.A, KeyModifiers.Alt))
             .AsToolbox(
-                toolFactory.DefineTool("Add folder").AsCommand);
+                commandFactory.DefineTool<ILaminarStorageFolder>("Add folder", "Add folder",
+                        LaminarCommandIcon.Template(PathData.AddFolderIcon))
+                    .AsCommand(new AddStorageItemParameterAction<ILaminarStorageItem>(storageItemFactory)),
+                commandFactory.DefineTool<ILaminarStorageFolder>("Add script", "Add script",
+                        LaminarCommandIcon.Template(PathData.AddScriptIcon))
+                    .AsCommand(new AddStorageItemParameterAction<ILaminarStorageItem>(storageItemFactory)));
         
-        ToggleEnable = commandFactory.CreateParameterCommand("Toggle Enabled", 
-            item => item.IsEnabled = !item.IsEnabled, item => item.IsEnabled = !item.IsEnabled,
-            ToggleEnabledDataTemplate,
-            new ReactiveFunc<ILaminarStorageItem, string>(item => new StringBuilder(4)
-                .Append("Click to ")
-                .Append(item.IsEffectivelyEnabled ? "disable" : "enable")
-                .Append(" this ")
-                .Append(ItemTypeName(item)).ToString()),
-            new ReactiveFunc<ILaminarStorageItem, bool>(item => item.ParentIsEffectivelyEnabled),
-            new KeyGesture(Key.E, KeyModifiers.Alt)
-        );
-        AddItem = commandFactory.CreateParameterCommand("Add Item", _ => false, null,
-            LaminarCommandIcon.Template(PathData.AddIcon),
-            new ReactiveFunc<LaminarStorageFolder, string>(_ => "Add a new file or folder"),
-            children:
-            [
-                commandFactory.CreateParameterCommand("Add Folder", _ => false, null,
-                    LaminarCommandIcon.Template(PathData.AddFolderIcon),
-                    new ReactiveFunc<LaminarStorageFolder, string>(_ => "Add a new folder")),
-                commandFactory.CreateParameterCommand("Add script", _ => false, null,
-                    LaminarCommandIcon.Template(PathData.AddScriptIcon),
-                    new ReactiveFunc<LaminarStorageFolder, string>(_ => "Add script"))
-
-            ]);
-        DeleteItem = commandFactory.CreateParameterCommand("Delete Item", _ => false, null,
-            LaminarCommandIcon.Template(PathData.DeleteIcon),
-            new ReactiveFunc<ILaminarStorageItem, string>(item => $"Delete {ItemTypeName(item)}"));
-        RenameItem = commandFactory.CreateParameterCommand("Rename Item", _ => false, null,
-            LaminarCommandIcon.Template(PathData.RenameIcon),
-            new ReactiveFunc<ILaminarStorageItem,string>(item => $"Rename {ItemTypeName(item)}"));
-        RootFiles = [ new LaminarStorageFolder(Path.Combine(dataManager.Path, "Default")) ];
+        DeleteItem = commandFactory
+            .DefineTool<ILaminarStorageItem>("Delete Item", "Delete Item",
+                LaminarCommandIcon.Template(PathData.DeleteIcon), new KeyGesture(Key.Delete))
+            .AsCommand(new DeleteStorageItemParameterAction<ILaminarStorageItem>(storageItemFactory));
+        
+        RenameItem = commandFactory
+            .DefineTool<ILaminarStorageItem>("Rename Item", item => $"Rename {ItemTypeName(item)}", 
+                LaminarCommandIcon.Template(PathData.RenameIcon), new KeyGesture(Key.R, KeyModifiers.Control))
+            .AsToolbox();
+        
+        RootFiles = [ new LaminarStorageFolder(Path.Combine(dataManager.Path, "Default"), storageItemFactory) ];
         FolderQuickAccess = [RenameItem, DeleteItem, AddItem, ToggleEnable];
     }
 
-    public LaminarCommand ToggleEnable { get; }
+    public LaminarTool ToggleEnable { get; }
 
-    public LaminarCommand AddItem { get; }
+    public LaminarTool AddItem { get; }
 
-    public LaminarCommand DeleteItem { get; }
+    public LaminarTool DeleteItem { get; }
 
-    public LaminarCommand RenameItem { get; }
+    public LaminarTool RenameItem { get; }
 
     [Serialize]
-    public ObservableCollection<ILaminarStorageItem> RootFiles { get; set; }
+    public ObservableCollection<ILaminarStorageFolder> RootFiles { get; set; }
 
-    public ObservableCollection<LaminarCommand> FolderQuickAccess { get; }
+    public ObservableCollection<LaminarTool> FolderQuickAccess { get; }
 
     public void OpenFilePicker()
     {
         _storageProvider.OpenFilePickerAsync(new FilePickerOpenOptions { AllowMultiple = false, Title = "Pick a file!"});
     }
-
-    private static readonly IDataTemplate ToggleEnabledDataTemplate =
-        new FuncDataTemplate<LaminarCommandInstance>(
-            _ => true,
-            commandInstance =>
-            {
-                var newSwitch = new LaminarCommandSwitch
-                {
-                    [!LaminarCommandSwitch.IsOnProperty] =
-                        new Binding
-                        {
-                            Source = commandInstance.Parameter, Path = nameof(ILaminarStorageItem.IsEffectivelyEnabled)
-                        },
-                };
-
-                newSwitch.Tapped += (_, _) => commandInstance.Execute();
-
-                return newSwitch;
-            });
 
     private static string ItemTypeName(ILaminarStorageItem item) => item switch
     {

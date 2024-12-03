@@ -137,8 +137,10 @@ public interface ISerializedPropertyInfo
             {
                 throw new Exception("Error reading value for " + PropertyName + " with status " + readResult.Status, readResult.Exception);
             }
-
-            Setter(typedTarget, dataStoreValue);
+            else
+            {
+                Setter(typedTarget, dataStoreValue);
+            }
         }
 
         public void PropertyToDataStore(string prefix, object target, IPersistentDataStore dataStore)

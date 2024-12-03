@@ -36,6 +36,4 @@ public class ObservableValue<T> : IObservableValue<T>
     public event EventHandler<T>? ValueChanged;
     
     public event PropertyChangedEventHandler? PropertyChanged;
-
-    public static implicit operator T(ObservableValue<T> observableValue) => observableValue.Value;
 }

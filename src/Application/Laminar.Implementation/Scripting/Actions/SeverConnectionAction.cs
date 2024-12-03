@@ -9,15 +9,19 @@ namespace Laminar.Implementation.Scripting.Actions;
 public class SeverConnectionAction(IConnection? connection, ICollection<IConnection> connectionCollection)
     : IUserAction
 {
-    public IObservableValue<bool> CanExecute { get; } = new ObservableValue<bool>(connection is not null);
+    public event EventHandler? CanExecuteChanged;
+    
+    public bool CanExecute { get; } = connection is not null;
 
-    public void Execute()
+    public IUserAction Execute()
     {
         ArgumentNullException.ThrowIfNull(connection);
         connection.InputConnector.OnDisconnectedFrom(connection.OutputConnector);
         connection.OutputConnector.OnDisconnectedFrom(connection.InputConnector);
         connectionCollection.Remove(connection);
         connection.Break();
+        return new EstablishConnectionAction(connection.OutputConnector, connection.InputConnector,
+            connectionCollection);
     }
 
     public IUserAction GetInverse()

@@ -18,8 +18,8 @@ public class LaminarCommandSwitch : TemplatedControl
         set => SetValue(IsOnProperty, value);
     }
 
-    public static IDataTemplate Template(Func<LaminarCommandInstance, IBinding> isOnBinding) =>
-        new FuncDataTemplate<LaminarCommandInstance>(
+    public static IDataTemplate Template(Func<LaminarToolInstance, IBinding> isOnBinding) =>
+        new FuncDataTemplate<LaminarToolInstance>(
             _ => true,
             commandInstance => new LaminarCommandSwitch
             {
