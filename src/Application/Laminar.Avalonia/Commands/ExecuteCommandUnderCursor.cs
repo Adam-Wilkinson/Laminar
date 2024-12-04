@@ -6,7 +6,7 @@ using Avalonia.VisualTree;
 
 namespace Laminar.Avalonia.Commands;
 
-public class ExecuteCommandUnderCursor(ICommand command, LaminarCommandFactory factory) : ICommand
+public class ExecuteCommandUnderCursor(ICommand command, LaminarToolFactory factory) : ICommand
 {
     public bool CanExecute(object? parameter)
     {

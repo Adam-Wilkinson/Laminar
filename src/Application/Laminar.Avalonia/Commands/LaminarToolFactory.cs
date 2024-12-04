@@ -10,12 +10,12 @@ using Laminar.Domain.ValueObjects;
 
 namespace Laminar.Avalonia.Commands;
 
-public class LaminarCommandFactory
+public class LaminarToolFactory
 {
     private readonly IUserActionManager _userActionManager;
     private readonly TopLevel _topLevel;
 
-    public LaminarCommandFactory(IUserActionManager userActionManager, TopLevel topLevel)
+    public LaminarToolFactory(IUserActionManager userActionManager, TopLevel topLevel)
     {
         _userActionManager = userActionManager;
         _topLevel = topLevel;
@@ -27,28 +27,27 @@ public class LaminarCommandFactory
 
     public Visual? VisualUnderCursor { get; private set; }
 
-    public ToolBuilder DefineTool(string name, string description, IDataTemplate iconTemplate, KeyGesture? gesture = null)
-        => DefineTool(name, new ObservableValue<string>(description), iconTemplate, gesture); 
+    public ToolBuilder DefineTool(string name, IDataTemplate iconTemplate, string? description  = null, KeyGesture? gesture = null)
+        => DefineTool(name, iconTemplate, new ObservableValue<string?>(description), gesture); 
     
-    public ToolBuilder DefineTool(string name, IObservableValue<string> description, IDataTemplate iconTemplate,
+    public ToolBuilder DefineTool(string name, IDataTemplate iconTemplate, IObservableValue<string?>? description = null,
         KeyGesture? gesture = null)
-        => new(this, name, description, iconTemplate, gesture);
+        => new(this, name, description ?? new ObservableValue<string?>(null), iconTemplate, gesture);
 
-    public ToolBuilder<T> DefineTool<T>(string name, string description, IDataTemplate iconTemplate,
+    public ToolBuilder<T> DefineTool<T>(string name, IDataTemplate iconTemplate, string? description = null,
         KeyGesture? gesture = null)
-        => DefineTool(name, new ReactiveFunc<T, string>(_ => description), iconTemplate, gesture);
+        => DefineTool(name, iconTemplate, new ReactiveFunc<T, string?>(_ => description), gesture);
     
-    public ToolBuilder<T> DefineTool<T>(string name, Func<T, string> autoDescriptionGenerator, IDataTemplate iconTemplate, KeyGesture? gesture = null)
-        => DefineTool(name, new ReactiveFunc<T, string>(autoDescriptionGenerator), iconTemplate, gesture);
+    public ToolBuilder<T> DefineTool<T>(string name, IDataTemplate iconTemplate, Func<T, string?> autoDescriptionGenerator, KeyGesture? gesture = null)
+        => DefineTool(name, iconTemplate, new ReactiveFunc<T, string?>(autoDescriptionGenerator), gesture);
     
-    public ToolBuilder<T> DefineTool<T>(string name, ReactiveFunc<T, string> descriptionGenerator,
-        IDataTemplate iconTemplate, KeyGesture? gesture = null) 
+    public ToolBuilder<T> DefineTool<T>(string name, IDataTemplate iconTemplate, ReactiveFunc<T, string?> descriptionGenerator, KeyGesture? gesture = null) 
         => new(this, name, descriptionGenerator, iconTemplate, gesture);
 
     public class ToolBuilder(
-        LaminarCommandFactory factory,
+        LaminarToolFactory factory,
         string name,
-        IObservableValue<string> descriptionObservable,
+        IObservableValue<string?> descriptionObservable,
         IDataTemplate iconDataTemplate,
         KeyGesture? gesture)
     {
@@ -78,9 +77,9 @@ public class LaminarCommandFactory
     }
     
     public class ToolBuilder<TParameter>(
-        LaminarCommandFactory factory,
+        LaminarToolFactory factory,
         string name, 
-        ReactiveFunc<TParameter, string> descriptionGenerator, 
+        ReactiveFunc<TParameter, string?> descriptionGenerator, 
         IDataTemplate iconDataTemplate, 
         KeyGesture? gesture)
     {

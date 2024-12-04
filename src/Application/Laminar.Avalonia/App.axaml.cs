@@ -31,7 +31,7 @@ public partial class App : Application
             var services = new ServiceCollection()
                 .AddLaminarServices()
                 .AddDescendantsTransient<ViewModelBase>()
-                .AddSingleton<LaminarCommandFactory>()
+                .AddSingleton<LaminarToolFactory>()
                 .AddSingleton(desktop.MainWindow.StorageProvider)
                 .AddSingleton<TopLevel>(desktop.MainWindow)
                 .BuildServiceProvider();

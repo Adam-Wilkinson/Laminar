@@ -24,6 +24,7 @@
 			</ResourceDictionary.MergedDictionaries>
 			
 			<conv:ScaleNameConverter x:Key="ScaleNameConverter"/>
+			<conv:FirstNotNullValueConverter x:Key="FirstNotNullValueConverter"/>
 		</ResourceDictionary>
 	</Application.Resources>
 </Application>

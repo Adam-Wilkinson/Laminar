@@ -21,36 +21,35 @@ public class FileNavigatorViewModel : ViewModelBase
         IStorageProvider storageProvider, 
         IPersistentDataManager dataManager, 
         ILaminarStorageItemFactory storageItemFactory,
-        LaminarCommandFactory commandFactory)
+        LaminarToolFactory toolFactory)
     {
         _storageProvider = storageProvider;
-        ToggleEnable = commandFactory
+        ToggleEnable = toolFactory
             .DefineTool<ILaminarStorageItem>("Toggle Enabled",
-                item => new StringBuilder(4).Append("Click to ").Append(item.IsEnabled ? "disable" : "enable")
-                    .Append(" this ").Append(ItemTypeName(item)).ToString(),
                 LaminarCommandSwitch.Template(instance => new Binding
                     { Source = instance.Parameter, Path = nameof(ILaminarStorageItem.IsEffectivelyEnabled) }),
-                new KeyGesture(Key.E, KeyModifiers.Alt)).AsCommand(new ToggleEnabledParameterAction());
+                item => new StringBuilder(3).Append(item.IsEnabled ? "Disable" : "Enable").Append(" this ").Append(ItemTypeName(item)).ToString(),
+                new KeyGesture(Key.E, KeyModifiers.Alt))
+            .AsCommand(new ToggleEnabledParameterAction());
         
-        AddItem = commandFactory
-            .DefineTool<ILaminarStorageFolder>("Add item", "Add item", 
-                LaminarCommandIcon.Template(PathData.AddIcon), new KeyGesture(Key.A, KeyModifiers.Alt))
+        AddItem = toolFactory
+            .DefineTool<ILaminarStorageFolder>("Add item", LaminarCommandIcon.Template(PathData.AddIcon))
             .AsToolbox(
-                commandFactory.DefineTool<ILaminarStorageFolder>("Add folder", "Add folder",
-                        LaminarCommandIcon.Template(PathData.AddFolderIcon))
+                toolFactory
+                    .DefineTool<ILaminarStorageFolder>("Add folder", LaminarCommandIcon.Template(PathData.AddFolderIcon), gesture: new KeyGesture(Key.S, KeyModifiers.Alt))
                     .AsCommand(new AddStorageItemParameterAction<ILaminarStorageItem>(storageItemFactory)),
-                commandFactory.DefineTool<ILaminarStorageFolder>("Add script", "Add script",
-                        LaminarCommandIcon.Template(PathData.AddScriptIcon))
+                toolFactory
+                    .DefineTool<ILaminarStorageFolder>("Add script", LaminarCommandIcon.Template(PathData.AddScriptIcon))
                     .AsCommand(new AddStorageItemParameterAction<ILaminarStorageItem>(storageItemFactory)));
         
-        DeleteItem = commandFactory
-            .DefineTool<ILaminarStorageItem>("Delete Item", "Delete Item",
-                LaminarCommandIcon.Template(PathData.DeleteIcon), new KeyGesture(Key.Delete))
+        DeleteItem = toolFactory
+            .DefineTool<ILaminarStorageItem>("Delete Item", LaminarCommandIcon.Template(PathData.DeleteIcon),
+                item => $"Delete {ItemTypeName(item)}", new KeyGesture(Key.Delete))
             .AsCommand(new DeleteStorageItemParameterAction<ILaminarStorageItem>(storageItemFactory));
         
-        RenameItem = commandFactory
-            .DefineTool<ILaminarStorageItem>("Rename Item", item => $"Rename {ItemTypeName(item)}", 
-                LaminarCommandIcon.Template(PathData.RenameIcon), new KeyGesture(Key.R, KeyModifiers.Control))
+        RenameItem = toolFactory
+            .DefineTool<ILaminarStorageItem>("Rename Item", LaminarCommandIcon.Template(PathData.RenameIcon), 
+                item => $"Rename {ItemTypeName(item)}", new KeyGesture(Key.R, KeyModifiers.Control))
             .AsToolbox();
         
         RootFiles = [ new LaminarStorageFolder(Path.Combine(dataManager.Path, "Default"), storageItemFactory) ];
