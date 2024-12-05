@@ -48,4 +48,8 @@
   <ItemGroup>
     <ProjectReference Include="..\Laminar.Implementation\Laminar.Implementation.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="XamlAssets\Themes\ToggleButtonThemes.axaml" />
+  </ItemGroup>
 </Project>

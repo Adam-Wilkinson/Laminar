@@ -2,7 +2,7 @@
 
 public interface ISerializer
 {
-    public object SerializeObject(object toSerialize);
+    public object SerializeObject(object toSerialize, Type? overrideTypeKey = null);
 
     public object DeserializeObject(object serialized, Type requestedType, object? context = null);
     

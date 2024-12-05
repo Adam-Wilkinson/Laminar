@@ -36,7 +36,7 @@ public class EnumerableSerializer<TElement, TSerialized, TEnumerable>(ISerialize
     private readonly ISerializer _serializer = serializer;
     protected override SerializedEnumerable<TSerialized, TEnumerable> SerializeTyped(TEnumerable toSerialize)
     {
-        return new(toSerialize.Select(x => (TSerialized)_serializer.SerializeObject(x)));
+        return new(toSerialize.Select(x => (TSerialized)_serializer.SerializeObject(x, typeof(TElement))));
     }
 
     protected override TEnumerable DeSerializeTyped(SerializedEnumerable<TSerialized, TEnumerable> serialized, object? deserializationContext = null)

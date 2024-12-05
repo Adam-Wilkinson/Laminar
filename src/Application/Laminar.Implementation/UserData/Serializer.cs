@@ -36,8 +36,8 @@ public class Serializer(IServiceProvider serviceProvider) : ISerializer
         _conditionalSerializerFactories!.Add(factory);
     }
 
-    public object SerializeObject(object toSerialize)
-        => GetSerializer(toSerialize.GetType()).Serialize(toSerialize);
+    public object SerializeObject(object toSerialize, Type? overrideTypeKey = null)
+        => GetSerializer(overrideTypeKey ?? toSerialize.GetType()).Serialize(toSerialize);
 
     public object DeserializeObject(object serialized, Type requestedType, object? context)
         => GetSerializer(requestedType).DeSerialize(serialized);

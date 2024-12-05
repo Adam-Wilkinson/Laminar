@@ -19,7 +19,6 @@
 			<ResourceDictionary.MergedDictionaries>
 				<ResourceInclude Source="XamlAssets/Resources/LaminarColorResources.axaml"/>
 				<ResourceInclude Source="XamlAssets/Resources/SettingsResources.axaml"/>
-				<ResourceInclude Source="XamlAssets/Themes/ToggleButtonThemes.axaml"/>
 				<ResourceInclude Source="XamlAssets/DataTemplates/LaminarCommandTemplates.axaml"/>
 			</ResourceDictionary.MergedDictionaries>
 			

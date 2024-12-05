@@ -1,15 +1,21 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace Laminar.Avalonia.ViewModels;
-public partial class MainControlViewModel(FileNavigatorViewModel fileNavigator) : ViewModelBase
+public partial class MainControlViewModel : ViewModelBase
 {
     [ObservableProperty, Serialize] private bool _sidebarExpanded = true;
 
     [ObservableProperty, Serialize] private double _expandedSidebarWidth = 350;
 
     [ObservableProperty] private double _currentSidebarWidth;
-    
-    public FileNavigatorViewModel FileNavigator { get; } = fileNavigator;
+
+    public MainControlViewModel(FileNavigatorViewModel fileNavigator)
+    {
+        FileNavigator = fileNavigator;
+        OnExpandedSidebarWidthChanged(_expandedSidebarWidth);
+    }
+
+    public FileNavigatorViewModel FileNavigator { get; }
 
     partial void OnSidebarExpandedChanged(bool value)
     {

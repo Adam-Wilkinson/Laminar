@@ -1,4 +1,5 @@
 using Laminar.Contracts.UserData.FileNavigation;
+using Laminar.Implementation.UserData.FileNavigation;
 using Laminar.PluginFramework.Serialization;
 
 namespace Laminar.Implementation.UserData.Serializers;
@@ -12,6 +13,6 @@ public class LaminarStorageItemSerializer(ILaminarStorageItemFactory factory) : 
 
     protected override ILaminarStorageFolder DeSerializeTyped(string serialized, object? deserializationContext = null)
     {
-        return factory.FromPath<ILaminarStorageFolder>(serialized);
+        return factory.FromPath<LaminarStorageFolder>(serialized);
     }
 }
