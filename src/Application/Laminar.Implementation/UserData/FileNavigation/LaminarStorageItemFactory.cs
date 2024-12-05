@@ -6,10 +6,10 @@ namespace Laminar.Implementation.UserData.FileNavigation;
 
 public class LaminarStorageItemFactory : ILaminarStorageItemFactory
 {
-    public ILaminarStorageItem FromPath(string path)
+    public ILaminarStorageItem FromPath(string path, ILaminarStorageFolder? folder)
         => (File.GetAttributes(path) & FileAttributes.Directory) == FileAttributes.Directory
-            ? new LaminarStorageFolder(path, this)
-            : new LaminarStorageFile(path, new LaminarStorageFolder(new DirectoryInfo(path).Parent!, this));
+            ? new LaminarStorageFolder(path, this, folder)
+            : new LaminarStorageFile(path, folder ?? new LaminarStorageFolder(new DirectoryInfo(path).Parent!, this));
 
     public ILaminarStorageItem FromFileSystemInfo(FileSystemInfo fileSystemInfo, ILaminarStorageFolder? parent = null) => fileSystemInfo switch
     {
@@ -22,16 +22,24 @@ public class LaminarStorageItemFactory : ILaminarStorageItemFactory
     {
         parent ??= new LaminarStorageFolder(new DirectoryInfo(path).Parent!, this); 
         
-        if (typeof(T) == typeof(LaminarStorageFolder))
+        if (typeof(ILaminarStorageFolder).IsAssignableFrom(typeof(T)))
         {
             return (new LaminarStorageFolder(path, this, parent) as T)!;
         }
 
-        if (typeof(T) == typeof(LaminarStorageFile))
+        if (typeof(LaminarStorageFile).IsAssignableFrom(typeof(T)))
         {
             return (new LaminarStorageFile(path, parent) as T)!;
         }
         
         throw new ArgumentException($"Unknown file system type {typeof(T)}", nameof(path));
     }
+
+    public T AddDefaultToFolder<T>(ILaminarStorageFolder folder) where T : class, ILaminarStorageItem =>
+        (typeof(T) switch
+        {
+            var type when type == typeof(LaminarStorageFolder) || type == typeof(ILaminarStorageFolder) => new LaminarStorageFolder(Path.Join(folder.Path, "Untitled Folder"), this, folder) as T,
+            var type when type == typeof(LaminarStorageFile) => new LaminarStorageFile(Path.Join(folder.Path, "Untitled Script.pls"), folder) as T,
+            _ => throw new ArgumentException($"Unknown file system type {typeof(T)}"),
+        })!;
 }

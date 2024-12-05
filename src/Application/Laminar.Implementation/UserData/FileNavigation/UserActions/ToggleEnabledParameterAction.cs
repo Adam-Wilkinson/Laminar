@@ -8,7 +8,7 @@ namespace Laminar.Implementation.UserData.FileNavigation.UserActions;
 
 public class ToggleEnabledParameterAction : IParameterAction<ILaminarStorageItem>
 {
-    private static readonly ReactiveFunc<ILaminarStorageItem, bool> CanExecuteReactiveFunc = new(item => item.ParentIsEffectivelyEnabled);
+    private static readonly ReactiveFunc<ILaminarStorageItem, bool> CanExecuteReactiveFunc = new(item => item.ParentFolder.IsEffectivelyEnabled);
     
     public IObservableValue<bool> CanExecute(ILaminarStorageItem parameter) => CanExecuteReactiveFunc.GetObservable(parameter);
 

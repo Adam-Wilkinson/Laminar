@@ -15,7 +15,8 @@ public abstract class LaminarStorageItem<T> : ILaminarStorageItem
     protected LaminarStorageItem(T fileSystemInfo)
     {
         FileSystemInfo = fileSystemInfo;
-        Name = FileSystemInfo.Name;
+        Extension = FileSystemInfo.Extension;
+        Name = string.IsNullOrEmpty(Extension) ? FileSystemInfo.Name : FileSystemInfo.Name.Replace(Extension, string.Empty);
         Path = FileSystemInfo.FullName;
     }
 
@@ -31,6 +32,7 @@ public abstract class LaminarStorageItem<T> : ILaminarStorageItem
         }
     }
 
+    public string Extension { get; }
     public string Path { get; }
 
     public string Name { get; }

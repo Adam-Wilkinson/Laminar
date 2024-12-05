@@ -43,7 +43,7 @@
                     <DockPanel Background="{DynamicResource ScriptSignatureColor}"
                                HorizontalAlignment="Stretch"
                                dd:DragDropHandler.TriggerMouseButton="Left">
-                        <ContentControl ContentTemplate="{StaticResource LaminarCommandMenuItem}" DockPanel.Dock="Right">
+                        <ContentControl Width="30" Height="30" ContentTemplate="{StaticResource LaminarCommandIcon}" DockPanel.Dock="Right">
                             <lc:LaminarToolInstance Tool="{Binding $parent[UserControl].((vm:FileNavigatorViewModel)DataContext).ToggleEnable}"
                                                        Parameter="{Binding}"/>
                         </ContentControl>

@@ -1,4 +1,3 @@
-using System;
 using Laminar.Contracts.Base.ActionSystem;
 using Laminar.Contracts.UserData.FileNavigation;
 using Laminar.Domain.ValueObjects;
@@ -12,7 +11,7 @@ public class AddStorageItemParameterAction<T>(ILaminarStorageItemFactory factory
     
     public IUserAction Execute(ILaminarStorageFolder parameter)
     {
-        var newItem = factory.FromPath<T>("New Storage Item", parameter);
+        var newItem = factory.AddDefaultToFolder<T>(parameter);
         parameter.AddItem(newItem);
         return new DeleteStorageItemAction<T>(newItem);
     }

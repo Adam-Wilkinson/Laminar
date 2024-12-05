@@ -37,10 +37,10 @@ public class FileNavigatorViewModel : ViewModelBase
             .AsToolbox(
                 toolFactory
                     .DefineTool<ILaminarStorageFolder>("Add folder", LaminarCommandIcon.Template(PathData.AddFolderIcon), gesture: new KeyGesture(Key.S, KeyModifiers.Alt))
-                    .AsCommand(new AddStorageItemParameterAction<ILaminarStorageItem>(storageItemFactory)),
+                    .AsCommand(new AddStorageItemParameterAction<ILaminarStorageFolder>(storageItemFactory)),
                 toolFactory
                     .DefineTool<ILaminarStorageFolder>("Add script", LaminarCommandIcon.Template(PathData.AddScriptIcon))
-                    .AsCommand(new AddStorageItemParameterAction<ILaminarStorageItem>(storageItemFactory)));
+                    .AsCommand(new AddStorageItemParameterAction<LaminarStorageFile>(storageItemFactory)));
         
         DeleteItem = toolFactory
             .DefineTool<ILaminarStorageItem>("Delete Item", LaminarCommandIcon.Template(PathData.DeleteIcon),

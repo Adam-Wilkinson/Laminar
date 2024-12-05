@@ -43,7 +43,7 @@
     </ControlTheme>
     
     <DataTemplate x:Key="LaminarCommandIcon" x:DataType="{x:Type lc:LaminarToolInstance}">
-        <Button IsEnabled="{Binding CanExecute}" 
+        <Button IsHitTestVisible="{Binding CanExecute}" 
                 Background="Transparent"
                 Classes.HasFlyout="{Binding Tool.ChildTools, Converter={x:Static ObjectConverters.IsNotNull}}"
                 Command="{Binding Tool}" Cursor="Hand"
