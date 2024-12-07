@@ -1,11 +1,16 @@
 <ResourceDictionary xmlns="https://github.com/avaloniaui"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:s="using:System">
-    <s:Double x:Key="H1FontSize">34</s:Double>
+	
+	<s:Double x:Key="H1FontSize">34</s:Double>
     <s:Double x:Key="H2FontSize">24</s:Double>
     <s:Double x:Key="B1FontSize">18</s:Double>
     <s:Double x:Key="B2FontSize">14</s:Double>
 			
     <s:TimeSpan x:Key="AnimationDuration">0:0:0.2</s:TimeSpan>
     <Easing x:Key="AnimationEasing">QuadraticEaseInOut</Easing>
+	
+	<KeyGesture x:Key="ChangeBindingGesture">Ctrl+B</KeyGesture>
+	<s:String x:Key="ChangeBindingGestureString">Ctrl+B</s:String>
+	
 </ResourceDictionary>

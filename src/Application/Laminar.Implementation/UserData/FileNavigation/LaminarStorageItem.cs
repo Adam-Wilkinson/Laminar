@@ -11,13 +11,13 @@ public abstract class LaminarStorageItem<T> : ILaminarStorageItem
 {
     private bool _isEnabled = true;
     private bool _parentIsEffectivelyEnabled = true;
+    private string _name;
 
     protected LaminarStorageItem(T fileSystemInfo)
     {
         FileSystemInfo = fileSystemInfo;
         Extension = FileSystemInfo.Extension;
-        Name = string.IsNullOrEmpty(Extension) ? FileSystemInfo.Name : FileSystemInfo.Name.Replace(Extension, string.Empty);
-        Path = FileSystemInfo.FullName;
+        _name = string.IsNullOrEmpty(Extension) ? FileSystemInfo.Name : FileSystemInfo.Name.Replace(Extension, string.Empty);
     }
 
     protected T FileSystemInfo { get; }
@@ -33,9 +33,21 @@ public abstract class LaminarStorageItem<T> : ILaminarStorageItem
     }
 
     public string Extension { get; }
-    public string Path { get; }
+    public string Path => FileSystemInfo.FullName;
 
-    public string Name { get; }
+    public string Name
+    {
+        get => _name;
+        set
+        {
+            if (value != Name)
+            {
+                MoveTo(System.IO.Path.Combine(ParentFolder.Path, value + Extension));
+                SetField(ref _name, value);
+                OnPropertyChanged(nameof(Path));
+            }
+        }
+    }
 
     public virtual bool IsEnabled
     {
@@ -48,6 +60,8 @@ public abstract class LaminarStorageItem<T> : ILaminarStorageItem
     }
 
     public bool IsEffectivelyEnabled => IsEnabled && ParentIsEffectivelyEnabled;
+    
+    public bool NeedsName { get; init; }
 
     public override bool Equals(object? obj)
     {
@@ -61,7 +75,10 @@ public abstract class LaminarStorageItem<T> : ILaminarStorageItem
 
     public void Delete()
     {
-        FileSystemInfo.Delete();
+        if (ParentFolder.Contents.Remove(this))
+        {
+            FileSystemInfo.Delete();
+        }
     }
 
     public abstract void MoveTo(string newPath);

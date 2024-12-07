@@ -4,6 +4,7 @@
     <option name="projectPerEditor">
       <map>
         <entry key="src/Application/Laminar.Avalonia/App.axaml" value="src/Application/Laminar.Avalonia/Laminar.Avalonia.csproj" />
+        <entry key="src/Application/Laminar.Avalonia/Controls/EditableLabel.axaml" value="src/Application/Laminar.Avalonia/Laminar.Avalonia.csproj" />
         <entry key="src/Application/Laminar.Avalonia/Styles/FontStyles.axaml" value="src/Application/Laminar.Avalonia/Laminar.Avalonia.csproj" />
         <entry key="src/Application/Laminar.Avalonia/Styles/StyleIncludes.axaml" value="src/Application/Laminar.Avalonia/Laminar.Avalonia.csproj" />
         <entry key="src/Application/Laminar.Avalonia/Styles/ToggleButtonStyles.axaml" value="src/Application/Laminar.Avalonia/Laminar.Avalonia.csproj" />

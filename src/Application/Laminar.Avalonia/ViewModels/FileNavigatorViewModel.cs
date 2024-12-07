@@ -54,6 +54,7 @@ public class FileNavigatorViewModel : ViewModelBase
         
         RootFiles = [ new LaminarStorageFolder(Path.Combine(dataManager.Path, "Default"), storageItemFactory) ];
         FolderQuickAccess = [RenameItem, DeleteItem, AddItem, ToggleEnable];
+        FileQuickAssess = [RenameItem, DeleteItem, ToggleEnable];
     }
 
     public LaminarTool ToggleEnable { get; }
@@ -68,6 +69,8 @@ public class FileNavigatorViewModel : ViewModelBase
     public ObservableCollection<ILaminarStorageFolder> RootFiles { get; set; }
 
     public ObservableCollection<LaminarTool> FolderQuickAccess { get; }
+    
+    public ObservableCollection<LaminarTool> FileQuickAssess { get; }
 
     public void OpenFilePicker()
     {

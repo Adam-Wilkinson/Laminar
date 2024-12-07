@@ -6,23 +6,23 @@ namespace Laminar.Domain.Notification;
 /// <summary>
 /// Helper class to wrap an INotifyCollectionChanged for listeners who just want to know when items are added or removed
 /// </summary>
-public class NotifyCollectionChangedHelper : INotifyCollectionChangedHelper
+public static class NotifyCollectionChangedHelper
 {
-    readonly Dictionary<INotifyCollectionChanged, object> _existingListeners = new();
+    private static readonly Dictionary<INotifyCollectionChanged, object> ExistingListeners = new();
+    
+    public static Instance<T> HelperInstance<T>(this IReadOnlyObservableCollection<T> collection) => HelperInstance<T>((INotifyCollectionChanged)collection);
 
-    public INotifyCollectionChangedHelper.IHelperInstance<T> HelperInstance<T>(IReadOnlyObservableCollection<T> collection) => HelperInstance<T>((INotifyCollectionChanged)collection);
-
-    public INotifyCollectionChangedHelper.IHelperInstance<T> HelperInstance<T>(INotifyCollectionChanged core)
+    public static Instance<T> HelperInstance<T>(this INotifyCollectionChanged core)
     {
-        if (!_existingListeners.ContainsKey(core))
-        {
-            _existingListeners.Add(core, new Instance<T>(core));
-        }
-
-        return (Instance<T>)_existingListeners[core];
+        if (ExistingListeners.TryGetValue(core, out var value)) return (Instance<T>)value;
+        
+        value = new Instance<T>(core);
+        ExistingListeners.Add(core, value);
+        return (Instance<T>)value;
     }
+}
 
-    private class Instance<T> : INotifyCollectionChangedHelper.IHelperInstance<T>
+public class Instance<T> : INotifyCollectionChangedHelper.IHelperInstance<T>
     {
         private readonly INotifyCollectionChanged _core;
 
@@ -43,26 +43,27 @@ public class NotifyCollectionChangedHelper : INotifyCollectionChangedHelper
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
-                    AddItems(e.NewItems!);
+                    ItemsAdded(e.NewItems!);
                     break;
                 case NotifyCollectionChangedAction.Remove:
-                    RemoveItems(e.OldItems!);
+                    ItemsRemoved(e.OldItems!);
                     break;
                 case NotifyCollectionChangedAction.Reset:
                     Reset?.Invoke(_core, EventArgs.Empty);
                     break;
                 case NotifyCollectionChangedAction.Replace:
-                    RemoveItems(e.OldItems!);
-                    AddItems(e.NewItems!);
+                    ItemsRemoved(e.OldItems!);
+                    ItemsAdded(e.NewItems!);
                     break;
                 case NotifyCollectionChangedAction.Move:
+                default:
                     break;
             }
         }
 
-        public void AddItems(IList items)
+        private void ItemsAdded(IList items)
         {
-            foreach (object obj in items)
+            foreach (var obj in items)
             {
                 if (obj is T typedItem)
                 {
@@ -71,9 +72,9 @@ public class NotifyCollectionChangedHelper : INotifyCollectionChangedHelper
             }
         }
 
-        public void RemoveItems(IList items)
+        private void ItemsRemoved(IList items)
         {
-            foreach (object obj in items)
+            foreach (var obj in items)
             {
                 if (obj is T typedItem)
                 {
@@ -82,4 +83,3 @@ public class NotifyCollectionChangedHelper : INotifyCollectionChangedHelper
             }
         }
     }
-}

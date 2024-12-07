@@ -83,6 +83,8 @@ public abstract class LaminarTool(IObservableValue<string?>? descriptionObservab
 
     public virtual IEnumerable<LaminarTool>? ChildTools => null;
 
+    public bool HasChildren => ChildTools is not null;
+    
     public virtual IObservableValue<bool> CanExecute(object? _) => _canExecuteObservable;
     
     bool ICommand.CanExecute(object? parameter) => CanExecute(parameter).Value;

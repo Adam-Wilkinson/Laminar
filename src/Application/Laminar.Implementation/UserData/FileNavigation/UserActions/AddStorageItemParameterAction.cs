@@ -12,7 +12,7 @@ public class AddStorageItemParameterAction<T>(ILaminarStorageItemFactory factory
     public IUserAction Execute(ILaminarStorageFolder parameter)
     {
         var newItem = factory.AddDefaultToFolder<T>(parameter);
-        parameter.AddItem(newItem);
+        parameter.Contents.Add(newItem);
         return new DeleteStorageItemAction<T>(newItem);
     }
 }

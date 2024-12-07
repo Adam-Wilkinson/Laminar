@@ -42,15 +42,25 @@
         </Setter>
     </ControlTheme>
     
-    <DataTemplate x:Key="LaminarCommandIcon" x:DataType="{x:Type lc:LaminarToolInstance}">
-        <Button IsHitTestVisible="{Binding CanExecute}" 
-                Background="Transparent"
-                Classes.HasFlyout="{Binding Tool.ChildTools, Converter={x:Static ObjectConverters.IsNotNull}}"
-                Command="{Binding Tool}" Cursor="Hand"
-                HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
-                HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-                CommandParameter="{Binding Parameter}">
-            <ToolTip.Tip>
+    <ControlTheme x:Key="LaminarToolIcon"
+                  x:DataType="lc:LaminarToolInstance" 
+                  TargetType="{x:Type Button}"
+                  BasedOn="{StaticResource {x:Type Button}}">
+        <Setter Property="IsHitTestVisible" Value="{Binding CanExecute}"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Command" Value="{Binding Tool}"/>
+        <Setter Property="CommandParameter" Value="{Binding Parameter}"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Content">
+            <Template>
+                <Viewbox>
+                    <ContentPresenter ContentTemplate="{Binding Tool.IconTemplate}"
+                                      Content="{Binding}"/>
+                </Viewbox>
+            </Template>
+        </Setter>
+        <Setter Property="ToolTip.Tip">
+            <Template>
                 <StackPanel>
                     <TextBlock Classes="b2">
                         <TextBlock.Text>
@@ -64,28 +74,27 @@
                                IsVisible="{Binding Tool.Gesture, Converter={x:Static ObjectConverters.IsNotNull}}">
                         Currently bound to <Run Classes="Emphasis" FontWeight="Normal" Text="{Binding Tool.Gesture}"/>
                     </TextBlock>
-                    <TextBlock Classes="b2">Press <Run Classes="Emphasis" FontWeight="Normal">Ctrl+B</Run> to change binding</TextBlock>
+                    <TextBlock Classes="b2">Press <Run Classes="Emphasis" FontWeight="Normal" Text="{DynamicResource ChangeBindingGestureString}"/> to change binding</TextBlock>
                 </StackPanel>
-            </ToolTip.Tip>
-            <Button.Styles>
-                <Style Selector="Button.HasFlyout">
-                    <Setter Property="Flyout">
-                        <MenuFlyout ItemsSource="{Binding ChildCommands}" FlyoutPresenterClasses="ArrowCursor"
-                                    ItemContainerTheme="{DynamicResource LaminarMenuItem}"/>
-                    </Setter>
-                </Style>
-                <Style Selector=":is(Control).ArrowCursor">
-                    <Setter Property="Cursor" Value="Arrow"/>
-                </Style>
-            </Button.Styles>
-            <Viewbox>
-                <ContentPresenter ContentTemplate="{Binding Tool.IconTemplate}"
-                                  Content="{Binding}"/>
-            </Viewbox>
-        </Button>
-    </DataTemplate>
+            </Template>
+        </Setter>
+        <Setter Property="Tag" Value="{Binding ChildTools, Converter={x:Static ObjectConverters.IsNotNull}}"/>
+        <Style Selector="^[Tag=true]">
+            <Setter Property="Flyout">
+                <Flyout>
+                    <MenuFlyoutPresenter ItemsSource="{Binding ChildTools}" Padding="0" CornerRadius="0"
+                                         ItemContainerTheme="{DynamicResource LaminarMenuItem}" Margin="0" BorderThickness="0"/>
+                </Flyout>
+            </Setter>
+        </Style>
+        <Style Selector="^:is(Control).ArrowCursor">
+            <Setter Property="Cursor" Value="Arrow"/>
+        </Style>
+    </ControlTheme>
     
-    <!-- <StaticResource x:Key="MenuFlyoutItemKeyboardAcceleratorTextForeground" ResourceKey="LaminarForegroundEmph"/> -->
+    <DataTemplate x:Key="LaminarToolIconTemplate" x:DataType="{x:Type lc:LaminarToolInstance}">
+        <Button Theme="{DynamicResource LaminarToolIcon}"/>
+    </DataTemplate>
     
     <ControlTheme TargetType="{x:Type MenuItem}" x:Key="LaminarMenuItem" x:DataType="lc:LaminarToolInstance" 
                   BasedOn="{StaticResource {x:Type MenuItem}}">
@@ -105,7 +114,7 @@
                     <TextBlock Classes="b2" 
                                Text="{Binding  Description}" 
                                IsVisible="{Binding Description, Converter={x:Static ObjectConverters.IsNotNull}}"/>
-                    <TextBlock Classes="b2">Press <Run FontWeight="Normal" Classes="Emphasis">Ctrl+B</Run> to change binding</TextBlock>
+                    <TextBlock Classes="b2">Press <Run FontWeight="Normal" Classes="Emphasis" Text="{DynamicResource ChangeBindingGestureString}"/> to change binding</TextBlock>
                 </StackPanel>
             </Template>
         </Setter>

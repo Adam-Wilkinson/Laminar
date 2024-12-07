@@ -16,21 +16,21 @@ public class LaminarToolInstance : AvaloniaObject
         AvaloniaProperty.Register<LaminarToolInstance, object?>(nameof(Parameter));
 
     public static readonly DirectProperty<LaminarToolInstance, bool> CanExecuteProperty = 
-        AvaloniaProperty.RegisterDirect<LaminarToolInstance, bool>("CanExecute", o => o.CanExecute);
+        AvaloniaProperty.RegisterDirect<LaminarToolInstance, bool>(nameof(CanExecute), o => o.CanExecute);
     
     public static readonly DirectProperty<LaminarToolInstance, string?> DescriptionProperty = 
-        AvaloniaProperty.RegisterDirect<LaminarToolInstance, string?>("Description", o => o.Description);
+        AvaloniaProperty.RegisterDirect<LaminarToolInstance, string?>(nameof(Description), o => o.Description);
 
     public static readonly DirectProperty<LaminarToolInstance, IEnumerable<LaminarToolInstance>?>
-        ChildCommandsProperty =
+        ChildToolsProperty =
             AvaloniaProperty.RegisterDirect<LaminarToolInstance, IEnumerable<LaminarToolInstance>?>(
-                "ChildCommands", o => o.ChildCommands);
+                nameof(ChildTools), o => o.ChildTools);
     
     private IObservableValue<string?>? _descriptionObservable;
     private IObservableValue<bool>? _canExecuteObservable;
     private bool _canExecute;
     private string? _description;
-    private IEnumerable<LaminarToolInstance>? _childCommands;
+    private IEnumerable<LaminarToolInstance>? _childTools;
 
     static LaminarToolInstance()
     {
@@ -62,10 +62,10 @@ public class LaminarToolInstance : AvaloniaObject
         set => SetAndRaise(CanExecuteProperty, ref _canExecute, value);
     }
 
-    public IEnumerable<LaminarToolInstance>? ChildCommands
+    public IEnumerable<LaminarToolInstance>? ChildTools
     {
-        get => _childCommands;
-        set => SetAndRaise(ChildCommandsProperty, ref _childCommands, value);
+        get => _childTools;
+        set => SetAndRaise(ChildToolsProperty, ref _childTools, value);
     }
     
     public void Execute()
@@ -77,7 +77,7 @@ public class LaminarToolInstance : AvaloniaObject
     {
         IObservableValue<string?>.TransferObservable(ref _descriptionObservable, Tool?.GetDescription(Parameter), SetDescription);
         IObservableValue<bool>.TransferObservable(ref _canExecuteObservable, Tool?.CanExecute(Parameter), SetCanExecute);
-        ChildCommands = Tool?.ChildTools?.Select(x => new LaminarToolInstance
+        ChildTools = Tool?.ChildTools?.Select(x => new LaminarToolInstance
         {
             Tool = x,
             Parameter = Parameter

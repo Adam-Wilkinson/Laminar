@@ -10,7 +10,7 @@ public class AddStorageItemAction<T>(T item, ILaminarStorageFolder folder) : IUs
     public bool CanExecute => true;
     public IUserAction Execute()
     {
-        folder.AddItem(item);
+        folder.Contents.Add(item);
         return new DeleteStorageItemAction<T>(item);
     }
 }

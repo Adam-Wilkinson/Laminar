@@ -38,8 +38,8 @@ public class LaminarStorageItemFactory : ILaminarStorageItemFactory
     public T AddDefaultToFolder<T>(ILaminarStorageFolder folder) where T : class, ILaminarStorageItem =>
         (typeof(T) switch
         {
-            var type when type == typeof(LaminarStorageFolder) || type == typeof(ILaminarStorageFolder) => new LaminarStorageFolder(Path.Join(folder.Path, "Untitled Folder"), this, folder) as T,
-            var type when type == typeof(LaminarStorageFile) => new LaminarStorageFile(Path.Join(folder.Path, "Untitled Script.pls"), folder) as T,
+            var type when type == typeof(LaminarStorageFolder) || type == typeof(ILaminarStorageFolder) => new LaminarStorageFolder(Path.Join(folder.Path, "Untitled Folder"), this, folder) { NeedsName = true } as T,
+            var type when type == typeof(LaminarStorageFile) => new LaminarStorageFile(Path.Join(folder.Path, "Untitled Script.pls"), folder) { NeedsName = true } as T,
             _ => throw new ArgumentException($"Unknown file system type {typeof(T)}"),
         })!;
 }

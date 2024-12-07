@@ -1,6 +1,5 @@
 ﻿using Laminar.Contracts.Base;
 using Laminar.Contracts.UserData.Settings;
-using Laminar.Domain.Notification;
 using Laminar.Implementation.Base;
 using Laminar.Implementation.UserData.Settings;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,8 +14,6 @@ internal static class EnvironmentServices
 
         serviceCollection.AddSingleton<IUserPreferenceManager, UserPreferenceManager>();
         
-        serviceCollection.AddSingleton<INotifyCollectionChangedHelper, NotifyCollectionChangedHelper>();
-
         return serviceCollection;
     }
 }

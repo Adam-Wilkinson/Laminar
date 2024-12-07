@@ -9,6 +9,7 @@ public interface ILaminarStorageItem : INotifyPropertyChanged
     public string Path { get; }
     public bool IsEnabled { get; set; }
     public bool IsEffectivelyEnabled { get; }
+    public bool NeedsName { get; init; }
     public void Delete();
     public void MoveTo(string newPath);
     public ILaminarStorageFolder ParentFolder { get; }

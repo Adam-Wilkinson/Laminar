@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using Laminar.Contracts.UserData.FileNavigation;
+using Laminar.Domain.Notification;
 
 namespace Laminar.Implementation.UserData.FileNavigation;
 
@@ -26,12 +27,23 @@ public class LaminarStorageFolder : LaminarStorageItem<DirectoryInfo>, ILaminarS
         _factory = factory;
         
         Contents = new ObservableCollection<ILaminarStorageItem>(GetChildren());
-
+        Contents.HelperInstance<ILaminarStorageItem>().ItemAdded += ContentsItemAdded;
+        Contents.HelperInstance<ILaminarStorageItem>().ItemRemoved += ContentsItemRemoved;
         _parent = parent;
     }
-    
-    public ObservableCollection<ILaminarStorageItem> Contents { get; }
 
+    private void ContentsItemRemoved(object? sender, ItemRemovedEventArgs<ILaminarStorageItem> e)
+    {
+        e.Item.Delete();
+    }
+
+    private void ContentsItemAdded(object? sender, ItemAddedEventArgs<ILaminarStorageItem> e)
+    {
+        FileSystemInfo.Refresh();
+    }
+
+    public ObservableCollection<ILaminarStorageItem> Contents { get; }
+    
     public override ILaminarStorageFolder ParentFolder => _parent ??= new LaminarStorageFolder(FileSystemInfo.Parent!, _factory);
     
     public override bool IsEnabled
@@ -47,19 +59,6 @@ public class LaminarStorageFolder : LaminarStorageItem<DirectoryInfo>, ILaminarS
     public override void MoveTo(string newPath)
     {
         FileSystemInfo.MoveTo(newPath);
-    }
-
-    public T AddItem<T>(T item) where T : class, ILaminarStorageItem
-    {
-        FileSystemInfo.Refresh();
-        
-        Contents.Clear();
-        foreach (var child in GetChildren())
-        {
-            Contents.Add(child);
-        }
-        
-        return item;
     }
 
     private IEnumerable<ILaminarStorageItem> GetChildren() => FileSystemInfo.GetDirectories()

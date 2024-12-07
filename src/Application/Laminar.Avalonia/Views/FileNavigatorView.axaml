@@ -6,7 +6,8 @@
              xmlns:dvm="using:Laminar.Avalonia.ViewModels.Design"
              xmlns:dd="using:Laminar.Avalonia.DragDrop"
              xmlns:lc="using:Laminar.Avalonia.Commands"
-             xmlns:fn="clr-namespace:Laminar.Implementation.UserData.FileNavigation;assembly=Laminar.Implementation"
+             xmlns:fn="using:Laminar.Implementation.UserData.FileNavigation"
+             xmlns:c="using:Laminar.Avalonia.Controls"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450" d:DataContext="{x:Static dvm:DesignViewModel.FileNavigator}"
              x:DataType="vm:FileNavigatorViewModel"
              x:Class="Laminar.Avalonia.Views.FileNavigatorView">
@@ -26,14 +27,16 @@
                             </ItemsControl.ItemsPanel>
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
-                                    <ContentControl Width="30" Height="30" ContentTemplate="{StaticResource LaminarCommandIcon}">
-                                        <lc:LaminarToolInstance Tool="{Binding}" 
-                                                                   Parameter="{Binding $parent[DockPanel].((fn:LaminarStorageFolder)DataContext)}"/>
+                                    <ContentControl Width="30" Height="30" ContentTemplate="{StaticResource LaminarToolIconTemplate}">
+                                        <lc:LaminarToolInstance Tool="{ReflectionBinding}"
+                                                                Parameter="{Binding $parent[DockPanel].DataContext}"/>
                                     </ContentControl>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
-                        <TextBlock VerticalAlignment="Center" Text="{Binding Name}"/>
+                        <c:EditableLabel VerticalAlignment="Center" 
+                                         Text="{Binding Name, Mode=TwoWay}" 
+                                         IsBeingEdited="{Binding NeedsName, Mode=OneWayToSource}"/>
                     </DockPanel>
                 </TreeDataTemplate>
             </TreeView.ItemTemplate>
@@ -43,11 +46,25 @@
                     <DockPanel Background="{DynamicResource ScriptSignatureColor}"
                                HorizontalAlignment="Stretch"
                                dd:DragDropHandler.TriggerMouseButton="Left">
-                        <ContentControl Width="30" Height="30" ContentTemplate="{StaticResource LaminarCommandIcon}" DockPanel.Dock="Right">
-                            <lc:LaminarToolInstance Tool="{Binding $parent[UserControl].((vm:FileNavigatorViewModel)DataContext).ToggleEnable}"
-                                                       Parameter="{Binding}"/>
-                        </ContentControl>
-                        <TextBlock VerticalAlignment="Center" Text="{Binding Name}"/>
+                        <ItemsControl DockPanel.Dock="Right" 
+                                      ItemsSource="{Binding $parent[UserControl].((vm:FileNavigatorViewModel)DataContext).FileQuickAssess}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Orientation="Horizontal" Spacing="4"/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <ContentControl Width="30" Height="30" ContentTemplate="{StaticResource LaminarToolIconTemplate}">
+                                        <lc:LaminarToolInstance Tool="{ReflectionBinding}"
+                                                                Parameter="{Binding $parent[DockPanel].DataContext}"/>
+                                    </ContentControl>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                        <c:EditableLabel VerticalAlignment="Center" 
+                                         Text="{Binding Name, Mode=TwoWay}"
+                                         IsBeingEdited="{Binding NeedsName, Mode=OneWayToSource}"/>
                     </DockPanel>
                 </DataTemplate>
             </TreeView.DataTemplates>
