@@ -30,7 +30,9 @@ public class ReactiveFunc<TInput, TOutput>
 
         _func = func;
     }
-
+    
+    public Func<TInput, IObservableValue<TOutput>> AsFunc() => GetObservable; 
+    
     public IObservableValue<TOutput> GetObservable(TInput input)
     {
         var result = new ObservableValue<TOutput> { Value = _func(input) };

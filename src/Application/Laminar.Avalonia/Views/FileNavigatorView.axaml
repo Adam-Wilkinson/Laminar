@@ -12,13 +12,23 @@
              x:DataType="vm:FileNavigatorViewModel"
              x:Class="Laminar.Avalonia.Views.FileNavigatorView">
     <Panel Background="{DynamicResource LaminarBackgroundLighter}" MinWidth="1" Name="FileNavigator">
+        <Panel.Styles>
+            <Style Selector="DockPanel:pointerover > ItemsControl.HoverReveal">
+                <Setter Property="IsVisible" Value="True"/>
+            </Style>
+            <Style Selector="DockPanel:not(:pointerover) > ItemsControl.HoverReveal">
+                <Setter Property="IsVisible" Value="False"/>
+            </Style>
+        </Panel.Styles>
+        
         <TreeView ClipToBounds="False" ItemsSource="{Binding RootFiles}">
             <TreeView.ItemTemplate>
                 <TreeDataTemplate DataType="{x:Type fn:LaminarStorageFolder}" ItemsSource="{Binding Contents}">
                     <DockPanel Background="{DynamicResource LaminarBackgroundAlt}" 
                                HorizontalAlignment="Stretch" 
                                dd:DragDropHandler.TriggerMouseButton="Left">
-                        <ItemsControl DockPanel.Dock="Right" 
+                        <ItemsControl Classes="HoverReveal"
+                                      DockPanel.Dock="Right" 
                                       ItemsSource="{Binding $parent[UserControl].((vm:FileNavigatorViewModel)DataContext).FolderQuickAccess}">
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>
@@ -36,7 +46,7 @@
                         </ItemsControl>
                         <c:EditableLabel VerticalAlignment="Center" 
                                          Text="{Binding Name, Mode=TwoWay}" 
-                                         IsBeingEdited="{Binding NeedsName, Mode=OneWayToSource}"/>
+                                         IsBeingEdited="{Binding NeedsName, Mode=TwoWay}"/>
                     </DockPanel>
                 </TreeDataTemplate>
             </TreeView.ItemTemplate>
@@ -46,7 +56,8 @@
                     <DockPanel Background="{DynamicResource ScriptSignatureColor}"
                                HorizontalAlignment="Stretch"
                                dd:DragDropHandler.TriggerMouseButton="Left">
-                        <ItemsControl DockPanel.Dock="Right" 
+                        <ItemsControl DockPanel.Dock="Right"
+                                      Classes="HoverReveal"
                                       ItemsSource="{Binding $parent[UserControl].((vm:FileNavigatorViewModel)DataContext).FileQuickAssess}">
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>
@@ -64,7 +75,7 @@
                         </ItemsControl>
                         <c:EditableLabel VerticalAlignment="Center" 
                                          Text="{Binding Name, Mode=TwoWay}"
-                                         IsBeingEdited="{Binding NeedsName, Mode=OneWayToSource}"/>
+                                         IsBeingEdited="{Binding NeedsName, Mode=TwoWay}"/>
                     </DockPanel>
                 </DataTemplate>
             </TreeView.DataTemplates>

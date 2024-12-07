@@ -50,7 +50,7 @@ public class FileNavigatorViewModel : ViewModelBase
         RenameItem = toolFactory
             .DefineTool<ILaminarStorageItem>("Rename Item", LaminarCommandIcon.Template(PathData.RenameIcon), 
                 item => $"Rename {ItemTypeName(item)}", new KeyGesture(Key.R, KeyModifiers.Control))
-            .AsToolbox();
+            .AsCommand(item => item.NeedsName = true);
         
         RootFiles = [ new LaminarStorageFolder(Path.Combine(dataManager.Path, "Default"), storageItemFactory) ];
         FolderQuickAccess = [RenameItem, DeleteItem, AddItem, ToggleEnable];

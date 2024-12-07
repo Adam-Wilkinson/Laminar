@@ -1,15 +1,15 @@
+using System.ComponentModel;
+using System.Diagnostics;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
+using Avalonia.Interactivity;
 
 namespace Laminar.Avalonia.Controls;
 
 public partial class EditableLabel : UserControl
 {
-    private bool _isEditing;
-    
-    public static readonly DirectProperty<EditableLabel, bool> IsBeingEditedProperty =
-        AvaloniaProperty.RegisterDirect<EditableLabel, bool>(nameof(IsBeingEdited), x => x.IsBeingEdited);
+    public static readonly StyledProperty<bool> IsBeingEditedProperty = AvaloniaProperty.Register<EditableLabel, bool>(nameof(IsBeingEdited));
     
     public static readonly StyledProperty<string> TextProperty = AvaloniaProperty.Register<EditableLabel, string>(nameof(Text));
     
@@ -26,6 +26,24 @@ public partial class EditableLabel : UserControl
         Display[!TextBlock.TextProperty] = this[!TextProperty];
         
         Editor.KeyDown += Entry_KeyDown;
+
+        Editor.GotFocus += (sender, args) =>
+        {
+            Debug.WriteLine("Got focus");
+        };
+
+        Editor.AttachedToVisualTree += (sender, args) =>
+        {
+            if (IsBeingEdited)
+            {
+                Editor.Focus();
+            }
+        };
+
+        Editor.LostFocus += (sender, args) =>
+        {
+            Debug.WriteLine("Lost focus");
+        };
     }
 
     public string Text
@@ -36,8 +54,8 @@ public partial class EditableLabel : UserControl
     
     public bool IsBeingEdited
     {
-        get => _isEditing;
-        set => SetAndRaise(IsBeingEditedProperty, ref _isEditing, value);
+        get => GetValue(IsBeingEditedProperty);
+        set => SetValue(IsBeingEditedProperty, value);
     }
 
     private void IsBeingEditedChanged(AvaloniaPropertyChangedEventArgs args)
@@ -47,8 +65,8 @@ public partial class EditableLabel : UserControl
             Editor.Text = Text;
             Display.IsVisible = false;
             Editor.IsVisible = true;
-            Editor.Focus();
             Editor.SelectAll();
+            Editor.Focus();
         }
         else
         {
@@ -56,7 +74,7 @@ public partial class EditableLabel : UserControl
             Editor.IsVisible = false;
         }
     }
-    
+
     private void Entry_KeyDown(object? sender, KeyEventArgs e)
     {
         if (e.Key == Key.Enter)

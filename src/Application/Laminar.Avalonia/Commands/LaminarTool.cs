@@ -34,20 +34,36 @@ public class Command(Action commandAction, IObservableValue<string?> description
     }
 }
 
-public class Command<TParameter>(
-    IParameterAction<TParameter> action,
-    IUserActionManager actionManager,
-    ReactiveFunc<TParameter, string?> descriptionTemplate) : LaminarTool<TParameter>(descriptionTemplate)
+public class Command<TParameter> : LaminarTool<TParameter>
 {
+    private readonly Action<TParameter> _action;
+    private readonly Func<TParameter, IObservableValue<bool>> _canExecuteReactiveFunc;
+    
+    public Command(IParameterAction<TParameter> action,
+        IUserActionManager actionManager,
+        ReactiveFunc<TParameter, string?> descriptionTemplate) : base(descriptionTemplate)
+    {
+        _action = parameter => actionManager.ExecuteAction(action.WithParameter(parameter));
+        _canExecuteReactiveFunc = action.CanExecute;
+    }
+
+    public Command(Action<TParameter> action, ReactiveFunc<TParameter, string?> descriptionTemplate,
+        ReactiveFunc<TParameter, bool>? canExecute = null) : base(descriptionTemplate)
+    {
+        _action = action;
+        _canExecuteReactiveFunc = parameter =>
+            canExecute is null ? new ObservableValue<bool>(true) : canExecute.GetObservable(parameter);
+    }
+
     public override IObservableValue<bool> CanExecute(object? parameter) => parameter is TParameter typed 
-        ? action.CanExecute(typed)
+        ? _canExecuteReactiveFunc(typed)
         : new ObservableValue<bool>(false);
 
     public override void Execute(object? parameter)
     {
         if (parameter is TParameter typed)
         {
-            actionManager.ExecuteAction(action.WithParameter(typed));
+            _action(typed);
         }
     }
 }

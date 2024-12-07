@@ -12,6 +12,7 @@ public abstract class LaminarStorageItem<T> : ILaminarStorageItem
     private bool _isEnabled = true;
     private bool _parentIsEffectivelyEnabled = true;
     private string _name;
+    private bool _needsName = false;
 
     protected LaminarStorageItem(T fileSystemInfo)
     {
@@ -60,8 +61,12 @@ public abstract class LaminarStorageItem<T> : ILaminarStorageItem
     }
 
     public bool IsEffectivelyEnabled => IsEnabled && ParentIsEffectivelyEnabled;
-    
-    public bool NeedsName { get; init; }
+
+    public bool NeedsName
+    {
+        get => _needsName;
+        set => SetField(ref _needsName, value);
+    }
 
     public override bool Equals(object? obj)
     {

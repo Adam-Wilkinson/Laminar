@@ -83,6 +83,15 @@ public class LaminarToolFactory
         IDataTemplate iconDataTemplate, 
         KeyGesture? gesture)
     {
+        public Command<TParameter> AsCommand(Action<TParameter> action,
+            ReactiveFunc<TParameter, bool>? canExecute = null)
+            => factory.BindTool(new Command<TParameter>(action, descriptionGenerator, canExecute)
+            {
+                Name = name,
+                IconTemplate = iconDataTemplate,
+                Gesture = gesture,
+            });
+        
         public Command<TParameter> AsCommand(IParameterAction<TParameter> action)
             => factory.BindTool(new Command<TParameter>(action, factory._userActionManager, descriptionGenerator)
             {
