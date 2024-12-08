@@ -1,5 +1,9 @@
 ﻿using System.Runtime.InteropServices;
+using Avalonia;
+using Avalonia.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
+using Laminar.Avalonia.Commands;
+using Laminar.Avalonia.Shapes;
 using Laminar.Avalonia.Views.CustomTitleBars;
 
 namespace Laminar.Avalonia.ViewModels;
@@ -7,39 +11,35 @@ public partial class MainWindowViewModel : ViewModelBase
 {
     [ObservableProperty] private bool _settingsOpen;
     
-    public MainWindowViewModel(MainControlViewModel mainControlViewModel)
+    public MainWindowViewModel(MainControlViewModel mainControl, TitleBarViewModel titlebar)
     {
-        MainControl = mainControlViewModel;
-        TitleBar.SidebarState = CurrentSidebarState();
-        MainControl.PropertyChanged += (_, args) =>
+        MainControl = mainControl;
+        TitleBar = titlebar;
+        TitleBar.SidebarExpanded = MainControl.SidebarExpanded;
+        MainControl.PropertyChanged += (sender, args) =>
         {
             if (args.PropertyName == nameof(MainControl.SidebarExpanded))
-                TitleBar.SidebarState = CurrentSidebarState();
+                TitleBar.SidebarExpanded = MainControl.SidebarExpanded;
+        };
+        TitleBar.PropertyChanged += (_, args) =>
+        {
+            switch (args.PropertyName)
+            {
+                case nameof(TitleBar.SidebarExpanded):
+                    MainControl.SidebarExpanded = TitleBar.SidebarExpanded;
+                    break;
+                case nameof(TitleBar.SettingsOpen):
+                    SettingsOpen = TitleBar.SettingsOpen;
+                    break;
+            }
         };
     }
-
-    public LaminarTitleBar TitleBar { get; } = RuntimeInformation.IsOSPlatform(OSPlatform.OSX) ? new MacosTitleBar() : new WindowsTitleBar();
+    
+    public TitleBarViewModel TitleBar { get; }
 
     public SettingsViewModel Settings { get; } = new();
 
     public MainControlViewModel MainControl { get; }
-
-    public void ToggleSidebar()
-    {
-        if (SettingsOpen) return;
-        
-        MainControl.SidebarExpanded = !MainControl.SidebarExpanded;
-        TitleBar.SidebarState = CurrentSidebarState();
-    }
-
-    partial void OnSettingsOpenChanged(bool value)
-    {
-        TitleBar.SidebarState = CurrentSidebarState();
-    }
-
-    private SidebarState CurrentSidebarState()
-        => SettingsOpen ? SidebarState.Unchangeable : 
-            MainControl.SidebarExpanded ? SidebarState.Expanded : SidebarState.Closed;
 }
 
 public enum SidebarState

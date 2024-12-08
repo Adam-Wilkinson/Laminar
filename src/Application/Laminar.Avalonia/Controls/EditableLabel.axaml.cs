@@ -27,11 +27,6 @@ public partial class EditableLabel : UserControl
         
         Editor.KeyDown += Entry_KeyDown;
 
-        Editor.GotFocus += (sender, args) =>
-        {
-            Debug.WriteLine("Got focus");
-        };
-
         Editor.AttachedToVisualTree += (sender, args) =>
         {
             if (IsBeingEdited)
@@ -42,7 +37,7 @@ public partial class EditableLabel : UserControl
 
         Editor.LostFocus += (sender, args) =>
         {
-            Debug.WriteLine("Lost focus");
+            IsBeingEdited = false;
         };
     }
 

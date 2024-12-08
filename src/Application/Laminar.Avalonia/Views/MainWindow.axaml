@@ -25,13 +25,6 @@
 			                Classes.IsFaded="{Binding SettingsOpen}"/>
 		</Panel>
 		<DockPanel.Styles>
-			<Style Selector=":is(ToggleButton)#SettingsButton">
-				<Setter Property="IsChecked" Value="{Binding SettingsOpen}"/>
-			</Style>
-			<Style Selector=":is(Button)#LaminarButton">
-				<Setter Property="Command" Value="{Binding ToggleSidebar}"/>
-			</Style>
-			
 			<Style Selector="ContentControl#SettingsMenu">
 				<Setter Property="RenderTransform" Value="{Binding $parent[v:MainWindow].HiddenSettingsRenderTransform}"/>
 				<Setter Property="Transitions">
