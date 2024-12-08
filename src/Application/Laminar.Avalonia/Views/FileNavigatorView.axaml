@@ -25,10 +25,12 @@
             <TreeView.ItemTemplate>
                 <TreeDataTemplate DataType="{x:Type fn:LaminarStorageFolder}" ItemsSource="{Binding Contents}">
                     <DockPanel Background="{DynamicResource LaminarBackgroundAlt}" 
-                               HorizontalAlignment="Stretch" 
+                               HorizontalAlignment="Stretch"
+                               Height="37"
                                dd:DragDropHandler.TriggerMouseButton="Left">
                         <ItemsControl Classes="HoverReveal"
-                                      DockPanel.Dock="Right" 
+                                      DockPanel.Dock="Right"
+                                      Margin="3"
                                       ItemsSource="{Binding $parent[UserControl].((vm:FileNavigatorViewModel)DataContext).FolderQuickAccess}">
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>
@@ -37,7 +39,7 @@
                             </ItemsControl.ItemsPanel>
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
-                                    <ContentControl Width="30" Height="30" ContentTemplate="{StaticResource LaminarToolIconTemplate}">
+                                    <ContentControl Width="32" Height="32" ContentTemplate="{StaticResource LaminarToolIconTemplate}">
                                         <lc:LaminarToolInstance Tool="{ReflectionBinding}"
                                                                 Parameter="{Binding $parent[DockPanel].DataContext}"/>
                                     </ContentControl>
@@ -55,8 +57,10 @@
                 <DataTemplate DataType="{x:Type fn:LaminarStorageFile}">
                     <DockPanel Background="{DynamicResource ScriptSignatureColor}"
                                HorizontalAlignment="Stretch"
+                               Height="37"
                                dd:DragDropHandler.TriggerMouseButton="Left">
                         <ItemsControl DockPanel.Dock="Right"
+                                      Margin="3"
                                       Classes="HoverReveal"
                                       ItemsSource="{Binding $parent[UserControl].((vm:FileNavigatorViewModel)DataContext).FileQuickAssess}">
                             <ItemsControl.ItemsPanel>
@@ -66,7 +70,7 @@
                             </ItemsControl.ItemsPanel>
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
-                                    <ContentControl Width="30" Height="30" ContentTemplate="{StaticResource LaminarToolIconTemplate}">
+                                    <ContentControl Width="32" Height="32" ContentTemplate="{StaticResource LaminarToolIconTemplate}">
                                         <lc:LaminarToolInstance Tool="{ReflectionBinding}"
                                                                 Parameter="{Binding $parent[DockPanel].DataContext}"/>
                                     </ContentControl>

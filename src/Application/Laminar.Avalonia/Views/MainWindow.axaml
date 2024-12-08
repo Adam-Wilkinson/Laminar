@@ -26,6 +26,7 @@
 		</Panel>
 		<DockPanel.Styles>
 			<Style Selector="ContentControl#SettingsMenu">
+				<Setter Property="IsHitTestVisible" Value="False"/>
 				<Setter Property="RenderTransform" Value="{Binding $parent[v:MainWindow].HiddenSettingsRenderTransform}"/>
 				<Setter Property="Transitions">
 					<Transitions>
@@ -33,6 +34,7 @@
 					</Transitions>
 				</Setter>
 				<Style Selector="^.IsOpen">
+					<Setter Property="IsHitTestVisible" Value="True"/>
 					<Setter Property="RenderTransform">
 						<TransformGroup>
 							<TranslateTransform X="0" Y="0"/>

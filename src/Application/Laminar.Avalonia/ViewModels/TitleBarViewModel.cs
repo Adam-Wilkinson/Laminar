@@ -35,7 +35,7 @@ public partial class TitleBarViewModel : ViewModelBase
         {
             Tool = toolFactory
                 .DefineTool("Toggle Sidebar", LaminarCommandIcon.Template(new PolylineGeometry { Points = [new Point(0, 0), new Point(10, 10), new Point(10, -10)] }), 
-                    _toggleSidebarDescription)
+                    _toggleSidebarDescription, new KeyGesture(Key.B, KeyModifiers.Control))
                 .AsCommand(() => SidebarExpanded = !SidebarExpanded)
         };
     }

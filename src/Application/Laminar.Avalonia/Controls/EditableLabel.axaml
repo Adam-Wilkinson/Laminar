@@ -8,7 +8,7 @@
         <TextBlock Name="Display"
                    VerticalAlignment="Center"
                    HorizontalAlignment="Left"
-                   Margin="5"/>
+                   Margin="6.5"/>
         <TextBox Name="Editor"
                  IsVisible="False"
                  VerticalAlignment="Center"
