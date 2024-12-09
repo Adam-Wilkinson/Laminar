@@ -1,10 +1,8 @@
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Text;
-using Avalonia.Controls.Templates;
 using Avalonia.Data;
 using Avalonia.Input;
-using Avalonia.Platform.Storage;
 using Laminar.Avalonia.Commands;
 using Laminar.Avalonia.Shapes;
 using Laminar.Contracts.UserData;
@@ -15,15 +13,11 @@ using Laminar.Implementation.UserData.FileNavigation.UserActions;
 namespace Laminar.Avalonia.ViewModels;
 public class FileNavigatorViewModel : ViewModelBase
 {
-    private readonly IStorageProvider _storageProvider;
-    
     public FileNavigatorViewModel(
-        IStorageProvider storageProvider, 
         IPersistentDataManager dataManager, 
         ILaminarStorageItemFactory storageItemFactory,
         LaminarToolFactory toolFactory)
     {
-        _storageProvider = storageProvider;
         ToggleEnable = toolFactory
             .DefineTool<ILaminarStorageItem>("Toggle Enabled",
                 LaminarCommandSwitch.Template(instance => new Binding
@@ -74,7 +68,6 @@ public class FileNavigatorViewModel : ViewModelBase
 
     public void OpenFilePicker()
     {
-        _storageProvider.OpenFilePickerAsync(new FilePickerOpenOptions { AllowMultiple = false, Title = "Pick a file!"});
     }
 
     private static string ItemTypeName(ILaminarStorageItem item) => item switch

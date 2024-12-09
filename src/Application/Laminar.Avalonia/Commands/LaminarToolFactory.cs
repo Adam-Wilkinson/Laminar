@@ -13,16 +13,19 @@ namespace Laminar.Avalonia.Commands;
 public class LaminarToolFactory
 {
     private readonly IUserActionManager _userActionManager;
-    private readonly TopLevel _topLevel;
+    private readonly TopLevel? _topLevel;
 
-    public LaminarToolFactory(IUserActionManager userActionManager, TopLevel topLevel)
+    public LaminarToolFactory(IUserActionManager userActionManager, TopLevel? topLevel)
     {
         _userActionManager = userActionManager;
         _topLevel = topLevel;
-        _topLevel.PointerMoved += (_, e) =>
+        if (_topLevel is not null)
         {
-            VisualUnderCursor = _topLevel.GetVisualAt(e.GetPosition(_topLevel));
-        };
+            _topLevel.PointerMoved += (_, e) =>
+            {
+                VisualUnderCursor = _topLevel.GetVisualAt(e.GetPosition(_topLevel));
+            };   
+        }
     }
 
     public Visual? VisualUnderCursor { get; private set; }
@@ -111,7 +114,7 @@ public class LaminarToolFactory
     
     private T BindTool<T>(T tool) where T : LaminarTool 
     {
-        _topLevel.KeyBindings.Add(new KeyBinding
+        _topLevel?.KeyBindings.Add(new KeyBinding
         {
             Command = new ExecuteCommandUnderCursor(tool, this),
             [!KeyBinding.GestureProperty] = tool[!LaminarTool.GestureProperty],

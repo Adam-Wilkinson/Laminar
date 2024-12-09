@@ -1,13 +1,19 @@
+using Avalonia.Controls;
+using Laminar.Avalonia.Commands;
+using Laminar.Implementation.UserData.FileNavigation;
+
 namespace Laminar.Avalonia.ViewModels.Design;
 
 public static class DesignViewModel
 {
-    public static readonly FileNavigatorViewModel FileNavigator = new FileNavigatorViewModel(null, null, null, null);
+    private static readonly LaminarToolFactory MockToolFactory = new(new MockUserActionManager(), TopLevel.GetTopLevel(null));
     
-    public static readonly MainControlViewModel MainControl = new MainControlViewModel(FileNavigator);
+    public static readonly FileNavigatorViewModel FileNavigator = new(new MockDataManager(), new LaminarStorageItemFactory(), MockToolFactory);
     
-    public static readonly TitleBarViewModel TitleBar = new TitleBarViewModel(null);
+    public static readonly MainControlViewModel MainControl = new(FileNavigator);
     
-    public static readonly MainWindowViewModel MainWindow = new MainWindowViewModel(MainControl, TitleBar);
+    public static readonly TitleBarViewModel TitleBar = new(MockToolFactory);
+    
+    public static readonly MainWindowViewModel MainWindow = new(MainControl, TitleBar);
 
 }
