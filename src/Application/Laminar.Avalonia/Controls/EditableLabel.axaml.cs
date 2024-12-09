@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using Avalonia;
@@ -72,15 +73,17 @@ public partial class EditableLabel : UserControl
 
     private void Entry_KeyDown(object? sender, KeyEventArgs e)
     {
-        if (e.Key == Key.Enter)
+        switch (e.Key)
         {
-            Text = Editor.Text ?? string.Empty;
-            IsBeingEdited = false;
-        }
-
-        if (e.Key == Key.Escape)
-        {
-            IsBeingEdited = false;
+            case Key.Enter:
+                Text = Editor.Text ?? string.Empty;
+                IsBeingEdited = false;
+                e.Handled = true;
+                break;
+            case Key.Escape:
+                IsBeingEdited = false;
+                e.Handled = true;
+                break;
         }
     }
 }

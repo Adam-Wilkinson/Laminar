@@ -5,7 +5,8 @@
              xmlns:titlebars="using:Laminar.Avalonia.Views.CustomTitleBars"
 			 xmlns:localshapes="using:Laminar.Avalonia.Shapes"
              xmlns:vm="using:Laminar.Avalonia.ViewModels"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:vmd="using:Laminar.Avalonia.ViewModels.Design"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450" d:DataContext="{x:Static vmd:DesignViewModel.TitleBar}"
              SidebarState="Closed"
              x:Class="Laminar.Avalonia.Views.CustomTitleBars.WindowsTitleBar"
              x:DataType="vm:TitleBarViewModel">
@@ -205,7 +206,7 @@
 		  <Style Selector=":is(Button)#LaminarButton">
 			  <Setter Property="IsHitTestVisible" Value="True"/>
 			  <Style Selector="^ Image#LaminarLogo">
-				  <Setter Property="RenderTransform" Value="translatex(-2px)"/>
+				  <Setter Property="RenderTransform" Value="translatex(-5px)"/>
 				  <Setter Property="Transitions">
 					  <Transitions>
 						  <TransformOperationsTransition Property="RenderTransform" Duration="{DynamicResource AnimationDuration}" Easing="{DynamicResource AnimationEasing}"/>
@@ -220,6 +221,7 @@
 					  </Transitions>
 				  </Setter>
 			      <Style Selector="^#ExpandSidebarHint">
+				      <Setter Property="RenderTransform" Value="translatex(14px)"/>
 				      <Setter Property="Opacity" Value="1"/>
 			      </Style>
 			      <Style Selector="^#CloseSidebarHint">
@@ -250,12 +252,6 @@
 				  </Style>
 				  <Style Selector="^ Path">
 					  <Setter Property="Opacity" Value="0"/>
-					  <Style Selector="^#ExpandSidebarHint">
-						  <Setter Property="RenderTransform" Value="translatex(18px)"/>
-					  </Style>
-					  <Style Selector="^#CloseSidebarHint">
-						  <Setter Property="RenderTransform" Value="translatex(-10px)"/>
-					  </Style>
 				  </Style>
 			  </Style>
 		  </Style>
