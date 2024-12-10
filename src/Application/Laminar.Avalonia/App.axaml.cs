@@ -3,7 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
-using Laminar.Avalonia.Commands;
+using Laminar.Avalonia.ToolSystem;
 using Laminar.Avalonia.ViewModels;
 using Laminar.Avalonia.Views;
 using Laminar.Contracts.UserData;
@@ -41,6 +41,8 @@ public partial class App : Application
             ActivatorUtilities.CreateInstance<ViewModelSerializationHelper>(services)
                 .SerializeObservableProperties(mainWindowViewModel,
                     services.GetRequiredService<IPersistentDataManager>().GetDataStore(DataStoreKey.PersistentData));
+            
+            Resources.Add("ServiceProvider", services);
             
             desktop.MainWindow.DataContext = mainWindowViewModel;
         }

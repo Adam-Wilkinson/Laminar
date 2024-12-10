@@ -5,12 +5,12 @@ using Avalonia.Controls.Templates;
 using Avalonia.Data;
 using Laminar.Domain.Notification;
 
-namespace Laminar.Avalonia.Commands;
+namespace Laminar.Avalonia.ToolSystem;
 
-public class LaminarCommandSwitch : TemplatedControl
+public class LaminarToolSwitchIcon : TemplatedControl
 {
     public static readonly StyledProperty<bool> IsOnProperty =
-        AvaloniaProperty.Register<LaminarCommandSwitch, bool>(nameof(IsOn), defaultBindingMode: BindingMode.TwoWay);
+        AvaloniaProperty.Register<LaminarToolSwitchIcon, bool>(nameof(IsOn), defaultBindingMode: BindingMode.TwoWay);
 
     public bool IsOn
     {
@@ -18,10 +18,10 @@ public class LaminarCommandSwitch : TemplatedControl
         set => SetValue(IsOnProperty, value);
     }
 
-    public static IDataTemplate Template(Func<LaminarToolInstance, IBinding> isOnBinding) =>
+    public static IDataTemplate CreateTemplate(Func<LaminarToolInstance, IBinding> isOnBinding) =>
         new FuncDataTemplate<LaminarToolInstance>(
             _ => true,
-            commandInstance => new LaminarCommandSwitch
+            commandInstance => new LaminarToolSwitchIcon
             {
                 [!IsOnProperty] = isOnBinding(commandInstance)
             });

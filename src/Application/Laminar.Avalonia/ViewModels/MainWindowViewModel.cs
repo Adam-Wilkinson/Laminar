@@ -1,10 +1,4 @@
-﻿using System.Runtime.InteropServices;
-using Avalonia;
-using Avalonia.Input;
-using CommunityToolkit.Mvvm.ComponentModel;
-using Laminar.Avalonia.Commands;
-using Laminar.Avalonia.Shapes;
-using Laminar.Avalonia.Views.CustomTitleBars;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace Laminar.Avalonia.ViewModels;
 public partial class MainWindowViewModel : ViewModelBase
@@ -16,7 +10,7 @@ public partial class MainWindowViewModel : ViewModelBase
         MainControl = mainControl;
         TitleBar = titlebar;
         TitleBar.SidebarExpanded = MainControl.SidebarExpanded;
-        MainControl.PropertyChanged += (sender, args) =>
+        MainControl.PropertyChanged += (_, args) =>
         {
             if (args.PropertyName == nameof(MainControl.SidebarExpanded))
                 TitleBar.SidebarExpanded = MainControl.SidebarExpanded;
@@ -40,11 +34,4 @@ public partial class MainWindowViewModel : ViewModelBase
     public SettingsViewModel Settings { get; } = new();
 
     public MainControlViewModel MainControl { get; }
-}
-
-public enum SidebarState
-{
-    Unchangeable = 0,
-    Expanded = 1,
-    Closed = 2,
 }

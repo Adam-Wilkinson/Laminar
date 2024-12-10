@@ -5,7 +5,7 @@ using Avalonia.Controls;
 using Avalonia.Data;
 using Avalonia.Data.Converters;
 using Avalonia.Styling;
-using Laminar.Avalonia.Commands;
+using Laminar.Avalonia.ToolSystem;
 
 namespace Laminar.Avalonia.Converters;
 

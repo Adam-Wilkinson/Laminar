@@ -2,7 +2,7 @@ using Avalonia;
 using Avalonia.Input;
 using Avalonia.Media;
 using CommunityToolkit.Mvvm.ComponentModel;
-using Laminar.Avalonia.Commands;
+using Laminar.Avalonia.ToolSystem;
 using Laminar.Avalonia.Shapes;
 using Laminar.Domain.ValueObjects;
 using Point = Avalonia.Point;
@@ -27,14 +27,14 @@ public partial class TitleBarViewModel : ViewModelBase
         ToggleSettingsTool = new LaminarToolInstance
         {
             Tool = toolFactory
-                .DefineTool("Settings", LaminarCommandIcon.Template(SettingsCog.GetGeometry(4.5, 8, new Size(19, 19))), 
+                .DefineTool("Settings", LaminarToolGeometryIcon.CreateTemplate(SettingsCog.GetGeometry(4.5, 8, new Size(19, 19))), 
                     _toggleSettingsDescription, new KeyGesture(Key.S, KeyModifiers.Control | KeyModifiers.Alt))
                 .AsCommand(() => SettingsOpen = !SettingsOpen)
         };
         ToggleSidebarTool = new LaminarToolInstance
         {
             Tool = toolFactory
-                .DefineTool("Toggle Sidebar", LaminarCommandIcon.Template(new PolylineGeometry { Points = [new Point(0, 0), new Point(10, 10), new Point(10, -10)] }), 
+                .DefineTool("Toggle Sidebar", LaminarToolGeometryIcon.CreateTemplate(new PolylineGeometry { Points = [new Point(0, 0), new Point(10, 10), new Point(10, -10)] }), 
                     _toggleSidebarDescription, new KeyGesture(Key.B, KeyModifiers.Control))
                 .AsCommand(() => SidebarExpanded = !SidebarExpanded)
         };

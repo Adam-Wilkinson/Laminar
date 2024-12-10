@@ -3,15 +3,15 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Media;
 
-namespace Laminar.Avalonia.Commands;
+namespace Laminar.Avalonia.ToolSystem;
 
-public class LaminarCommandIcon : TemplatedControl
+public class LaminarToolGeometryIcon : TemplatedControl
 {
     public static readonly StyledProperty<Geometry> IconDataProperty =
-        AvaloniaProperty.Register<LaminarCommandIcon, Geometry>(nameof(IconData));
+        AvaloniaProperty.Register<LaminarToolGeometryIcon, Geometry>(nameof(IconData));
 
     public static readonly StyledProperty<LaminarToolInstance> CommandInstanceProperty =
-        AvaloniaProperty.Register<LaminarCommandIcon, LaminarToolInstance>(nameof(ToolInstance));
+        AvaloniaProperty.Register<LaminarToolGeometryIcon, LaminarToolInstance>(nameof(ToolInstance));
     
     public Geometry IconData
     {
@@ -25,9 +25,9 @@ public class LaminarCommandIcon : TemplatedControl
         set => SetValue(CommandInstanceProperty, value);
     }
 
-    public static IDataTemplate Template(Geometry iconData) => new FuncDataTemplate<LaminarToolInstance>(
+    public static IDataTemplate CreateTemplate(Geometry iconData) => new FuncDataTemplate<LaminarToolInstance>(
         _ => true,
-        commandInstance => new LaminarCommandIcon
+        commandInstance => new LaminarToolGeometryIcon
         {
             IconData = iconData,
             ToolInstance = commandInstance,

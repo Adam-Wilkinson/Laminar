@@ -5,7 +5,7 @@ using Avalonia;
 using Avalonia.Data.Converters;
 using Laminar.Domain.ValueObjects;
 
-namespace Laminar.Avalonia.Commands;
+namespace Laminar.Avalonia.ToolSystem;
 
 public class LaminarToolInstance : AvaloniaObject
 {
