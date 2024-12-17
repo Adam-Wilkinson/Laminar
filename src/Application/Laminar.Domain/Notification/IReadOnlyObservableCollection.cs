@@ -2,6 +2,6 @@
 
 namespace Laminar.Domain.Notification;
 
-public interface IReadOnlyObservableCollection<T> : IReadOnlyList<T>, INotifyCollectionChanged
+public interface IReadOnlyObservableCollection<out T> : IReadOnlyList<T>, INotifyCollectionChanged
 {
 }
