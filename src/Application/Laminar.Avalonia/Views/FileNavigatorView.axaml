@@ -20,11 +20,14 @@
     
     <Panel Background="{DynamicResource LaminarBackgroundLighter}" MinWidth="1" Name="FileNavigator">
         <Panel.Styles>
-            <Style Selector="DockPanel:pointerover > ItemsControl.HoverReveal">
+            <Style Selector="DockPanel:pointerover :is(Control).HoverReveal">
                 <Setter Property="IsVisible" Value="True"/>
             </Style>
-            <Style Selector="DockPanel:not(:pointerover) > ItemsControl.HoverReveal">
+            <Style Selector="DockPanel:not(:pointerover) :is(Control).HoverReveal">
                 <Setter Property="IsVisible" Value="False"/>
+            </Style>
+            <Style Selector="DockPanel ContentControl[Tag=Toggle Enabled, True]">
+                <Setter Property="IsVisible" Value="True"/>
             </Style>
         </Panel.Styles>
         
@@ -35,8 +38,7 @@
                                Classes="FileNavigatorItem"
                                HorizontalAlignment="Stretch"
                                Height="37">
-                        <ItemsControl Classes="HoverReveal"
-                                      DockPanel.Dock="Right"
+                        <ItemsControl DockPanel.Dock="Right"
                                       Margin="3"
                                       ItemsSource="{Binding QuickAccess}">
                             <ItemsControl.ItemsPanel>
@@ -46,7 +48,13 @@
                             </ItemsControl.ItemsPanel>
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
-                                    <ContentControl Width="32" Height="32" ContentTemplate="{StaticResource LaminarToolIconTemplate}">
+                                    <ContentControl Classes="HoverReveal" Width="32" Height="32" ContentTemplate="{StaticResource LaminarToolIconTemplate}">
+                                        <ContentControl.Tag>
+                                            <MultiBinding StringFormat="{}{0}, {1}">
+                                                <Binding Path="Name"/>
+                                                <Binding Path="$parent[DockPanel].((vm:FileNavigatorItemViewModel)DataContext).CoreItem.IsEffectivelyEnabled" Converter="{x:Static BoolConverters.Not}"/>
+                                            </MultiBinding>
+                                        </ContentControl.Tag>
                                         <lc:LaminarToolInstance Tool="{Binding}"
                                                                 Parameter="{Binding $parent[DockPanel].DataContext}"/>
                                     </ContentControl>
