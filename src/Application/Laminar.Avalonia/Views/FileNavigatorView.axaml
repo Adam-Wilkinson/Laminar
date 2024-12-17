@@ -34,8 +34,7 @@
                     <DockPanel Tag="{Binding ItemTypeName}"
                                Classes="FileNavigatorItem"
                                HorizontalAlignment="Stretch"
-                               Height="37"
-                               dd:DragDropHandler.TriggerMouseButton="Left">
+                               Height="37">
                         <ItemsControl Classes="HoverReveal"
                                       DockPanel.Dock="Right"
                                       Margin="3"
@@ -73,6 +72,8 @@
             <TreeView.Styles>
                 <Style Selector="TreeViewItem">
                     <Setter Property="IsExpanded" Value="True"/>
+                    <Setter Property="dd:DragDropHandler.TriggerMouseButton" Value="Left"/>
+                    <Setter Property="ClipToBounds" Value="False"/>
                 </Style>
             </TreeView.Styles>
         </TreeView>
