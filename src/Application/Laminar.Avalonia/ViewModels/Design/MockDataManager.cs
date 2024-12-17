@@ -45,13 +45,13 @@ public class MockDataManager : IPersistentDataManager
             return new DataSaveResult();
         }
 
-        public IPersistentDataStore InitializeDefaultValue<T>(string key, T value) where T : notnull
+        public IPersistentDataStore InitializeDefaultValue<T>(string key, T value, object? deserializationContext = null) where T : notnull
         {
             _dataStore[key] = value;
             return this;
         }
 
-        public IPersistentDataStore InitializeDefaultValue(string key, object value, Type type)
+        public IPersistentDataStore InitializeDefaultValue(string key, object value, Type type, object? deserializationContext = null)
         {
             _dataStore[key] = value;
             return this;

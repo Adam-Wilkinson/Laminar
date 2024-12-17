@@ -49,7 +49,7 @@
         <Setter Property="IsHitTestVisible" Value="{Binding CanExecute}"/>
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="Command" Value="{Binding Tool}"/>
-        <Setter Property="CommandParameter" Value="{Binding Parameter}"/>
+        <Setter Property="CommandParameter" Value="{Binding RetargetedParameter}"/>
         <Setter Property="Cursor" Value="Hand"/>
         <Setter Property="Content">
             <Template>
@@ -119,7 +119,7 @@
             </Template>
         </Setter>
         <Setter Property="Command" Value="{Binding Tool}"/>
-        <Setter Property="CommandParameter" Value="{Binding Parameter}"/>
+        <Setter Property="CommandParameter" Value="{Binding RetargetedParameter}"/>
         <Setter Property="IsEnabled" Value="{Binding CanExecute}"/>
     </ControlTheme>
 </ResourceDictionary>

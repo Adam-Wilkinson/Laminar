@@ -8,14 +8,16 @@ public class PersistentValue : IPersistentDataValue
 {
     private readonly ISerializer _serializer;
     private readonly object _defaultValue;
+    private readonly object? _deserializationContext;
     
     private object _value;
     private object _serializedValue;
     
-    public PersistentValue(ISerializer serializer, object defaultValue)
+    public PersistentValue(ISerializer serializer, object defaultValue, object? deserializationContext = null)
     {
         _serializer = serializer;
         _value = defaultValue;
+        _deserializationContext = deserializationContext;
         _defaultValue = defaultValue;
         _serializedValue = _serializer.SerializeObject(_value);
         ValueType = defaultValue.GetType();
@@ -52,7 +54,7 @@ public class PersistentValue : IPersistentDataValue
             }
             
             _serializedValue = value;
-            _value = _serializer.DeserializeObject(_serializedValue, ValueType);
+            _value = _serializer.DeserializeObject(_serializedValue, ValueType, _deserializationContext);
         }
     }
 

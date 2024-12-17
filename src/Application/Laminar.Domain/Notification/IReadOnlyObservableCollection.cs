@@ -2,6 +2,9 @@
 
 namespace Laminar.Domain.Notification;
 
-public interface IReadOnlyObservableCollection<out T> : IReadOnlyList<T>, INotifyCollectionChanged
+public interface IReadOnlyObservableCollection<T> : IReadOnlyList<T>, INotifyCollectionChanged
 {
+    bool Contains(T value);
+
+    int IndexOf(T value);
 }

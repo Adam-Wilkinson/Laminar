@@ -5,12 +5,12 @@ using TreeIndex = System.Int32;
 
 namespace Laminar.Domain.Notification;
 
-public class FlattenedObservableTree<T> : IReadOnlyObservableCollection<T>
+public class FlattenedObservableTree<T> : ReadOnlyObservableCollectionBase<T>
 {
-    readonly List<T> _flattenedItems = new();
-    readonly List<object> _childNodes = new();
+    private readonly List<T> _flattenedItems = [];
+    private readonly List<object> _childNodes = [];
 
-    readonly FlattenedObservableTree<T>? _parent;
+    private readonly FlattenedObservableTree<T>? _parent;
 
     public FlattenedObservableTree(IEnumerable rootList)
     {
@@ -27,30 +27,33 @@ public class FlattenedObservableTree<T> : IReadOnlyObservableCollection<T>
         _parent = parent;
     }
 
-    public T this[int index] => _flattenedItems[index];
+    public override T this[int index] => _flattenedItems[index];
 
-    public int Count => _flattenedItems.Count;
+    public override int Count => _flattenedItems.Count;
 
-    public event NotifyCollectionChangedEventHandler? CollectionChanged;
+    public override bool Contains(T value) => _flattenedItems.Contains(value);
 
-    public IEnumerator<T> GetEnumerator() => _flattenedItems.GetEnumerator();
+    public override int IndexOf(T value) => _flattenedItems.IndexOf(value);
 
-    IEnumerator IEnumerable.GetEnumerator() => _flattenedItems.GetEnumerator();
-
+    public override IEnumerator<T> GetEnumerator() => _flattenedItems.GetEnumerator();
+    
     private void AddChildren(TreeIndex index, IEnumerable objects)
     {
-        foreach (object obj in objects)
+        foreach (var obj in objects)
         {
-            if (obj is T correctType)
+            switch (obj)
             {
-                _childNodes.Insert(index, correctType);
-                AddFlattenedItem(correctType, GetFlattenedIndex(index));
-            }
-            else if (obj is IEnumerable enumerableChild)
-            {
-                FlattenedObservableTree<T> subTree = new(enumerableChild, this);
-                _childNodes.Insert(index, subTree);
-                AddFlattenedItemRange(subTree._flattenedItems, GetFlattenedIndex(index));
+                case T correctType:
+                    _childNodes.Insert(index, correctType);
+                    AddFlattenedItem(correctType, GetFlattenedIndex(index));
+                    break;
+                case IEnumerable enumerableChild:
+                {
+                    FlattenedObservableTree<T> subTree = new(enumerableChild, this);
+                    _childNodes.Insert(index, subTree);
+                    AddFlattenedItemRange(subTree._flattenedItems, GetFlattenedIndex(index));
+                    break;
+                }
             }
 
             index++;
@@ -108,7 +111,7 @@ public class FlattenedObservableTree<T> : IReadOnlyObservableCollection<T>
     {
         _flattenedItems.RemoveRange(oldStartingIndex, items.Count);
         _flattenedItems.InsertRange(newStartingIndex, items);
-        CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Move, items, newStartingIndex, oldStartingIndex));
+        InvokeCollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Move, items, newStartingIndex, oldStartingIndex));
         if (_parent is not null)
         {
             FlattenedIndex myIndexInParent = _parent.GetFlattenedIndexOf(this);
@@ -119,32 +122,24 @@ public class FlattenedObservableTree<T> : IReadOnlyObservableCollection<T>
     private void AddFlattenedItem(T item, FlattenedIndex index)
     {
         _flattenedItems.Insert(index, item);
-        NotifyCollectionChangedEventHandler collectionChanged = CollectionChanged;
-        collectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item, index));
+        InvokeCollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item, index));
         _parent?.AddFlattenedItem(item, index + _parent.GetFlattenedIndexOf(this));
     }
 
     private void AddFlattenedItemRange(List<T> newItems, FlattenedIndex index)
     {
         _flattenedItems.InsertRange(index, newItems);
-        NotifyCollectionChangedEventHandler collectionChanged = CollectionChanged;
-        collectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, newItems, index));
+        InvokeCollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, newItems, index));
         _parent?.AddFlattenedItemRange(newItems, index + _parent.GetFlattenedIndexOf(this));
     }
 
     private void RemoveFlattenedItemRange(List<T> removedItems, FlattenedIndex index)
     {
         _flattenedItems.RemoveRange(index, removedItems.Count);
-        NotifyCollectionChangedEventHandler collectionChanged = CollectionChanged;
-
-        if (_flattenedItems.Count == 0)
-        {
-            collectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
-        }
-        else
-        {
-            collectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, removedItems, index));
-        }
+        InvokeCollectionChanged(this,
+            _flattenedItems.Count == 0
+                ? new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset)
+                : new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, removedItems, index));
 
         _parent?.RemoveFlattenedItemRange(removedItems, index + _parent.GetFlattenedIndexOf(this));
     }

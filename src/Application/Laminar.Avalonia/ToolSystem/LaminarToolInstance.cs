@@ -15,6 +15,10 @@ public class LaminarToolInstance : AvaloniaObject
     public static readonly StyledProperty<object?> ParameterProperty =
         AvaloniaProperty.Register<LaminarToolInstance, object?>(nameof(Parameter));
 
+    public static readonly DirectProperty<LaminarToolInstance, object?> RetargetedParameterProperty =
+        AvaloniaProperty.RegisterDirect<LaminarToolInstance, object?>(nameof(RetargetedParameter),
+            o => o.RetargetedParameter);
+    
     public static readonly DirectProperty<LaminarToolInstance, bool> CanExecuteProperty = 
         AvaloniaProperty.RegisterDirect<LaminarToolInstance, bool>(nameof(CanExecute), o => o.CanExecute);
     
@@ -49,7 +53,9 @@ public class LaminarToolInstance : AvaloniaObject
         get => GetValue(ParameterProperty);
         set => SetValue(ParameterProperty, value);
     }
-
+    
+    public object? RetargetedParameter => Parameter is ILaminarToolTargetRedirect targetRedirect ? targetRedirect.LaminarToolTarget : Parameter;
+    
     public string? Description
     {
         get => _description;
@@ -70,18 +76,20 @@ public class LaminarToolInstance : AvaloniaObject
     
     public void Execute()
     {
-        if (CanExecute && Tool is not null) Tool.Execute(Parameter);
+        if (CanExecute && Tool is not null) Tool.Execute(RetargetedParameter);
     }
     
     private void Update()
     {
-        IObservableValue<string?>.TransferObservable(ref _descriptionObservable, Tool?.GetDescription(Parameter), SetDescription);
-        IObservableValue<bool>.TransferObservable(ref _canExecuteObservable, Tool?.CanExecute(Parameter), SetCanExecute);
+        var oldTarget = RetargetedParameter;
+        IObservableValue<string?>.TransferObservable(ref _descriptionObservable, Tool?.GetDescription(RetargetedParameter), SetDescription);
+        IObservableValue<bool>.TransferObservable(ref _canExecuteObservable, Tool?.CanExecute(RetargetedParameter), SetCanExecute);
         ChildTools = Tool?.ChildTools?.Select(x => new LaminarToolInstance
         {
             Tool = x,
             Parameter = Parameter
         });
+        RaisePropertyChanged(RetargetedParameterProperty, oldTarget, RetargetedParameter);
     }
 
     private void SetDescription(object? sender, string? description)

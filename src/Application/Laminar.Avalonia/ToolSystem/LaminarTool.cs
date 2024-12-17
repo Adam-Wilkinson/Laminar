@@ -59,11 +59,11 @@ public abstract class LaminarTool(IObservableValue<string?>? descriptionObservab
 
     public required IDataTemplate IconTemplate { get; init; }
 
-    public virtual IObservableValue<string?> GetDescription(object? _) => _descriptionObservable;
+    public virtual IObservableValue<string?> GetDescription(object? parameter) => _descriptionObservable;
 
     public virtual IEnumerable<LaminarTool>? ChildTools => null;
     
-    public virtual IObservableValue<bool> CanExecute(object? _) => _canExecuteObservable;
+    public virtual IObservableValue<bool> CanExecute(object? parameter) => _canExecuteObservable;
     
     bool ICommand.CanExecute(object? parameter) => CanExecute(parameter).Value;
 

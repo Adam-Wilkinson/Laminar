@@ -89,17 +89,17 @@ public class PersistentDataStore : IPersistentDataStore
         return SyncToFile();
     }
     
-    public IPersistentDataStore InitializeDefaultValue<T>(string key, T value)
+    public IPersistentDataStore InitializeDefaultValue<T>(string key, T value, object? deserializationContext = null)
         where T : notnull
     {
-        _serializedDataCache[key] = new PersistentValue(_serializer, value);
+        _serializedDataCache[key] = new PersistentValue(_serializer, value, deserializationContext);
         _fileIsDirty = true;
         return this;
     }
 
-    public IPersistentDataStore InitializeDefaultValue(string key, object value, Type type)
+    public IPersistentDataStore InitializeDefaultValue(string key, object value, Type type, object? deserializationContext = null)
     {
-        _serializedDataCache[key] = new PersistentValue(_serializer, value);
+        _serializedDataCache[key] = new PersistentValue(_serializer, value, deserializationContext);
         _fileIsDirty = true;
         return this;
     }

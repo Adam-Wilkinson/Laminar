@@ -31,7 +31,7 @@ public class ViewModelSerializationHelper(IServiceProvider serviceProvider)
         var serializedPropertyInfos = GetSerializedPropertyInfos(viewModel.GetType(), viewModel);
         foreach (var property in serializedPropertyInfos.Values)
         {
-            property.InitializeTo(prefix, dataStore);
+            property.InitializeTo(prefix, viewModel, dataStore);
         }
         
         foreach (var property in serializedPropertyInfos.Values)
@@ -102,11 +102,11 @@ public interface ISerializedPropertyInfo
 
     public string PropertyName { get; }
 
-    public void InitializeTo(string prefix, IPersistentDataStore dataStore);
+    public void InitializeTo(string prefix, ViewModelBase deserializationContext, IPersistentDataStore dataStore);
 
-    public void DataStoreToProperty(string prefix, object target, IPersistentDataStore dataStore);
+    public void DataStoreToProperty(string prefix, ViewModelBase target, IPersistentDataStore dataStore);
     
-    public void PropertyToDataStore(string prefix, object target, IPersistentDataStore dataStore);
+    public void PropertyToDataStore(string prefix, ViewModelBase target, IPersistentDataStore dataStore);
 
     private readonly record struct SerializedPropertyInfo<TTarget, TValue>(
         string PropertyName,
@@ -122,12 +122,12 @@ public interface ISerializedPropertyInfo
         {
         }
         
-        public void InitializeTo(string prefix, IPersistentDataStore dataStore)
+        public void InitializeTo(string prefix, ViewModelBase deserializationContext, IPersistentDataStore dataStore)
         {
-            dataStore.InitializeDefaultValue(prefix + "." + PropertyName, DefaultValue);
+            dataStore.InitializeDefaultValue(prefix + "." + PropertyName, DefaultValue, deserializationContext);
         }
 
-        public void DataStoreToProperty(string prefix, object target, IPersistentDataStore dataStore)
+        public void DataStoreToProperty(string prefix, ViewModelBase target, IPersistentDataStore dataStore)
         {
             if (target is not TTarget typedTarget)
                 throw new ArgumentException("Target is not of type " + typeof(TTarget).FullName);
@@ -143,7 +143,7 @@ public interface ISerializedPropertyInfo
             }
         }
 
-        public void PropertyToDataStore(string prefix, object target, IPersistentDataStore dataStore)
+        public void PropertyToDataStore(string prefix, ViewModelBase target, IPersistentDataStore dataStore)
         {
             if (target is not TTarget typedTarget)
                 throw new ArgumentException("Target is not of type " + typeof(TTarget).FullName);

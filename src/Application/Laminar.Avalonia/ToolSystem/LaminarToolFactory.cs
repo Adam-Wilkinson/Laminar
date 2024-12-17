@@ -180,8 +180,9 @@ public class LaminarToolFactory
         private object? TryGetParameter(object? target) => target switch
         {
             not null when command.CanExecute(target) => target,
-            ContentControl contentControl when command.CanExecute(contentControl.Content) => contentControl.Content,
-            ContentPresenter contentPresenter when command.CanExecute(contentPresenter.Content) => contentPresenter.Content,
+            ILaminarToolTargetRedirect redirect when command.CanExecute(redirect.LaminarToolTarget) => redirect.LaminarToolTarget,
+            ContentControl contentControl when TryGetParameter(contentControl.Content) is { } contentControlParameter => contentControlParameter,
+            ContentPresenter contentPresenter when TryGetParameter(contentPresenter.Content) is { } contentPresenterParameter => contentPresenterParameter,
             _ => null,
         };
     }

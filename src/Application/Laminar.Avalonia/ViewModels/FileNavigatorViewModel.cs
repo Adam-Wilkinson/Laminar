@@ -2,6 +2,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using Avalonia.Data;
 using Avalonia.Input;
+using Laminar.Avalonia.Converters;
 using Laminar.Avalonia.ToolSystem;
 using Laminar.Avalonia.Shapes;
 using Laminar.Contracts.UserData;
@@ -16,7 +17,7 @@ public class FileNavigatorViewModel : ViewModelBase
     {
         ToggleEnable = toolFactory
             .DefineTool<ILaminarStorageItem>("Toggle Enabled", LaminarToolSwitchIcon.CreateTemplate(
-                instance => new Binding { Source = instance.Parameter, Path = nameof(ILaminarStorageItem.IsEffectivelyEnabled) }), 
+                instance => new Binding { Source = instance.RetargetedParameter, Path = nameof(ILaminarStorageItem.IsEffectivelyEnabled) }), 
                 item => $"{(item.IsEnabled ? "Disable" : "Enable")} this {ItemTypeName(item)}", 
                 new KeyGesture(Key.E, KeyModifiers.Alt))
             .AsCommand(new ToggleEnabledParameterAction());
@@ -39,7 +40,7 @@ public class FileNavigatorViewModel : ViewModelBase
             .DefineTool<ILaminarStorageItem>("Rename Item", LaminarToolGeometryIcon.CreateTemplate(PathData.RenameIcon), item => $"Rename {ItemTypeName(item)}", new KeyGesture(Key.R, KeyModifiers.Control))
             .AsCommand(item => item.NeedsName = true);
         
-        RootFiles = [ new LaminarStorageFolder(Path.Combine(dataManager.Path, "Default"), storageItemFactory) ];
+        RootFiles = [ new FileNavigatorItemViewModel(new LaminarStorageFolder(Path.Combine(dataManager.Path, "Default"), storageItemFactory), this) ];
         FolderQuickAccess = [RenameItem, DeleteItem, AddItem, ToggleEnable];
         FileQuickAssess = [RenameItem, DeleteItem, ToggleEnable];
     }
@@ -53,7 +54,7 @@ public class FileNavigatorViewModel : ViewModelBase
     public LaminarTool RenameItem { get; }
 
     [Serialize]
-    public ObservableCollection<ILaminarStorageFolder> RootFiles { get; set; }
+    public ObservableCollection<FileNavigatorItemViewModel> RootFiles { get; set; }
 
     public ObservableCollection<LaminarTool> FolderQuickAccess { get; }
     
@@ -68,13 +69,4 @@ public class FileNavigatorViewModel : ViewModelBase
         LaminarStorageFolder => "folder",
         _ => "item",
     };
-
-    public class FileNavigatorItem(ILaminarStorageItem item)
-    {
-        public ILaminarStorageItem StorageItem { get; } = item;
-        
-        public required ObservableCollection<FileNavigatorItem> Children { get; init; }
-
-        public required ObservableCollection<LaminarTool> QuickAccess { get; init; }
-    }
 }

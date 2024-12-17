@@ -16,8 +16,8 @@ public interface IPersistentDataStore
     
     public DataSaveResult SetItem(string key, object value, Type type);
 
-    public IPersistentDataStore InitializeDefaultValue<T>(string key, T value)
+    public IPersistentDataStore InitializeDefaultValue<T>(string key, T value, object? deserializationContext = null)
         where T : notnull;
     
-    public IPersistentDataStore InitializeDefaultValue(string key, object value, Type type);
+    public IPersistentDataStore InitializeDefaultValue(string key, object value, Type type, object? deserializationContext = null);
 }

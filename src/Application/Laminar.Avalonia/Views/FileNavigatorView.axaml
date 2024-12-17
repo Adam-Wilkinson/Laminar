@@ -11,6 +11,13 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450" d:DataContext="{x:Static dvm:DesignViewModel.FileNavigator}"
              x:DataType="vm:FileNavigatorViewModel"
              x:Class="Laminar.Avalonia.Views.FileNavigatorView">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <StaticResource x:Key="{x:Type fn:LaminarStorageFile}" ResourceKey="ScriptSignatureColor"/>
+            <StaticResource x:Key="{x:Type fn:LaminarStorageFolder}" ResourceKey="LaminarBackgroundAlt"/>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    
     <Panel Background="{DynamicResource LaminarBackgroundLighter}" MinWidth="1" Name="FileNavigator">
         <Panel.Styles>
             <Style Selector="DockPanel:pointerover > ItemsControl.HoverReveal">
@@ -23,15 +30,16 @@
         
         <TreeView ClipToBounds="False" ItemsSource="{Binding RootFiles}">
             <TreeView.ItemTemplate>
-                <TreeDataTemplate DataType="{x:Type fn:LaminarStorageFolder}" ItemsSource="{Binding Contents}">
-                    <DockPanel Background="{DynamicResource LaminarBackgroundAlt}" 
+                <TreeDataTemplate DataType="{x:Type vm:FileNavigatorItemViewModel}" ItemsSource="{Binding Children}">
+                    <DockPanel Tag="{Binding ItemTypeName}"
+                               Classes="FileNavigatorItem"
                                HorizontalAlignment="Stretch"
                                Height="37"
                                dd:DragDropHandler.TriggerMouseButton="Left">
                         <ItemsControl Classes="HoverReveal"
                                       DockPanel.Dock="Right"
                                       Margin="3"
-                                      ItemsSource="{Binding $parent[UserControl].((vm:FileNavigatorViewModel)DataContext).FolderQuickAccess}">
+                                      ItemsSource="{Binding QuickAccess}">
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>
                                     <StackPanel Orientation="Horizontal" Spacing="4"/>
@@ -47,42 +55,20 @@
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
                         <c:EditableLabel VerticalAlignment="Center" 
-                                         Text="{Binding Name, Mode=TwoWay}" 
-                                         IsBeingEdited="{Binding NeedsName, Mode=TwoWay}"/>
+                                         Text="{Binding CoreItem.Name, Mode=TwoWay}" 
+                                         IsBeingEdited="{Binding CoreItem.NeedsName, Mode=TwoWay}"/>
+                        <DockPanel.Styles>
+                            <Style Selector="DockPanel.FileNavigatorItem">
+                                <Setter Property="Background" Value="{DynamicResource LaminarBackgroundAlt}"/>
+                            </Style>
+                            
+                            <Style Selector="DockPanel.FileNavigatorItem[Tag=script]">
+                                <Setter Property="Background" Value="{DynamicResource ScriptSignatureColor}"/>
+                            </Style>
+                        </DockPanel.Styles>
                     </DockPanel>
                 </TreeDataTemplate>
             </TreeView.ItemTemplate>
-            
-            <TreeView.DataTemplates>
-                <DataTemplate DataType="{x:Type fn:LaminarStorageFile}">
-                    <DockPanel Background="{DynamicResource ScriptSignatureColor}"
-                               HorizontalAlignment="Stretch"
-                               Height="37"
-                               dd:DragDropHandler.TriggerMouseButton="Left">
-                        <ItemsControl DockPanel.Dock="Right"
-                                      Margin="3"
-                                      Classes="HoverReveal"
-                                      ItemsSource="{Binding $parent[UserControl].((vm:FileNavigatorViewModel)DataContext).FileQuickAssess}">
-                            <ItemsControl.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <StackPanel Orientation="Horizontal" Spacing="4"/>
-                                </ItemsPanelTemplate>
-                            </ItemsControl.ItemsPanel>
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <ContentControl Width="32" Height="32" ContentTemplate="{StaticResource LaminarToolIconTemplate}">
-                                        <lc:LaminarToolInstance Tool="{ReflectionBinding}"
-                                                                Parameter="{Binding $parent[DockPanel].DataContext}"/>
-                                    </ContentControl>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                        <c:EditableLabel VerticalAlignment="Center" 
-                                         Text="{Binding Name, Mode=TwoWay}"
-                                         IsBeingEdited="{Binding NeedsName, Mode=TwoWay}"/>
-                    </DockPanel>
-                </DataTemplate>
-            </TreeView.DataTemplates>
             
             <TreeView.Styles>
                 <Style Selector="TreeViewItem">
