@@ -3,17 +3,33 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using Avalonia.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
+using Laminar.Avalonia.InitializationTargets;
 using Laminar.Contracts.UserData;
+using Laminar.Domain.DataManagement;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Laminar.Avalonia.ViewModels.Services;
 
-public class ViewModelSerializationHelper(IServiceProvider serviceProvider)
+public class ViewModelSerializationHelper(
+    IServiceProvider serviceProvider, 
+    TopLevel topLevel, 
+    IPersistentDataManager dataManager) 
+    : IAfterApplicationBuiltTarget
 {
     private readonly IServiceProvider _serviceProvider = serviceProvider;
     private readonly HashSet<ViewModelBase> _registeredViewModels = [];
-    private readonly Dictionary<Type, Dictionary<string, ISerializedPropertyInfo>> _serializedPropertyInfos = []; 
+    private readonly Dictionary<Type, Dictionary<string, ISerializedPropertyInfo>> _serializedPropertyInfos = [];
+    private readonly IPersistentDataStore _dataStore = dataManager.GetDataStore(DataStoreKey.PersistentData);
+    
+    public void OnApplicationBuilt()
+    {
+        if (topLevel.DataContext is ViewModelBase topLevelViewModel)
+        {
+            SerializeObservableProperties(topLevelViewModel, _dataStore);
+        }
+    }
     
     public void SerializeObservableProperties(ViewModelBase viewModel, IPersistentDataStore dataStore, string prefix = "")
     {

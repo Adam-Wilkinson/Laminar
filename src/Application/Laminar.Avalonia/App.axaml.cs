@@ -3,12 +3,9 @@ using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
-using Laminar.Avalonia.ToolSystem;
+using Laminar.Avalonia.InitializationTargets;
 using Laminar.Avalonia.ViewModels;
-using Laminar.Avalonia.ViewModels.Services;
 using Laminar.Avalonia.Views;
-using Laminar.Contracts.UserData;
-using Laminar.Domain.DataManagement;
 using Laminar.Implementation.Extensions.ServiceInitializers;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -32,19 +29,17 @@ public partial class App : Application
             var services = new ServiceCollection()
                 .AddLaminarServices()
                 .AddDescendantsTransient<ViewModelBase>()
-                    .AddSingleton(desktop.MainWindow.StorageProvider)
+                .AddDescendantsSingleton<IBeforeApplicationBuiltTarget>()
+                .AddDescendantsSingleton<IAfterApplicationBuiltTarget>()
+                .AddSingleton(desktop.MainWindow.StorageProvider)
                 .AddSingleton<TopLevel>(desktop.MainWindow)
                 .BuildServiceProvider();
+
+            services.GetServices<IBeforeApplicationBuiltTarget>().Initialize();
             
-            var mainWindowViewModel = services.GetRequiredService<MainWindowViewModel>();
-            
-            ActivatorUtilities.CreateInstance<ViewModelSerializationHelper>(services)
-                .SerializeObservableProperties(mainWindowViewModel,
-                    services.GetRequiredService<IPersistentDataManager>().GetDataStore(DataStoreKey.PersistentData));
-            
-            Resources.Add("ServiceProvider", services);
-            
-            desktop.MainWindow.DataContext = mainWindowViewModel;
+            desktop.MainWindow.DataContext = services.GetRequiredService<MainWindowViewModel>();
+
+            services.GetServices<IAfterApplicationBuiltTarget>().Initialize();
         }
 
         base.OnFrameworkInitializationCompleted();

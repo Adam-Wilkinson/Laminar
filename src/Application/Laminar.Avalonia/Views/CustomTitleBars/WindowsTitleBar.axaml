@@ -38,29 +38,11 @@
 			<StackPanel Orientation="Horizontal"
 						VerticalAlignment="Stretch"
 						DockPanel.Dock="Left">
-				<!-- <Button VerticalAlignment="Stretch" -->
-				<!--         Name="LaminarButton"  -->
-				<!--         ClipToBounds="False" -->
-				<!--         DataContext="{Binding ToggleSidebarTool}" -->
-				<!--         Theme="{DynamicResource LaminarToolIcon}" -->
-				<!--         Classes.SidebarExpanded="{Binding $parent.((vm:TitleBarViewModel)DataContext).SidebarExpanded}" -->
-				<!--         Classes.Disabled="{Binding $parent.((vm:TitleBarViewModel)DataContext).SettingsOpen}"> -->
-				<!-- 	<Panel Margin="3,0,0,0" Width="28"> -->
-				<!-- 		<Path HorizontalAlignment="Center" Name="CloseSidebarHint" Data="M 0 0 L -2 8 L 0 16" Stroke="{DynamicResource LaminarForeground}" StrokeThickness="2" Height="16" ClipToBounds="False"/> -->
-				<!-- 		<Path HorizontalAlignment="Center" Name="ExpandSidebarHint" Data="M 0 0 L 2 8 L 0 16" Stroke="{DynamicResource LaminarForeground}" StrokeThickness="2" Height="16" ClipToBounds="False"/> -->
-				<!-- 		<Image Source="/Assets/ProjectLaminarLogo.png" -->
-				<!-- 		       Height="28" -->
-				<!-- 		       Width="28" -->
-				<!-- 		       IsHitTestVisible="False" -->
-				<!-- 		       VerticalAlignment="Center" -->
-				<!-- 		       Name="LaminarLogo"/> -->
-				<!-- 	</Panel> -->
-				<!-- </Button> -->
 				<Button DataContext="{Binding MainWindow, 
 										Converter={StaticResource ToolInstancer}, 
 										ConverterParameter={StaticResource Tools.Window.ToggleSidebar}}"
 				        Theme="{StaticResource ToolButton}"
-				        Width="40"/>
+				        Width="50"/>
 				<Menu VerticalAlignment="Stretch">
 					<Menu.Styles>
 						<Style Selector=":is(MenuItem)">
@@ -78,27 +60,14 @@
 			<StackPanel HorizontalAlignment="Right"
 						DockPanel.Dock="Right"
 						Orientation="Horizontal">
-				<!-- <Button Name="SettingsButton" -->
-				<!-- 		Classes.SettingsOpen="{Binding $parent.((vm:TitleBarViewModel)DataContext).SettingsOpen}" -->
-				<!-- 		DataContext="{Binding ToggleSettingsTool}" -->
-				<!-- 		Theme="{DynamicResource LaminarToolIcon}" -->
-				<!-- 		Margin="0,0,20,0"> -->
-				<!-- 	<Panel> -->
-				<!-- 		<localshapes:SettingsCog Classes="SettingsCog" Width="19" Height="19" SpokeDepth="4.5" SpokeCount="8" Stroke="{DynamicResource LaminarForeground}" StrokeThickness="1.5"/> -->
-				<!-- 		<Border Classes="SettingsArrowRotater"> -->
-				<!-- 			<Path Classes="SettingsArrow" Data="M 0 0 L 3 1 L 6 0" Height="20" Width="17" Stroke="{DynamicResource LaminarForeground}" VerticalAlignment="Stretch" ClipToBounds="False" HorizontalAlignment="Stretch" StrokeThickness="1.5"/> -->
-				<!-- 		</Border> -->
-				<!-- 	</Panel> -->
-				<!-- </Button> -->
-				
 				<Button DataContext="{Binding MainWindow, 
 										Converter={StaticResource ToolInstancer}, 
 										ConverterParameter={StaticResource Tools.Window.ToggleSettings}}"
 				        Classes.accent="{Binding $parent.((vm:TitleBarViewModel)DataContext).MainWindow.SettingsOpen}"    
 				        VerticalAlignment="Stretch"
 				        Theme="{StaticResource ToolButton}"
-				        Margin="3,0,9,0"
-				        Width="35"/>
+				        Margin="3,0,18,0"
+				        Width="45"/>
 				
 				<Button Name="SystemTrayButton" Classes="TitleBarStyle"
 						ToolTip.Tip="Minimize to System Tray">
@@ -149,124 +118,6 @@
 				  <Setter Property="StrokeThickness" Value="2"/>
 			  </Style>
 		  </Style>
-		  
-		  <!-- <Style Selector="Button#SettingsButton"> -->
-			 <!--  <Setter Property="Width" Value="46"/> -->
-			 <!--  <Setter Property="ClipToBounds" Value="False"/> -->
-			 <!--  <Setter Property="VerticalAlignment" Value="Stretch"/> -->
-			 <!--  <Setter Property="VerticalContentAlignment" Value="Stretch"/> -->
-			 <!--  <Style Selector="^ :is(Shape).SettingsCog"> -->
-				<!--   <Setter Property="Fill" Value="Transparent"/> -->
-				<!--   <Setter Property="RenderTransform" Value="rotate(0) scale(1.1)"/> -->
-				<!--   <Setter Property="Transitions"> -->
-				<!-- 	  <Transitions> -->
-				<!-- 		  <TransformOperationsTransition Easing="{DynamicResource AnimationEasing}" Duration="{DynamicResource AnimationDuration}" Property="RenderTransform"/> -->
-				<!-- 		  <BrushTransition Easing="{DynamicResource AnimationEasing}" Duration="{DynamicResource AnimationDuration}" Property="Fill"/> -->
-				<!-- 	  </Transitions> -->
-				<!--   </Setter> -->
-			 <!--  </Style> -->
-			 <!--  <Style Selector="^ :is(Path).SettingsArrow"> -->
-				<!--   <Setter Property="Opacity" Value="0"/> -->
-				<!--   <Setter Property="RenderTransform" Value="translatey(18px)"/> -->
-				<!--   <Setter Property="Stretch" Value="Uniform"/> -->
-				<!--   <Setter Property="Transitions"> -->
-				<!-- 	  <Transitions> -->
-				<!-- 		  <TransformOperationsTransition Easing="{DynamicResource AnimationEasing}" Duration="{DynamicResource AnimationDuration}" Property="RenderTransform"/> -->
-				<!-- 		  <DoubleTransition Easing="{DynamicResource AnimationEasing}" Duration="{DynamicResource AnimationDuration}" Property="Opacity"/> -->
-				<!-- 	  </Transitions> -->
-				<!--   </Setter> -->
-			 <!--  </Style> -->
-			 <!--  <Style Selector="^ :is(Control).SettingsArrowRotater"> -->
-				<!--   <Setter Property="RenderTransform" Value="rotate(0deg)"/> -->
-				<!--   <Setter Property="Transitions"> -->
-				<!-- 	  <Transitions> -->
-				<!-- 		  <TransformOperationsTransition Easing="{DynamicResource AnimationEasing}" Duration="{DynamicResource AnimationDuration}" Property="RenderTransform"/> -->
-				<!-- 	  </Transitions> -->
-				<!--   </Setter>				   -->
-			 <!--  </Style> -->
-		  <!-- -->
-			 <!--  <Style Selector="^:pointerover"> -->
-				<!--   <Style Selector="^ :is(Shape).SettingsCog"> -->
-				<!-- 	  <Setter Property="RenderTransform" Value="rotate(0) scale(1)"/> -->
-				<!-- 	  <Setter Property="Fill" Value="{Binding $self.Stroke}"/> -->
-				<!--   </Style> -->
-		  <!-- -->
-				<!--   <Style Selector="^ :is(Control).SettingsArrow"> -->
-				<!-- 	  <Setter Property="Opacity" Value="1"/> -->
-				<!-- 	  <Setter Property="RenderTransform" Value="translatey(22px)"/> -->
-				<!--   </Style> -->
-			 <!--  </Style> -->
-			 <!--   -->
-			 <!--  <Style Selector="^.SettingsOpen"> -->
-				<!--   <Style Selector="^ /template/ ContentPresenter#PART_ContentPresenter"> -->
-				<!-- 	  <Setter Property="Background" Value="{DynamicResource LaminarAccent}"/> -->
-				<!--   </Style> -->
-				<!--   <Style Selector="^ :is(Shape).SettingsCog"> -->
-				<!-- 	  <Setter Property="Fill" Value="{Binding $self.Stroke}"/> -->
-				<!-- 	  <Setter Property="RenderTransform" Value="rotate(20deg) scale(1)"/> -->
-				<!--   </Style> -->
-				<!--   <Style Selector="^ :is(Control).SettingsArrow"> -->
-				<!-- 	  <Setter Property="Opacity" Value="1"/> -->
-				<!-- 	  <Setter Property="RenderTransform" Value="translatey(22px)"/> -->
-				<!--   </Style> -->
-				<!--   <Style Selector="^ :is(Control).SettingsArrowRotater"> -->
-				<!-- 	  <Setter Property="RenderTransform" Value="rotate(180deg)"/> -->
-				<!--   </Style> -->
-			 <!--  </Style> -->
-		  <!-- </Style> -->
-		  
-		  <!-- <Style Selector=":is(Button)#LaminarButton"> -->
-			 <!--  <Setter Property="IsHitTestVisible" Value="True"/> -->
-			 <!--  <Style Selector="^ Image#LaminarLogo"> -->
-				<!--   <Setter Property="RenderTransform" Value="translatex(-5px)"/> -->
-				<!--   <Setter Property="Transitions"> -->
-				<!-- 	  <Transitions> -->
-				<!-- 		  <TransformOperationsTransition Property="RenderTransform" Duration="{DynamicResource AnimationDuration}" Easing="{DynamicResource AnimationEasing}"/> -->
-				<!-- 	  </Transitions> -->
-				<!--   </Setter> -->
-			 <!--  </Style> -->
-		  <!--     <Style Selector="^ Path"> -->
-				<!--   <Setter Property="Transitions"> -->
-				<!-- 	  <Transitions> -->
-  		<!-- 				  <DoubleTransition Property="Opacity" Duration="{DynamicResource AnimationDuration}" Easing="{DynamicResource AnimationEasing}"/> -->
-				<!-- 		  <TransformOperationsTransition Property="RenderTransform" Duration="{DynamicResource AnimationDuration}" Easing="{DynamicResource AnimationEasing}"/> -->
-				<!-- 	  </Transitions> -->
-				<!--   </Setter> -->
-			 <!--      <Style Selector="^#ExpandSidebarHint"> -->
-				<!--       <Setter Property="RenderTransform" Value="translatex(14px)"/> -->
-				<!--       <Setter Property="Opacity" Value="1"/> -->
-			 <!--      </Style> -->
-			 <!--      <Style Selector="^#CloseSidebarHint"> -->
-				<!--       <Setter Property="RenderTransform" Value="translatex(-10px)"/> -->
-				<!--       <Setter Property="Opacity" Value="0"/> -->
-			 <!--      </Style> -->
-		  <!--     </Style> -->
-			 <!--   -->
-			 <!--  <Style Selector="^.SidebarExpanded"> -->
-				<!--   <Setter Property="IsHitTestVisible" Value="True"/> -->
-				<!--   <Style Selector="^ Image#LaminarLogo"> -->
-				<!-- 	  <Setter Property="RenderTransform" Value="translatex(4px)"/> -->
-				<!--   </Style> -->
-				<!--   <Style Selector="^ Path#ExpandSidebarHint"> -->
-				<!-- 	  <Setter Property="RenderTransform" Value="translatex(-20px)"/> -->
-				<!-- 	  <Setter Property="Opacity" Value="0"/> -->
-				<!--   </Style> -->
-				<!--   <Style Selector="^ Path#CloseSidebarHint"> -->
-				<!-- 	  <Setter Property="RenderTransform" Value="translatex(-15px)"/> -->
-				<!-- 	  <Setter Property="Opacity" Value="1"/> -->
-				<!--   </Style> -->
-			 <!--  </Style> -->
-			 <!--   -->
-			 <!--  <Style Selector="^.Disabled"> -->
-				<!--   <Setter Property="IsHitTestVisible" Value="False"/> -->
-				<!--   <Style Selector="^ Image#LaminarLogo"> -->
-				<!-- 	  <Setter Property="RenderTransform" Value="translatex(0)"/> -->
-				<!--   </Style> -->
-				<!--   <Style Selector="^ Path"> -->
-				<!-- 	  <Setter Property="Opacity" Value="0"/> -->
-				<!--   </Style> -->
-			 <!--  </Style> -->
-		  <!-- </Style> -->
 	  </StackPanel.Styles>
   </StackPanel>
 </titlebars:LaminarTitleBar>
