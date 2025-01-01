@@ -10,6 +10,8 @@
             <Color x:Key='LaminarPrimary'>#242ee0</Color>
             <Color x:Key='LaminarSecondary'>#000c2e</Color>
             <Color x:Key='LaminarAccent'>#5c1887</Color>
+            <Color x:Key="LaminarAccentLight">#702a9e</Color>
+            <Color x:Key="LaminarAccentDark">#4c1877</Color>
             <Color x:Key="ScriptSignatureColor">#1c0807</Color>
         </ResourceDictionary>
         <ResourceDictionary x:Key="Light">
@@ -21,6 +23,8 @@
             <Color x:Key='LaminarPrimary'>#1f29db</Color>
             <Color x:Key='LaminarSecondary'>#d1ddff</Color>
             <Color x:Key='LaminarAccent'>#ab98d7</Color>
+            <Color x:Key="LaminarAccentLight">#beaaea</Color>
+            <Color x:Key="LaminarAccentDark">#9b88c7</Color>
             <Color x:Key="ScriptSignatureColor">#fec5e5</Color>
         </ResourceDictionary>
     </ResourceDictionary.ThemeDictionaries>

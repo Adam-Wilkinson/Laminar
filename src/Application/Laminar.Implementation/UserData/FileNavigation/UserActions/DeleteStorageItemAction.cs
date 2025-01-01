@@ -10,7 +10,8 @@ public class DeleteStorageItemAction<T>(T item) : IUserAction where T : class, I
     public bool CanExecute => true;
     public IUserAction Execute()
     {
+        var parentFolder = item.ParentFolder;
         item.Delete();
-        return new AddStorageItemAction<T>(item, item.ParentFolder);
+        return new AddStorageItemAction<T>(item, parentFolder);
     }
 }

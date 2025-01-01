@@ -1,0 +1,246 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:vm="using:Laminar.Avalonia.ViewModels"
+                    xmlns:vms="using:Laminar.Avalonia.ViewModels.Services"
+                    xmlns:t="using:Laminar.Avalonia.ToolSystem"
+                    xmlns:shapes="using:Laminar.Avalonia.Shapes">
+    
+    <!-- Edit Menu Tool -->
+    <t:ToolTemplate Name="Undo" x:DataType="vms:IUndoTarget" 
+                    x:Key="Tools.Edit.Undo"
+                    Gesture="Ctrl+z"
+                    DefaultIconGeometry="{x:Static shapes:PathData.UndoIcon}"
+                    CommandBinding="{ReflectionBinding Undo}"/>
+    
+    <t:ToolboxTemplate Name="Edit" 
+                       x:Key="Tools.Edit" 
+                       DefaultIconGeometry="{x:Static shapes:PathData.EditIcon}"
+                       Gesture="Ctrl+e">
+        <StaticResource ResourceKey="Tools.Edit.Undo"/>
+        <t:ToolTemplate Name="Redo" Gesture="Ctrl+y" DefaultIconGeometry="{x:Static shapes:PathData.RedoIcon}"/>
+    </t:ToolboxTemplate>
+    
+    <!-- File Navigator Tool -->
+    <t:ToolboxTemplate x:Key="Tools.FileNavigator.StorageItem" 
+                    Name="Storage Item Tools" 
+                    x:DataType="vm:FileNavigatorItemViewModel"
+                    DescriptionBinding="{Binding ItemTypeName, StringFormat='{}{0} Tools'}">
+        <t:ToolTemplate.IconTemplate>
+            <DataTemplate DataType="vm:FileNavigatorItemViewModel">
+                <PathIcon Tag="{Binding ItemTypeName}">
+                    <PathIcon.Styles>
+                        <Style Selector="PathIcon[Tag=folder]">
+                            <Setter Property="Data" Value="{x:Static shapes:PathData.FolderIcon}"/>
+                        </Style>
+                        <Style Selector="PathIcon[Tag=script]">
+                            <Setter Property="Data" Value="{x:Static shapes:PathData.ScriptIcon}"/>
+                        </Style>
+                    </PathIcon.Styles>
+                </PathIcon>
+            </DataTemplate>
+        </t:ToolTemplate.IconTemplate>
+        <t:ToolTemplate Name="Rename" x:DataType="vm:FileNavigatorItemViewModel" 
+                        DefaultIconGeometry="{x:Static shapes:PathData.RenameIcon}"
+                        CommandBinding="{ReflectionBinding Rename}"/>
+        <t:ToolboxTemplate Name="Add Storage Item" x:DataType="vm:FileNavigatorItemViewModel"
+                           DefaultIconGeometry="{x:Static shapes:PathData.AddIcon}">
+            <t:ToolTemplate Name="Add Folder" x:DataType="vm:FileNavigatorItemViewModel" 
+                            DefaultIconGeometry="{x:Static shapes:PathData.FolderIcon}"
+                            CommandBinding="{ReflectionBinding AddFolder}"/>
+            <t:ToolTemplate Name="Add Script" x:DataType="vm:FileNavigatorItemViewModel" 
+                            DefaultIconGeometry="{x:Static shapes:PathData.ScriptIcon}"
+                            CommandBinding="{ReflectionBinding AddScript}"/>
+        </t:ToolboxTemplate>
+        <t:ToolTemplate Name="Delete" x:DataType="vm:FileNavigatorItemViewModel"
+                        DefaultIconGeometry="{x:Static shapes:PathData.DeleteIcon}"
+                        DescriptionBinding="{Binding ItemTypeName, StringFormat='Delete {0}'}"
+                        CommandBinding="{ReflectionBinding Delete}"/>
+        <t:ToolTemplate Name="Toggle Enabled" x:DataType="vm:FileNavigatorItemViewModel"
+                        CommandBinding="{ReflectionBinding ToggleEnabled}"
+                        DescriptionBinding="{Binding ToggleEnabledString}">
+	        <!-- <t:ToolInstance Command="{Binding ToggleEnabled}"/> -->
+	        <t:ToolTemplate.IconTemplate>
+                <DataTemplate DataType="vm:FileNavigatorItemViewModel">
+                    <t:SwitchIcon IsOn="{Binding CoreItem.IsEffectivelyEnabled}"/>
+                </DataTemplate>
+            </t:ToolTemplate.IconTemplate>
+        </t:ToolTemplate>
+    </t:ToolboxTemplate>
+    
+    <t:ToolboxTemplate Name="File Navigator Tools" x:Key="Tools.FileNavigator"
+                       DefaultIconGeometry="{x:Static shapes:PathData.FileNavigatorIcon}">
+        <StaticResource ResourceKey="Tools.FileNavigator.StorageItem"/>
+    </t:ToolboxTemplate>
+    
+    <!-- Window Tools -->
+    <t:ToolTemplate Name="Expand/Collapse Sidebar" x:Key="Tools.Window.ToggleSidebar" 
+                    x:DataType="vm:MainWindowViewModel"
+                    Gesture="Ctrl+B"
+                    DescriptionBinding="{Binding ToggleSidebarDescription}"
+                    CommandBinding="{ReflectionBinding ToggleSidebar}">
+        <t:ToolTemplate.IconTemplate>
+            <DataTemplate DataType="vm:MainWindowViewModel">
+                <Panel Classes.SidebarExpanded="{Binding SidebarExpanded}"
+                       Classes.Disabled="{Binding SettingsOpen}">
+                    <Path HorizontalAlignment="Center" Name="CloseSidebarHint" Data="M 0 0 L -2 8 L 0 16" Stroke="{DynamicResource LaminarForeground}" StrokeThickness="2" Height="16" ClipToBounds="False"/>
+                    <Path HorizontalAlignment="Center" Name="ExpandSidebarHint" Data="M 0 0 L 2 8 L 0 16" Stroke="{DynamicResource LaminarForeground}" StrokeThickness="2" Height="16" ClipToBounds="False"/>
+                    <Image Source="/Assets/ProjectLaminarLogo.png"
+                               Height="30"
+                               Width="30"
+                               IsHitTestVisible="False"
+                               VerticalAlignment="Center"
+                               Name="LaminarLogo"/>
+                    <Panel.Styles>
+                        <Style Selector="Panel">
+						    <Setter Property="IsHitTestVisible" Value="True"/>
+						    <Style Selector="^ Image#LaminarLogo">
+							    <Setter Property="RenderTransform" Value="translatex(-5px)"/>
+							    <Setter Property="Transitions">
+								    <Transitions>
+									    <TransformOperationsTransition Property="RenderTransform" Duration="{DynamicResource AnimationDuration}" Easing="{DynamicResource AnimationEasing}"/>
+								    </Transitions>
+							    </Setter>
+						    </Style>
+					        <Style Selector="^ Path">
+							    <Setter Property="Transitions">
+								    <Transitions>
+  									    <DoubleTransition Property="Opacity" Duration="{DynamicResource AnimationDuration}" Easing="{DynamicResource AnimationEasing}"/>
+									    <TransformOperationsTransition Property="RenderTransform" Duration="{DynamicResource AnimationDuration}" Easing="{DynamicResource AnimationEasing}"/>
+								    </Transitions>
+							    </Setter>
+						        <Style Selector="^#ExpandSidebarHint">
+							        <Setter Property="RenderTransform" Value="translatex(14px)"/>
+							        <Setter Property="Opacity" Value="1"/>
+						        </Style>
+						        <Style Selector="^#CloseSidebarHint">
+							        <Setter Property="RenderTransform" Value="translatex(-10px)"/>
+							        <Setter Property="Opacity" Value="0"/>
+						        </Style>
+					        </Style>
+						 
+						    <Style Selector="^.SidebarExpanded">
+							    <Setter Property="IsHitTestVisible" Value="True"/>
+							    <Style Selector="^ Image#LaminarLogo">
+								    <Setter Property="RenderTransform" Value="translatex(4px)"/>
+							    </Style>
+							    <Style Selector="^ Path#ExpandSidebarHint">
+								    <Setter Property="RenderTransform" Value="translatex(-20px)"/>
+								    <Setter Property="Opacity" Value="0"/>
+							    </Style>
+							    <Style Selector="^ Path#CloseSidebarHint">
+								    <Setter Property="RenderTransform" Value="translatex(-15px)"/>
+								    <Setter Property="Opacity" Value="1"/>
+							    </Style>
+						    </Style>
+						 
+						    <Style Selector="^.Disabled">
+							    <Setter Property="IsHitTestVisible" Value="False"/>
+							    <Style Selector="^ Image#LaminarLogo">
+								    <Setter Property="RenderTransform" Value="translatex(0)"/>
+							    </Style>
+							    <Style Selector="^ Path">
+							  	    <Setter Property="Opacity" Value="0"/>
+							    </Style>
+						    </Style>
+					  </Style>
+                    </Panel.Styles>
+                </Panel>
+            </DataTemplate>
+        </t:ToolTemplate.IconTemplate>
+    </t:ToolTemplate>
+    
+    <t:ToolTemplate Name="Open/Close Settings Menu" x:Key="Tools.Window.ToggleSettings"
+                    x:DataType="vm:MainWindowViewModel"
+                    Gesture="Ctrl+Alt+S"
+                    DescriptionBinding="{Binding ToggleSettingsDescription}"
+                    CommandBinding="{ReflectionBinding ToggleSettings}">
+		<t:ToolTemplate.IconTemplate>
+			<DataTemplate x:DataType="vm:MainWindowViewModel">
+				<Panel Classes.SettingsOpen="{Binding SettingsOpen}"
+				       VerticalAlignment="Stretch"
+				       Classes="TagIsPointerOver">
+					<shapes:SettingsCog Classes="SettingsCog" Width="19" Height="19" 
+					                    SpokeDepth="4.5" SpokeCount="8" 
+					                    Stroke="{DynamicResource LaminarForeground}" StrokeThickness="1.5"/>
+					<Border Classes="SettingsArrowRotater">
+						<Path Classes="SettingsArrow" Data="M 0 0 L 3 1 L 6 0" Height="20" Width="17"
+						      Stroke="{DynamicResource LaminarForeground}" VerticalAlignment="Stretch" 
+						      ClipToBounds="False" HorizontalAlignment="Stretch" StrokeThickness="1.5"/>
+					</Border>
+					<Panel.Styles>
+						<Style Selector="Panel">
+						    <Setter Property="ClipToBounds" Value="False"/>
+						    <Setter Property="VerticalAlignment" Value="Stretch"/>
+						    <Style Selector="^ :is(Shape).SettingsCog">
+							    <Setter Property="Fill" Value="Transparent"/>
+							    <Setter Property="RenderTransform" Value="rotate(0) scale(1.1)"/>
+							    <Setter Property="Transitions">
+								    <Transitions>
+									    <TransformOperationsTransition Easing="{DynamicResource AnimationEasing}" Duration="{DynamicResource AnimationDuration}" Property="RenderTransform"/>
+									    <BrushTransition Easing="{DynamicResource AnimationEasing}" Duration="{DynamicResource AnimationDuration}" Property="Fill"/>
+								    </Transitions>
+							    </Setter>
+						    </Style>
+						    <Style Selector="^ :is(Path).SettingsArrow">
+							    <Setter Property="Opacity" Value="0"/>
+							    <Setter Property="RenderTransform" Value="translatey(18px)"/>
+							    <Setter Property="Stretch" Value="Uniform"/>
+							    <Setter Property="Transitions">
+								    <Transitions>
+									    <TransformOperationsTransition Easing="{DynamicResource AnimationEasing}" Duration="{DynamicResource AnimationDuration}" Property="RenderTransform"/>
+									    <DoubleTransition Easing="{DynamicResource AnimationEasing}" Duration="{DynamicResource AnimationDuration}" Property="Opacity"/>
+								    </Transitions>
+							    </Setter>
+						    </Style>
+						    <Style Selector="^ :is(Control).SettingsArrowRotater">
+							    <Setter Property="RenderTransform" Value="rotate(0deg)"/>
+							    <Setter Property="Transitions">
+								    <Transitions>
+									    <TransformOperationsTransition Easing="{DynamicResource AnimationEasing}" Duration="{DynamicResource AnimationDuration}" Property="RenderTransform"/>
+								    </Transitions>
+							    </Setter>				
+						    </Style>
+					
+						    <Style Selector="^[Tag=PointerOver]">
+							    <Style Selector="^ :is(Shape).SettingsCog">
+								    <Setter Property="RenderTransform" Value="rotate(0) scale(1)"/>
+								    <Setter Property="Fill" Value="{Binding $self.Stroke}"/>
+							    </Style>
+					
+							    <Style Selector="^ :is(Control).SettingsArrow">
+								    <Setter Property="Opacity" Value="1"/>
+								    <Setter Property="RenderTransform" Value="translatey(22px)"/>
+							    </Style>
+						    </Style>
+						
+						    <Style Selector="^.SettingsOpen">
+							    <Style Selector="^ :is(Shape).SettingsCog">
+								    <Setter Property="Fill" Value="{Binding $self.Stroke}"/>
+								    <Setter Property="RenderTransform" Value="rotate(20deg) scale(1)"/>
+							    </Style>
+							    <Style Selector="^ :is(Control).SettingsArrow">
+								    <Setter Property="Opacity" Value="1"/>
+								    <Setter Property="RenderTransform" Value="translatey(22px)"/>
+							    </Style>
+							    <Style Selector="^ :is(Control).SettingsArrowRotater">
+								    <Setter Property="RenderTransform" Value="rotate(180deg)"/>
+							    </Style>
+						    </Style>
+					    </Style>
+					</Panel.Styles>
+				</Panel>
+			</DataTemplate>
+		</t:ToolTemplate.IconTemplate>	    
+    </t:ToolTemplate>
+    
+    <t:ToolboxTemplate x:Key="Tools.Window" Name="Window">
+	    <StaticResource ResourceKey="Tools.Window.ToggleSettings"/>
+	    <StaticResource ResourceKey="Tools.Window.ToggleSidebar"/>
+    </t:ToolboxTemplate>
+
+    <t:ToolboxTemplate x:Key="Tools" Name="LaminarToolRoot">
+        <StaticResource ResourceKey="Tools.Edit"/>
+        <StaticResource ResourceKey="Tools.FileNavigator"/>
+        <StaticResource ResourceKey="Tools.Window"/>
+    </t:ToolboxTemplate>
+</ResourceDictionary>

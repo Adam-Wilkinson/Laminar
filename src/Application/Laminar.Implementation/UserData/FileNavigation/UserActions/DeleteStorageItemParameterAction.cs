@@ -9,9 +9,5 @@ public class DeleteStorageItemParameterAction<T>(ILaminarStorageItemFactory fact
     public IObservableValue<bool> CanExecute(T parameter) => new ObservableValue<bool>(true);
 
     public IUserAction Execute(T parameter)
-    {
-        var folder = parameter.ParentFolder;
-        parameter.Delete();
-        return new AddStorageItemAction<T>(parameter, folder);
-    }
+        => new DeleteStorageItemAction<T>(parameter).Execute();
 }

@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -9,20 +7,23 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using Laminar.Contracts.UserData;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Laminar.Avalonia.ViewModels;
+namespace Laminar.Avalonia.ViewModels.Services;
 
 public class ViewModelSerializationHelper(IServiceProvider serviceProvider)
 {
     private readonly IServiceProvider _serviceProvider = serviceProvider;
+    private readonly HashSet<ViewModelBase> _registeredViewModels = [];
     private readonly Dictionary<Type, Dictionary<string, ISerializedPropertyInfo>> _serializedPropertyInfos = []; 
     
     public void SerializeObservableProperties(ViewModelBase viewModel, IPersistentDataStore dataStore, string prefix = "")
     {
+        _registeredViewModels.Add(viewModel);
         foreach (var propertyInfo in viewModel.GetType().GetProperties())
         {
             if (propertyInfo.GetMethod is not null 
                 && propertyInfo.PropertyType.IsSubclassOf(typeof(ViewModelBase))
-                && propertyInfo.GetMethod.Invoke(viewModel, []) is ViewModelBase childViewModel)
+                && propertyInfo.GetMethod.Invoke(viewModel, []) is ViewModelBase childViewModel
+                && !_registeredViewModels.Contains(childViewModel))
             {
                 SerializeObservableProperties(childViewModel, dataStore, prefix + "." + propertyInfo.Name);
             }

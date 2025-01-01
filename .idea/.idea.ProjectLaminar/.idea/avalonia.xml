@@ -23,9 +23,14 @@
         <entry key="src/Application/Laminar.Avalonia/XamlAssets/LaminarColorResources.axaml" value="src/Application/Laminar.Avalonia/Laminar.Avalonia.csproj" />
         <entry key="src/Application/Laminar.Avalonia/XamlAssets/Resources/LaminarColorResources.axaml" value="src/Application/Laminar.Avalonia/Laminar.Avalonia.csproj" />
         <entry key="src/Application/Laminar.Avalonia/XamlAssets/Resources/SettingsResources.axaml" value="src/Application/Laminar.Avalonia/Laminar.Avalonia.csproj" />
+        <entry key="src/Application/Laminar.Avalonia/XamlAssets/Resources/ToolResources.axaml" value="src/Application/Laminar.Avalonia/Laminar.Avalonia.csproj" />
         <entry key="src/Application/Laminar.Avalonia/XamlAssets/Styles/FontStyles.axaml" value="src/Application/Laminar.Avalonia/Laminar.Avalonia.csproj" />
         <entry key="src/Application/Laminar.Avalonia/XamlAssets/Styles/SettingsResources.axaml" value="src/Application/Laminar.Avalonia/Laminar.Avalonia.csproj" />
+        <entry key="src/Application/Laminar.Avalonia/XamlAssets/Themes/GeometryIconTheme.axaml" value="src/Application/Laminar.Avalonia/Laminar.Avalonia.csproj" />
+        <entry key="src/Application/Laminar.Avalonia/XamlAssets/Themes/SwitchIconTheme.axaml" value="src/Application/Laminar.Avalonia/Laminar.Avalonia.csproj" />
         <entry key="src/Application/Laminar.Avalonia/XamlAssets/Themes/ToggleButtonThemes.axaml" value="src/Application/Laminar.Avalonia/Laminar.Avalonia.csproj" />
+        <entry key="src/Application/Laminar.Avalonia/XamlAssets/Themes/ToolButtonTheme.axaml" value="src/Application/Laminar.Avalonia/Laminar.Avalonia.csproj" />
+        <entry key="src/Application/Laminar.Avalonia/XamlAssets/Themes/ToolMenuItemTheme.axaml" value="src/Application/Laminar.Avalonia/Laminar.Avalonia.csproj" />
       </map>
     </option>
   </component>

@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 
 namespace Laminar.Domain.Notification;
@@ -12,6 +13,9 @@ public static class NotifyCollectionChangedHelper
     
     public static Instance<T> HelperInstance<T>(this IReadOnlyObservableCollection<T> collection) => HelperInstance<T>((INotifyCollectionChanged)collection);
 
+    public static Instance<T> HelperInstance<T>(this ObservableCollection<T> collection) =>
+        HelperInstance<T>((INotifyCollectionChanged)collection);
+    
     public static Instance<T> HelperInstance<T>(this INotifyCollectionChanged core)
     {
         if (ExistingListeners.TryGetValue(core, out var value)) return (Instance<T>)value;

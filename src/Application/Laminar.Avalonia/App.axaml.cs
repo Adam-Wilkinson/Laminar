@@ -5,6 +5,7 @@ using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
 using Laminar.Avalonia.ToolSystem;
 using Laminar.Avalonia.ViewModels;
+using Laminar.Avalonia.ViewModels.Services;
 using Laminar.Avalonia.Views;
 using Laminar.Contracts.UserData;
 using Laminar.Domain.DataManagement;
@@ -31,8 +32,7 @@ public partial class App : Application
             var services = new ServiceCollection()
                 .AddLaminarServices()
                 .AddDescendantsTransient<ViewModelBase>()
-                .AddSingleton<LaminarToolFactory>()
-                .AddSingleton(desktop.MainWindow.StorageProvider)
+                    .AddSingleton(desktop.MainWindow.StorageProvider)
                 .AddSingleton<TopLevel>(desktop.MainWindow)
                 .BuildServiceProvider();
             

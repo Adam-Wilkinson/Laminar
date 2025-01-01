@@ -9,10 +9,6 @@ public class AddStorageItemParameterAction<T>(ILaminarStorageItemFactory factory
 {
     public IObservableValue<bool> CanExecute(ILaminarStorageFolder parameter) => new ObservableValue<bool>(true);
     
-    public IUserAction Execute(ILaminarStorageFolder parameter)
-    {
-        var newItem = factory.AddDefaultToFolder<T>(parameter);
-        parameter.Contents.Add(newItem);
-        return new DeleteStorageItemAction<T>(newItem);
-    }
+    public IUserAction Execute(ILaminarStorageFolder parameter) 
+        => new AddDefaultStorageItemAction<T>(parameter, factory).Execute();
 }

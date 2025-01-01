@@ -2,11 +2,16 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="Laminar.Avalonia.App"
              xmlns:local="using:Laminar.Avalonia"
+             xmlns:vms="using:Laminar.Avalonia.ViewModels.Services"
+             xmlns:t="using:Laminar.Avalonia.ToolSystem"
              xmlns:conv="using:Laminar.Avalonia.Converters"
              RequestedThemeVariant="Default">
 
     <Application.DataTemplates>
-        <local:ViewLocator/>
+        <vms:ViewLocator/>
+        <DataTemplate DataType="t:ToolInstance">
+	        <Button Theme="{StaticResource ToolButton}"/>
+        </DataTemplate>
     </Application.DataTemplates>
   
     <Application.Styles>
@@ -18,12 +23,18 @@
 		<ResourceDictionary>
 			<ResourceDictionary.MergedDictionaries>
 				<ResourceInclude Source="XamlAssets/Resources/LaminarColorResources.axaml"/>
+				<ResourceInclude Source="XamlAssets/Resources/ToolResources.axaml"/>
 				<ResourceInclude Source="XamlAssets/Resources/SettingsResources.axaml"/>
-				<ResourceInclude Source="XamlAssets/DataTemplates/LaminarCommandTemplates.axaml"/>
+				<ResourceInclude Source="XamlAssets/Themes/ToolButtonTheme.axaml"/>
+				<ResourceInclude Source="XamlAssets/Themes/ToolMenuItemTheme.axaml"/>
+				<ResourceInclude Source="XamlAssets/Themes/GeometryIconTheme.axaml"/>
+				<ResourceInclude Source="XamlAssets/Themes/SwitchIconTheme.axaml"/>
 			</ResourceDictionary.MergedDictionaries>
 			
 			<conv:ScaleNameConverter x:Key="ScaleNameConverter"/>
 			<conv:FirstNotNullValueConverter x:Key="FirstNotNullValueConverter"/>
+			<conv:NullOrEmptyConverter x:Key="NullOrEmptyConverter"/>
+			<conv:ToolInstancer x:Key="ToolInstancer"/>
 		</ResourceDictionary>
 	</Application.Resources>
 </Application>

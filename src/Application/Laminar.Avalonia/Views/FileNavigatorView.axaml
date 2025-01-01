@@ -11,12 +11,12 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450" d:DataContext="{x:Static dvm:DesignViewModel.FileNavigator}"
              x:DataType="vm:FileNavigatorViewModel"
              x:Class="Laminar.Avalonia.Views.FileNavigatorView">
-    <UserControl.Resources>
-        <ResourceDictionary>
-            <StaticResource x:Key="{x:Type fn:LaminarStorageFile}" ResourceKey="ScriptSignatureColor"/>
-            <StaticResource x:Key="{x:Type fn:LaminarStorageFolder}" ResourceKey="LaminarBackgroundAlt"/>
-        </ResourceDictionary>
-    </UserControl.Resources>
+    <!-- <UserControl.Resources> -->
+    <!--     <ResourceDictionary> -->
+    <!--         <StaticResource x:Key="{x:Type fn:LaminarStorageFile}" ResourceKey="ScriptSignatureColor"/> -->
+    <!--         <StaticResource x:Key="{x:Type fn:LaminarStorageFolder}" ResourceKey="LaminarBackgroundAlt"/> -->
+    <!--     </ResourceDictionary> -->
+    <!-- </UserControl.Resources> -->
     
     <Panel Background="{DynamicResource LaminarBackgroundLighter}" MinWidth="1" Name="FileNavigator">
         <Panel.Styles>
@@ -38,31 +38,18 @@
                                Classes="FileNavigatorItem"
                                HorizontalAlignment="Stretch"
                                Height="37">
-                        <ItemsControl DockPanel.Dock="Right"
-                                      Margin="3"
-                                      ItemsSource="{Binding QuickAccess}">
+                        <ItemsControl DockPanel.Dock="Right" 
+                                      ItemsSource="{Binding 
+                                            Converter={StaticResource ToolInstancer}, 
+                                            ConverterParameter={StaticResource Tools.FileNavigator.StorageItem}}">
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>
-                                    <StackPanel Orientation="Horizontal" Spacing="4"/>
+                                    <StackPanel Orientation="Horizontal" Spacing="3" Height="32"/>
                                 </ItemsPanelTemplate>
                             </ItemsControl.ItemsPanel>
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <ContentControl Classes="HoverReveal" Width="32" Height="32" ContentTemplate="{StaticResource LaminarToolIconTemplate}">
-                                        <ContentControl.Tag>
-                                            <MultiBinding StringFormat="{}{0}, {1}">
-                                                <Binding Path="Name"/>
-                                                <Binding Path="$parent[DockPanel].((vm:FileNavigatorItemViewModel)DataContext).CoreItem.IsEffectivelyEnabled" Converter="{x:Static BoolConverters.Not}"/>
-                                            </MultiBinding>
-                                        </ContentControl.Tag>
-                                        <lc:LaminarToolInstance Tool="{Binding}"
-                                                                Parameter="{Binding $parent[DockPanel].DataContext}"/>
-                                    </ContentControl>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
                         </ItemsControl>
                         <c:EditableLabel VerticalAlignment="Center" 
-                                         Text="{Binding CoreItem.Name, Mode=TwoWay}" 
+                                         Text="{Binding Name, Mode=TwoWay}" 
                                          IsBeingEdited="{Binding CoreItem.NeedsName, Mode=TwoWay}"/>
                         <DockPanel.Styles>
                             <Style Selector="DockPanel.FileNavigatorItem">
@@ -79,7 +66,7 @@
             
             <TreeView.Styles>
                 <Style Selector="TreeViewItem">
-                    <Setter Property="IsExpanded" Value="True"/>
+                    <Setter Property="IsExpanded" Value="False"/>
                     <Setter Property="dd:DragDropHandler.TriggerMouseButton" Value="Left"/>
                     <Setter Property="ClipToBounds" Value="False"/>
                 </Style>

@@ -1,0 +1,32 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:t="using:Laminar.Avalonia.ToolSystem">
+    <ControlTheme TargetType="MenuItem" x:Key="ToolMenuItemTheme" x:DataType="t:ToolInstance" 
+                  BasedOn="{StaticResource {x:Type MenuItem}}">
+        
+        <Setter Property="Icon">
+            <Template>
+                <ContentControl Name="PART_LaminarIcon"
+                                Content="{Binding DataContext}"
+                                ContentTemplate="{Binding ToolTemplate.IconTemplate}"/>
+            </Template>
+        </Setter>
+        <Setter Property="Header" Value="{Binding ToolTemplate.Name}"/>
+        <Setter Property="InputGesture" Value="{Binding ToolTemplate.Gesture}"/>
+        <Setter Property="ToolTip.Tip">
+            <Template>
+                <StackPanel>
+                    <TextBlock Classes="b2" 
+                               Text="{Binding Description}" 
+                               IsVisible="{Binding Description, Converter={x:Static ObjectConverters.IsNotNull}}"/>
+                    <TextBlock Classes="b2">Press <Run FontWeight="Normal" Classes="Emphasis" Text="{DynamicResource ChangeBindingGestureString}"/> to change binding</TextBlock>
+                </StackPanel>
+            </Template>
+        </Setter>
+        <Setter Property="Command" Value="{Binding  Command}"/>
+        <Setter Property="ItemsSource" Value="{Binding ChildTools}"/>
+        <Style Selector="^:pointerover /template/ ContentControl#PART_IconPresenter > ContentControl#PART_LaminarIcon :is(Control).PointerOverTarget">
+            <Setter Property="Tag" Value="PointerOver"/>
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>

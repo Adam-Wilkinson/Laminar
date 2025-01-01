@@ -4,7 +4,7 @@ namespace Laminar.Contracts.UserData.FileNavigation;
 
 public interface ILaminarStorageItem : INotifyPropertyChanged
 {
-    public string Name { get; }
+    public string Name { get; set; }
     public string Extension { get; }
     public string Path { get; }
     public bool IsEnabled { get; set; }
