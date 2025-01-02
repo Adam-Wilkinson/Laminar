@@ -6,7 +6,7 @@ using Laminar.Avalonia.ToolSystem;
 
 namespace Laminar.Avalonia.Converters;
 
-public class ToolInstancer : IValueConverter
+public class ToolInstancingConverter : IValueConverter
 {
     public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {

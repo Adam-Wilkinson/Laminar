@@ -17,8 +17,10 @@ public class ToolboxTemplate : ToolTemplate
     [Content] public AvaloniaList<ToolTemplate> ChildrenContent => ChildTools;
 }
 
-public class ToolTemplate : AvaloniaObject, ITemplate<object?, ToolInstance>, IEnumerable<ToolTemplate>
+public class ToolTemplate : AvaloniaObject, ITemplate<object?, ToolInstance?>, IEnumerable<ToolTemplate>
 {
+    public static readonly string ToolRootKey = "ToolRoot"; 
+    
     public static readonly StyledProperty<KeyGesture?> GestureProperty = AvaloniaProperty.Register<ToolTemplate, KeyGesture?>(nameof(Gesture));
 
     public static readonly StyledProperty<IDataTemplate?> IconTemplateProperty = AvaloniaProperty.Register<ToolTemplate, IDataTemplate?>(nameof(IconTemplate));
@@ -76,8 +78,13 @@ public class ToolTemplate : AvaloniaObject, ITemplate<object?, ToolInstance>, IE
     [TemplateContent(TemplateResultType = typeof(ToolInstance))]
     public object? Content { get; set; }
 
-    public ToolInstance Build(object? param)
+    public ToolInstance? Build(object? param)
     {
+        if (DataType is not null && !DataType.IsInstanceOfType(param))
+        {
+            return null;
+        }
+        
         var newTool = TemplateContent.Load<ToolInstance>(Content)?.Result ?? new ToolInstance();
         newTool.DataContext = param;
         newTool.ToolTemplate = this;

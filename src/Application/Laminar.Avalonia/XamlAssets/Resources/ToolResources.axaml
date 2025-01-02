@@ -56,6 +56,7 @@
                         DescriptionBinding="{Binding ItemTypeName, StringFormat='Delete {0}'}"
                         CommandBinding="{ReflectionBinding Delete}"/>
         <t:ToolTemplate Name="Toggle Enabled" x:DataType="vm:FileNavigatorItemViewModel"
+                        Gesture="Alt+E"
                         CommandBinding="{ReflectionBinding ToggleEnabled}"
                         DescriptionBinding="{Binding ToggleEnabledString}">
 	        <!-- <t:ToolInstance Command="{Binding ToggleEnabled}"/> -->
@@ -238,7 +239,7 @@
 	    <StaticResource ResourceKey="Tools.Window.ToggleSidebar"/>
     </t:ToolboxTemplate>
 
-    <t:ToolboxTemplate x:Key="Tools" Name="LaminarToolRoot">
+    <t:ToolboxTemplate x:Key="{x:Static t:ToolTemplate.ToolRootKey}" Name="LaminarToolRoot">
         <StaticResource ResourceKey="Tools.Edit"/>
         <StaticResource ResourceKey="Tools.FileNavigator"/>
         <StaticResource ResourceKey="Tools.Window"/>
