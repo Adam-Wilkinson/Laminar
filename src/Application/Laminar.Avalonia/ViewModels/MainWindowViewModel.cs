@@ -1,10 +1,11 @@
 ﻿using Avalonia.Metadata;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 
 namespace Laminar.Avalonia.ViewModels;
 public partial class MainWindowViewModel : ViewModelBase
 {
-    [ObservableProperty] private bool _settingsOpen;
+    [ObservableProperty, NotifyCanExecuteChangedFor(nameof(ToggleSidebarCommand))] private bool _settingsOpen;
     [ObservableProperty] private bool _sidebarExpanded;
     
     public MainWindowViewModel(MainControlViewModel mainControl, TitleBarViewModel titlebar, SettingsViewModel settings)
@@ -21,23 +22,23 @@ public partial class MainWindowViewModel : ViewModelBase
         };
     }
     
-    
     public string ToggleSettingsDescription => SettingsOpen ? "Close settings" : "Open settings";
 
     public string ToggleSidebarDescription => SidebarExpanded ? "Collapse Sidebar" : "Expand Sidebar";
     
+    [RelayCommand]
     public void ToggleSettings()
     {
         SettingsOpen = !SettingsOpen;
     }
 
+    [RelayCommand(CanExecute = nameof(CanToggleSidebar))]
     public void ToggleSidebar()
     {
         SidebarExpanded = !SidebarExpanded;
     }
 
-    [DependsOn(nameof(SettingsOpen))]
-    public bool CanToggleSidebar(object? _) => !SettingsOpen;
+    public bool CanToggleSidebar() => !SettingsOpen;
     
     public TitleBarViewModel TitleBar { get; }
 

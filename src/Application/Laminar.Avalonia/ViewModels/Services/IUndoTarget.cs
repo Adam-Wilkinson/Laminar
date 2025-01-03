@@ -1,8 +1,8 @@
+using System.Windows.Input;
+
 namespace Laminar.Avalonia.ViewModels.Services;
 
 public interface IUndoTarget
 {
-    public void Undo();
-
-    public bool CanUndo { get; }
+    public ICommand UndoCommand { get; }
 }
