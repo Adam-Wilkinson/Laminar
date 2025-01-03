@@ -19,11 +19,17 @@
                     <TextBlock Classes="b2" 
                                Text="{Binding Description}" 
                                IsVisible="{Binding Description, Converter={x:Static ObjectConverters.IsNotNull}}"/>
-                    <TextBlock Classes="b2">Press <Run FontWeight="Normal" Classes="Emphasis" Text="{DynamicResource ChangeBindingGestureString}"/> to change binding</TextBlock>
+                    <TextBlock Classes="b2">Press <Run FontWeight="Normal" 
+                                                       Classes="Emphasis"
+                                                       Text="{Binding Gesture, 
+                                                        Source={StaticResource Tools.Windows.ChangeKeybinding}, 
+                                                        Converter={StaticResource ToStringConverter},
+                                                        DataType=t:ToolTemplate}"/> to change binding</TextBlock>
                 </StackPanel>
             </Template>
         </Setter>
         <Setter Property="Command" Value="{Binding  Command}"/>
+        <Setter Property="CommandParameter" Value="{Binding ToolTemplate.CommandParameter}"/>
         <Setter Property="ItemsSource" Value="{Binding ChildTools}"/>
         <Style Selector="^:pointerover /template/ ContentControl#PART_IconPresenter > ContentControl#PART_LaminarIcon :is(Control).PointerOverTarget">
             <Setter Property="Tag" Value="PointerOver"/>

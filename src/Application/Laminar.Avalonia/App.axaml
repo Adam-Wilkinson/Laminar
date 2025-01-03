@@ -35,6 +35,7 @@
 			<conv:FirstNotNullValueConverter x:Key="FirstNotNullValueConverter"/>
 			<conv:NullOrEmptyConverter x:Key="NullOrEmptyConverter"/>
 			<conv:ToolInstancingConverter x:Key="ToolInstancer"/>
+			<conv:ToStringConverter x:Key="ToStringConverter"/>
 		</ResourceDictionary>
 	</Application.Resources>
 </Application>

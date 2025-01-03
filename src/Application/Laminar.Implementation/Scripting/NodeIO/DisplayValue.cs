@@ -12,14 +12,15 @@ namespace Laminar.Implementation.Scripting.NodeIO;
 internal class DisplayValue<T> : IDisplayValue
 {
     private object? _lastValue;
-    private readonly INotificationClient _valueChangedByuserNotificationClient;
+    private readonly INotificationClient _valueChangedByUserNotificationClient;
     private readonly IValueInterfaceDefinition _valueInterfaceDefinition;
 
     private T _internalValue;
 
-    public DisplayValue(INotificationClient valueChangedByUserNotificationClient, IValueInterfaceDefinition valueInterfaceDefinition, T initialValue)
+    public DisplayValue(INotificationClient valueChangedByUserNotificationClient, 
+        IValueInterfaceDefinition valueInterfaceDefinition, T initialValue)
     {
-        _valueChangedByuserNotificationClient = valueChangedByUserNotificationClient;
+        _valueChangedByUserNotificationClient = valueChangedByUserNotificationClient;
         _valueInterfaceDefinition = valueInterfaceDefinition;
         _internalValue = initialValue;
         GetterOverride = () => ValueProvider is null ? _internalValue : ValueProvider.Value;
@@ -48,7 +49,7 @@ internal class DisplayValue<T> : IDisplayValue
             {
                 TypedValue = typedValue;
                 PropertyChanged?.Invoke(this, IDisplayValue.ValueChangedEventArgs);
-                _valueChangedByuserNotificationClient.TriggerNotification();
+                _valueChangedByUserNotificationClient.TriggerNotification();
                 ExecutionStarted?.Invoke(this, new LaminarExecutionContext(null, ValueExecutionFlag.Value));
             }
         }

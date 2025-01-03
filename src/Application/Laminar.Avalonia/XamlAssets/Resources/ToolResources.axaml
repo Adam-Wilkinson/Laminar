@@ -3,6 +3,7 @@
                     xmlns:vm="using:Laminar.Avalonia.ViewModels"
                     xmlns:vms="using:Laminar.Avalonia.ViewModels.Services"
                     xmlns:t="using:Laminar.Avalonia.ToolSystem"
+                    xmlns:fi="using:Laminar.Implementation.UserData.FileNavigation"
                     xmlns:shapes="using:Laminar.Avalonia.Shapes">
     
     <!-- Edit Menu Tool -->
@@ -46,10 +47,12 @@
                            DefaultIconGeometry="{x:Static shapes:PathData.AddIcon}">
             <t:ToolTemplate Name="Add Folder" x:DataType="vm:FileNavigatorItemViewModel" 
                             DefaultIconGeometry="{x:Static shapes:PathData.FolderIcon}"
-                            CommandBinding="{Binding AddFolderCommand}"/>
+                            CommandBinding="{Binding AddItemCommand}"
+                            CommandParameter="{x:Type fi:LaminarStorageFolder}"/>
             <t:ToolTemplate Name="Add Script" x:DataType="vm:FileNavigatorItemViewModel" 
                             DefaultIconGeometry="{x:Static shapes:PathData.ScriptIcon}"
-                            CommandBinding="{Binding AddScriptCommand}"/>
+                            CommandBinding="{Binding AddItemCommand}"
+                            CommandParameter="{x:Type fi:LaminarStorageFile}"/>
         </t:ToolboxTemplate>
         <t:ToolTemplate Name="Delete" x:DataType="vm:FileNavigatorItemViewModel"
                         DefaultIconGeometry="{x:Static shapes:PathData.DeleteIcon}"
@@ -234,9 +237,16 @@
 		</t:ToolTemplate.IconTemplate>	    
     </t:ToolTemplate>
     
+    
+    <t:ToolTemplate x:Key="Tools.Windows.ChangeKeybinding" Name="Change Keybinding"
+                    x:DataType="t:ToolInstance"
+                    Gesture="Ctrl+Shift+B"
+                    CommandBinding="{Binding ToolTemplate.ChangeBindingCommand}"/>
+    
     <t:ToolboxTemplate x:Key="Tools.Window" Name="Window">
 	    <StaticResource ResourceKey="Tools.Window.ToggleSettings"/>
 	    <StaticResource ResourceKey="Tools.Window.ToggleSidebar"/>
+	    <StaticResource ResourceKey="Tools.Windows.ChangeKeybinding"/>
     </t:ToolboxTemplate>
 
     <t:ToolboxTemplate x:Key="{x:Static t:ToolTemplate.ToolRootKey}" Name="LaminarToolRoot">

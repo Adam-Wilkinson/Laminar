@@ -6,17 +6,9 @@ using Laminar.PluginFramework.UserInterface.UserInterfaceDefinitions;
 
 namespace Laminar.Implementation.Scripting.NodeIO;
 
-internal class ValueInterfaceDefinition<T> : IValueInterfaceDefinition
+internal class ValueInterfaceDefinition<T>(ITypeInfoStore typeInfoStore, IUserInterfaceProvider uiProvider)
+    : IValueInterfaceDefinition
 {
-    readonly ITypeInfoStore _typeInfoStore;
-    readonly IUserInterfaceProvider _uiProvider;
-
-    public ValueInterfaceDefinition(ITypeInfoStore typeInfoStore, IUserInterfaceProvider uiProvider)
-    {
-        _typeInfoStore = typeInfoStore;
-        _uiProvider = uiProvider;
-    }
-
     public Type? ValueType => typeof(T);
 
     public bool IsUserEditable { get; set; }
@@ -29,30 +21,30 @@ internal class ValueInterfaceDefinition<T> : IValueInterfaceDefinition
     {
         if (IsUserEditable
             && Editor is not null
-            && _uiProvider.InterfaceImplemented(Editor))
+            && uiProvider.InterfaceImplemented(Editor))
         {
             return Editor;
         }
 
         if (!IsUserEditable
             && Viewer is not null
-            && _uiProvider.InterfaceImplemented(Viewer))
+            && uiProvider.InterfaceImplemented(Viewer))
         {
             return Viewer;
         }
 
         if (IsUserEditable
             && ValueType is not null
-            && _typeInfoStore.GetTypeInfoOrBlank(ValueType).EditorDefinition is IUserInterfaceDefinition editorDefinition
-            && _uiProvider.InterfaceImplemented(editorDefinition))
+            && typeInfoStore.GetTypeInfoOrBlank(ValueType).EditorDefinition is IUserInterfaceDefinition editorDefinition
+            && uiProvider.InterfaceImplemented(editorDefinition))
         {
             return editorDefinition;
         }
 
         if (!IsUserEditable
             && ValueType is not null
-            && _typeInfoStore.GetTypeInfoOrBlank(ValueType).ViewerDefinition is IUserInterfaceDefinition viewerDefinition
-            && _uiProvider.InterfaceImplemented(viewerDefinition))
+            && typeInfoStore.GetTypeInfoOrBlank(ValueType).ViewerDefinition is IUserInterfaceDefinition viewerDefinition
+            && uiProvider.InterfaceImplemented(viewerDefinition))
         {
             return viewerDefinition;
         }

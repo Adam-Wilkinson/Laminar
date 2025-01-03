@@ -1,11 +1,6 @@
 using System;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using Avalonia;
-using Avalonia.Metadata;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Laminar.Avalonia.ToolSystem;
 using Laminar.Contracts.Base.ActionSystem;
 using Laminar.Contracts.UserData.FileNavigation;
 using Laminar.Domain.Notification;
@@ -19,6 +14,8 @@ public partial class FileNavigatorItemViewModel : ViewModelBase
 {
     private readonly IUserActionManager _actionManager;
     private readonly ILaminarStorageItemFactory _storageFactory;
+
+    [ObservableProperty] private bool _isExpanded = false;
     
     public FileNavigatorItemViewModel(ILaminarStorageItem coreItem, IUserActionManager actionManager, ILaminarStorageItemFactory storageFactory)
     {
@@ -53,29 +50,38 @@ public partial class FileNavigatorItemViewModel : ViewModelBase
     
     public ILaminarStorageItem CoreItem { get; }
 
-    public string ItemTypeName => CoreItem switch
+    public string ItemTypeName => ItemType switch
     {
-        LaminarStorageFolder => "folder",
-        LaminarStorageFile => "script",
+        FileNavigatorItemType.Folder => "folder",
+        FileNavigatorItemType.Script => "script",
         _ => "item"
+    };
+
+    public FileNavigatorItemType ItemType => CoreItem switch
+    {
+        LaminarStorageFolder => FileNavigatorItemType.Folder,
+        LaminarStorageFile => FileNavigatorItemType.Script,
+        _ => throw new Exception(),
     };
     
     public string ToggleEnabledString => $"{(CoreItem.IsEnabled ? "Disable" : "Enable")} this {ItemTypeName}";
 
     public IReadOnlyObservableCollection<FileNavigatorItemViewModel>? Children { get; }
-    
+
     [RelayCommand(CanExecute = nameof(IsFolder))]
-    public void AddFolder()
+    public void AddItem(Type itemType)
     {
         if (CoreItem is not ILaminarStorageFolder folder) return;
-        _actionManager.ExecuteAction(new AddDefaultStorageItemAction<ILaminarStorageFolder>(folder, _storageFactory));
-    }
-    
-    [RelayCommand(CanExecute = nameof(IsFolder))]
-    public void AddScript()
-    {
-        if (CoreItem is not ILaminarStorageFolder folder) return;
-        _actionManager.ExecuteAction(new AddDefaultStorageItemAction<ILaminarStorageItem>(folder, _storageFactory));
+        if (itemType.IsAssignableTo(typeof(ILaminarStorageFolder)))
+        {
+            IsExpanded = true;
+            _actionManager.ExecuteAction(new AddDefaultStorageItemAction<ILaminarStorageFolder>(folder, _storageFactory));
+        }
+        else if (itemType.IsAssignableTo(typeof(LaminarStorageFile)))
+        {
+            IsExpanded = true;
+            _actionManager.ExecuteAction(new AddDefaultStorageItemAction<LaminarStorageFile>(folder, _storageFactory));
+        }
     }
 
     public bool IsFolder() => CoreItem is ILaminarStorageFolder;
@@ -96,6 +102,12 @@ public partial class FileNavigatorItemViewModel : ViewModelBase
     public void ToggleEnabled() => CoreItem.IsEnabled = !CoreItem.IsEnabled;
 
     public bool CanToggleEnabled() => CoreItem.ParentFolder.IsEffectivelyEnabled;
+}
+
+public enum FileNavigatorItemType
+{
+    Folder,
+    Script,
 }
 
 public class FileNavigatorItemViewModelSerializer(ILaminarStorageItemFactory storageItemFactory) : TypeSerializer<FileNavigatorItemViewModel, string>

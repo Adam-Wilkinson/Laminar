@@ -10,7 +10,4 @@
     <s:TimeSpan x:Key="AnimationDuration">0:0:0.2</s:TimeSpan>
     <Easing x:Key="AnimationEasing">QuadraticEaseInOut</Easing>
 	
-	<KeyGesture x:Key="ChangeBindingGesture">Ctrl+B</KeyGesture>
-	<s:String x:Key="ChangeBindingGestureString">Ctrl+B</s:String>
-	
 </ResourceDictionary>

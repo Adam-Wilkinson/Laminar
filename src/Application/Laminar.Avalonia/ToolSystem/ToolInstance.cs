@@ -5,10 +5,11 @@ using System.Linq;
 using System.Windows.Input;
 using Avalonia;
 using Avalonia.Controls;
+using CommunityToolkit.Mvvm.Input;
 
 namespace Laminar.Avalonia.ToolSystem;
 
-public class ToolInstance : StyledElement, IEnumerable<ToolInstance>
+public partial class ToolInstance : StyledElement, IEnumerable<ToolInstance>
 {
     public static readonly StyledProperty<ICommand> CommandProperty = AvaloniaProperty.Register<ToolInstance, ICommand>(nameof(Command), defaultValue: DefaultCommand.Instance);
     
@@ -28,9 +29,9 @@ public class ToolInstance : StyledElement, IEnumerable<ToolInstance>
         ChildTools = ToolTemplate.ChildTools.Select(x =>
         {
             var childTool = x.Build(DataContext);
-            ((ISetInheritanceParent)childTool).SetParent(this);
+            ((ISetInheritanceParent)childTool)?.SetParent(this);
             return childTool;
-        }).ToList();
+        }).OfType<ToolInstance>().ToList();
     }
 
     public List<ToolInstance> ChildTools

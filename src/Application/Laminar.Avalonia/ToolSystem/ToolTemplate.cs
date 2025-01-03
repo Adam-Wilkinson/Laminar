@@ -9,6 +9,7 @@ using Avalonia.Input;
 using Avalonia.Markup.Xaml.Templates;
 using Avalonia.Media;
 using Avalonia.Metadata;
+using CommunityToolkit.Mvvm.Input;
 
 namespace Laminar.Avalonia.ToolSystem;
 
@@ -17,7 +18,7 @@ public class ToolboxTemplate : ToolTemplate
     [Content] public AvaloniaList<ToolTemplate> ChildrenContent => ChildTools;
 }
 
-public class ToolTemplate : AvaloniaObject, ITemplate<object?, ToolInstance?>, IEnumerable<ToolTemplate>
+public partial class ToolTemplate : AvaloniaObject, ITemplate<object?, ToolInstance?>, IEnumerable<ToolTemplate>
 {
     public static readonly string ToolRootKey = "ToolRoot"; 
     
@@ -29,6 +30,8 @@ public class ToolTemplate : AvaloniaObject, ITemplate<object?, ToolInstance?>, I
     
     public static readonly StyledProperty<IBinding?> DescriptionBindingProperty = AvaloniaProperty.Register<ToolTemplate, IBinding?>(nameof(DescriptionBinding));
 
+    public static readonly StyledProperty<object?> CommandParameterProperty = AvaloniaProperty.Register<ToolTemplate, object?>(nameof(CommandParameter));
+    
     private Geometry? _defaultIconGeometry; 
     
     public string Name { get; set; } = string.Empty;
@@ -59,6 +62,12 @@ public class ToolTemplate : AvaloniaObject, ITemplate<object?, ToolInstance?>, I
         set => SetValue(CommandBindingProperty, value);
     }
 
+    public object? CommandParameter
+    {
+        get => GetValue(CommandParameterProperty);
+        set => SetValue(CommandParameterProperty, value);
+    }
+    
     public Geometry? DefaultIconGeometry
     {
         get => _defaultIconGeometry;
@@ -106,4 +115,10 @@ public class ToolTemplate : AvaloniaObject, ITemplate<object?, ToolInstance?>, I
 
     [DataType] 
     public Type? DataType { get; set; }
+    
+    [RelayCommand]
+    public void ChangeBinding()
+    {
+        
+    }
 }

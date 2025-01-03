@@ -7,18 +7,11 @@ using Laminar.PluginFramework.UserInterface.UserInterfaceDefinitions;
 
 namespace Laminar.Implementation.Base.UserInterface;
 
-internal class Display : IDisplay
+internal class Display(IDisplayValue displayValue, IUserInterfaceProvider userInterfaceProvider)
+    : IDisplay
 {
-    private readonly IUserInterfaceProvider _userInterfaceProvider;
-
     private object? _lastDisplayValue;
     private IUserInterfaceDefinition? _interfaceDefinition;
-
-    public Display(IDisplayValue displayValue, IUserInterfaceProvider userInterfaceProvider)
-    {
-        DisplayValue = displayValue;
-        _userInterfaceProvider = userInterfaceProvider;
-    }
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -28,7 +21,7 @@ internal class Display : IDisplay
         remove => DisplayValue.ExecutionStarted -= value;
     }
 
-    public IDisplayValue DisplayValue { get; }
+    public IDisplayValue DisplayValue { get; } = displayValue;
 
     public object? Interface
     {
@@ -39,7 +32,7 @@ internal class Display : IDisplay
                 Refresh();
             }
 
-            return _userInterfaceProvider.GetUserInterface(_interfaceDefinition);
+            return userInterfaceProvider.GetUserInterface(_interfaceDefinition);
         }
     }
 

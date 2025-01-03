@@ -11,16 +11,16 @@ using Laminar.PluginFramework.UserInterface;
 
 namespace Laminar.Implementation.Scripting.NodeIO;
 
-public class ValueInput<T> : IValueInput<T>, INotificationClient
+public sealed class ValueInput<T> : IValueInput<T>, INotificationClient
 {
-    readonly LaminarExecutionContext _contextCache;
-    readonly DisplayValue<T> _displayValue;
+    private readonly LaminarExecutionContext _contextCache;
+    private readonly DisplayValue<T> _displayValue;
 
     internal ValueInput(IUserInterfaceProvider uiProvider, ITypeInfoStore typeInfoStore, string name, T defaultValue)
     {
         InterfaceDefinition = new ValueInterfaceDefinition<T>(typeInfoStore, uiProvider) { IsUserEditable = true };
 
-        _displayValue = new(this, InterfaceDefinition, defaultValue ) { Name = name };
+        _displayValue = new DisplayValue<T>(this, InterfaceDefinition, defaultValue ) { Name = name };
 
         Connector = new ValueInputConnector<T>(typeInfoStore) { Input = this };
 
@@ -39,7 +39,7 @@ public class ValueInput<T> : IValueInput<T>, INotificationClient
 
     public IInputConnector Connector { get; }
 
-    public virtual Action? PreEvaluateAction { get; set; }
+    public Action? PreEvaluateAction { get; set; }
 
     public IValueInterfaceDefinition InterfaceDefinition { get; }
 
@@ -60,5 +60,5 @@ public class ValueInput<T> : IValueInput<T>, INotificationClient
         FireValueChange();
     }
 
-    protected void FireValueChange() => ExecutionStarted?.Invoke(this, _contextCache);
+    private void FireValueChange() => ExecutionStarted?.Invoke(this, _contextCache);
 }

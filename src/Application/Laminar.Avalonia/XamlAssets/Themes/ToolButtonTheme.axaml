@@ -21,6 +21,7 @@
                   BasedOn="{StaticResource {x:Type Button}}">
         <Setter Property="ClipToBounds" Value="False"/>
         <Setter Property="Command" Value="{Binding Command}"/>
+        <Setter Property="CommandParameter" Value="{Binding ToolTemplate.CommandParameter}"/>
         <Setter Property="Cursor" Value="Hand"/>
         <Setter Property="ToolTip.ShowDelay" Value="200"/>
         <Setter Property="ToolTip.Tip">
@@ -38,7 +39,12 @@
                                IsVisible="{Binding ToolTemplate.Gesture, Converter={x:Static ObjectConverters.IsNotNull}}">
                         Currently bound to <Run Classes="Emphasis" FontWeight="Normal" Text="{Binding ToolTemplate.Gesture}"/>
                     </TextBlock>
-                    <TextBlock Classes="b2">Press <Run Classes="Emphasis" FontWeight="Normal" Text="{DynamicResource ChangeBindingGestureString}"/> to change binding</TextBlock>
+                    <TextBlock Classes="b2">Press <Run Classes="Emphasis" 
+                                                       FontWeight="Normal" 
+                                                       Text="{Binding Gesture,
+                                                       Source={StaticResource Tools.Windows.ChangeKeybinding}, 
+                                                       Converter={StaticResource ToStringConverter}, 
+                                                       DataType=t:ToolTemplate}"/> to change binding</TextBlock>
                 </StackPanel>                
             </Template>
         </Setter>

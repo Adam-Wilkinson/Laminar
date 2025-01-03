@@ -1,6 +1,6 @@
 ﻿namespace Laminar.Domain.Extensions;
 
-public static class YieldExtension
+public static class EnumerableExtensions
 {
     public static IEnumerable<T> Yield<T>(this T single)
     {
