@@ -6,20 +6,13 @@ using Laminar.PluginFramework.UserInterface.UserInterfaceDefinitions;
 
 namespace Laminar.Implementation.UserData.Settings;
 
-internal class SettingsDisplayValue<T> : IDisplayValue
+internal class SettingsDisplayValue<T>(string name, T value) : IDisplayValue
 {
-    public SettingsDisplayValue(string name, T value)
-    {
-        InterfaceDefinition = null;
-        Name = name;
-        Value = value;
-    }
+    public string Name { get; } = name;
 
-    public string Name { get; }
+    public object? Value { get; set; } = value;
 
-    public object? Value { get; set; }
-
-    public IUserInterfaceDefinition? InterfaceDefinition { get; }
+    public IUserInterfaceDefinition? InterfaceDefinition { get; } = null;
 
     public event PropertyChangedEventHandler? PropertyChanged;
     public event EventHandler<LaminarExecutionContext>? ExecutionStarted;

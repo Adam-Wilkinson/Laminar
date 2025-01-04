@@ -9,13 +9,15 @@ using CommunityToolkit.Mvvm.Input;
 
 namespace Laminar.Avalonia.ToolSystem;
 
-public partial class ToolInstance : StyledElement, IEnumerable<ToolInstance>
+public class ToolInstance : StyledElement, IEnumerable<ToolInstance>
 {
+    public static readonly string TestString = "";
+    
     public static readonly StyledProperty<ICommand> CommandProperty = AvaloniaProperty.Register<ToolInstance, ICommand>(nameof(Command), defaultValue: DefaultCommand.Instance);
     
     public static readonly StyledProperty<string> DescriptionProperty = AvaloniaProperty.Register<ToolInstance, string>(nameof(Description));
     
-    public static readonly StyledProperty<ToolTemplate> ToolTemplateProperty = AvaloniaProperty.Register<ToolInstance, ToolTemplate>(nameof(ToolTemplate));
+    public static readonly StyledProperty<Tool> ToolTemplateProperty = AvaloniaProperty.Register<ToolInstance, Tool>(nameof(Tool));
 
     public static readonly StyledProperty<List<ToolInstance>> ChildToolsProperty = AvaloniaProperty.Register<ToolInstance, List<ToolInstance>>(nameof(ChildTools), defaultValue: []);
     
@@ -26,7 +28,7 @@ public partial class ToolInstance : StyledElement, IEnumerable<ToolInstance>
 
     private void TemplateChanged(AvaloniaPropertyChangedEventArgs _)
     {
-        ChildTools = ToolTemplate.ChildTools.Select(x =>
+        ChildTools = Tool.ChildTools.Select(x =>
         {
             var childTool = x.Build(DataContext);
             ((ISetInheritanceParent)childTool)?.SetParent(this);
@@ -52,7 +54,7 @@ public partial class ToolInstance : StyledElement, IEnumerable<ToolInstance>
         set => SetValue(DescriptionProperty, value);
     }
     
-    public ToolTemplate ToolTemplate
+    public Tool Tool
     {
         get => GetValue(ToolTemplateProperty);
         set => SetValue(ToolTemplateProperty, value);

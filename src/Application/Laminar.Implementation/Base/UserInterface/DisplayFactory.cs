@@ -3,17 +3,10 @@ using Laminar.PluginFramework.UserInterface;
 
 namespace Laminar.Implementation.Base.UserInterface;
 
-internal class DisplayFactory : IDisplayFactory
+internal class DisplayFactory(IUserInterfaceProvider userInterfaceProvider) : IDisplayFactory
 {
-    private readonly IUserInterfaceProvider _userInterfaceProvider;
-
-    public DisplayFactory(IUserInterfaceProvider userInterfaceProvider)
-    {
-        _userInterfaceProvider = userInterfaceProvider;
-    }
-
     public IDisplay CreateDisplayForValue(IDisplayValue valueInfo)
     {
-        return new Display(valueInfo, _userInterfaceProvider);
+        return new Display(valueInfo, userInterfaceProvider);
     }
 }

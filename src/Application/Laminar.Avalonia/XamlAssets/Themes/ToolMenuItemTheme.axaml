@@ -8,11 +8,11 @@
             <Template>
                 <ContentControl Name="PART_LaminarIcon"
                                 Content="{Binding DataContext}"
-                                ContentTemplate="{Binding ToolTemplate.IconTemplate}"/>
+                                ContentTemplate="{Binding Tool.IconTemplate}"/>
             </Template>
         </Setter>
-        <Setter Property="Header" Value="{Binding ToolTemplate.Name}"/>
-        <Setter Property="InputGesture" Value="{Binding ToolTemplate.Gesture}"/>
+        <Setter Property="Header" Value="{Binding Tool.Name}"/>
+        <Setter Property="InputGesture" Value="{Binding Tool.Gesture}"/>
         <Setter Property="ToolTip.Tip">
             <Template>
                 <StackPanel>
@@ -24,12 +24,12 @@
                                                        Text="{Binding Gesture, 
                                                         Source={StaticResource Tools.Windows.ChangeKeybinding}, 
                                                         Converter={StaticResource ToStringConverter},
-                                                        DataType=t:ToolTemplate}"/> to change binding</TextBlock>
+                                                        DataType=t:Tool}"/> to change binding</TextBlock>
                 </StackPanel>
             </Template>
         </Setter>
         <Setter Property="Command" Value="{Binding  Command}"/>
-        <Setter Property="CommandParameter" Value="{Binding ToolTemplate.CommandParameter}"/>
+        <Setter Property="CommandParameter" Value="{Binding Tool.CommandParameter}"/>
         <Setter Property="ItemsSource" Value="{Binding ChildTools}"/>
         <Style Selector="^:pointerover /template/ ContentControl#PART_IconPresenter > ContentControl#PART_LaminarIcon :is(Control).PointerOverTarget">
             <Setter Property="Tag" Value="PointerOver"/>

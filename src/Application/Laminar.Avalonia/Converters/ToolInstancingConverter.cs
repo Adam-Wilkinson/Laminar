@@ -10,9 +10,9 @@ public class ToolInstancingConverter : IValueConverter
 {
     public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
-        if (parameter is not ToolTemplate template)
+        if (parameter is not Tool template)
         {
-            return new BindingNotification(new ArgumentException($"{nameof(parameter)} must be a {nameof(ToolTemplate)}", nameof(parameter)), BindingErrorType.Error);
+            return new BindingNotification(new ArgumentException($"{nameof(parameter)} must be a {nameof(Tool)}", nameof(parameter)), BindingErrorType.Error);
         }
 
         return template.Build(value);

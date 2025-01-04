@@ -25,10 +25,10 @@ public class ToolKeyBindManager(TopLevel topLevel) : IAfterApplicationBuiltTarge
             _visualUnderCursor = _topLevel.GetVisualAt(args.GetPosition(_topLevel));
         };
 
-        _topLevel.Resources.GetResourceObservable(ToolTemplate.ToolRootKey).Subscribe(new AnonymousObserver<object?>(
+        _topLevel.Resources.GetResourceObservable(Tool.ToolRootKey).Subscribe(new AnonymousObserver<object?>(
             toolRoot =>
             {
-                if (toolRoot is ToolTemplate rootToolTemplate) BindTool(rootToolTemplate);
+                if (toolRoot is Tool rootToolTemplate) BindTool(rootToolTemplate);
             }));
         
         // Hack to stop Avalonia from focusing the menu when keybindings involving the Alt key are released.
@@ -40,11 +40,11 @@ public class ToolKeyBindManager(TopLevel topLevel) : IAfterApplicationBuiltTarge
         }, RoutingStrategies.Bubble | RoutingStrategies.Tunnel);
     }
 
-    private void BindTool(ToolTemplate tool)
+    private void BindTool(Tool tool)
     {
         _topLevel.KeyBindings.Add(new KeyBinding
         {
-            [!KeyBinding.GestureProperty] = tool[!ToolTemplate.GestureProperty],
+            [!KeyBinding.GestureProperty] = tool[!Tool.GestureProperty],
             Command = new ExecuteToolAtCursor(tool, this),
         });
 
@@ -54,7 +54,7 @@ public class ToolKeyBindManager(TopLevel topLevel) : IAfterApplicationBuiltTarge
         }
     }
 
-    private class ExecuteToolAtCursor(ToolTemplate tool, ToolKeyBindManager keyBindManager) : ICommand
+    private class ExecuteToolAtCursor(Tool tool, ToolKeyBindManager keyBindManager) : ICommand
     {
         private ToolInstance? _toolInstanceCache;
         

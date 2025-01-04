@@ -7,26 +7,26 @@
                     xmlns:shapes="using:Laminar.Avalonia.Shapes">
     
     <!-- Edit Menu Tool -->
-    <t:ToolTemplate Name="Undo" x:DataType="vms:IUndoTarget" 
-                    x:Key="Tools.Edit.Undo"
-                    Gesture="Ctrl+z"
-                    DefaultIconGeometry="{x:Static shapes:PathData.UndoIcon}"
-                    CommandBinding="{Binding UndoCommand}"/>
+    <t:CommandTool Name="Undo" x:DataType="vms:IUndoTarget" 
+                   x:Key="Tools.Edit.Undo"
+                   Gesture="Ctrl+z"
+                   DefaultIconGeometry="{x:Static shapes:PathData.UndoIcon}"
+                   CommandBinding="{Binding UndoCommand}"/>
     
-    <t:ToolboxTemplate Name="Edit" 
-                       x:Key="Tools.Edit" 
-                       DefaultIconGeometry="{x:Static shapes:PathData.EditIcon}"
-                       Gesture="Ctrl+e">
+    <t:Toolbox Name="Edit" 
+               x:Key="Tools.Edit" 
+               DefaultIconGeometry="{x:Static shapes:PathData.EditIcon}"
+               Gesture="Ctrl+e">
         <StaticResource ResourceKey="Tools.Edit.Undo"/>
-        <t:ToolTemplate Name="Redo" Gesture="Ctrl+y" DefaultIconGeometry="{x:Static shapes:PathData.RedoIcon}"/>
-    </t:ToolboxTemplate>
+        <t:Tool Name="Redo" Gesture="Ctrl+y" DefaultIconGeometry="{x:Static shapes:PathData.RedoIcon}"/>
+    </t:Toolbox>
     
     <!-- File Navigator Tool -->
-    <t:ToolboxTemplate x:Key="Tools.FileNavigator.StorageItem" 
-                    Name="Storage Item Tools" 
-                    x:DataType="vm:FileNavigatorItemViewModel"
-                    DescriptionBinding="{Binding ItemTypeName, StringFormat='{}{0} Tools'}">
-        <t:ToolTemplate.IconTemplate>
+    <t:Toolbox x:Key="Tools.FileNavigator.StorageItem" 
+               Name="Storage Item Tools" 
+               x:DataType="vm:FileNavigatorItemViewModel"
+               DescriptionBinding="{Binding ItemTypeName, StringFormat='{}{0} Tools'}">
+        <t:Tool.IconTemplate>
             <DataTemplate DataType="vm:FileNavigatorItemViewModel">
                 <PathIcon Tag="{Binding ItemTypeName}">
                     <PathIcon.Styles>
@@ -39,50 +39,51 @@
                     </PathIcon.Styles>
                 </PathIcon>
             </DataTemplate>
-        </t:ToolTemplate.IconTemplate>
-        <t:ToolTemplate Name="Rename" x:DataType="vm:FileNavigatorItemViewModel" 
-                        DefaultIconGeometry="{x:Static shapes:PathData.RenameIcon}"
-                        CommandBinding="{Binding RenameCommand}"/>
-        <t:ToolboxTemplate Name="Add Storage Item" x:DataType="vm:FileNavigatorItemViewModel"
-                           DefaultIconGeometry="{x:Static shapes:PathData.AddIcon}">
-            <t:ToolTemplate Name="Add Folder" x:DataType="vm:FileNavigatorItemViewModel" 
-                            DefaultIconGeometry="{x:Static shapes:PathData.FolderIcon}"
-                            CommandBinding="{Binding AddItemCommand}"
-                            CommandParameter="{x:Type fi:LaminarStorageFolder}"/>
-            <t:ToolTemplate Name="Add Script" x:DataType="vm:FileNavigatorItemViewModel" 
-                            DefaultIconGeometry="{x:Static shapes:PathData.ScriptIcon}"
-                            CommandBinding="{Binding AddItemCommand}"
-                            CommandParameter="{x:Type fi:LaminarStorageFile}"/>
-        </t:ToolboxTemplate>
-        <t:ToolTemplate Name="Delete" x:DataType="vm:FileNavigatorItemViewModel"
-                        DefaultIconGeometry="{x:Static shapes:PathData.DeleteIcon}"
-                        DescriptionBinding="{Binding ItemTypeName, StringFormat='Delete {0}'}"
-                        CommandBinding="{Binding DeleteCommand}"/>
-        <t:ToolTemplate Name="Toggle Enabled" x:DataType="vm:FileNavigatorItemViewModel"
-                        Gesture="Alt+E"
-                        CommandBinding="{Binding ToggleEnabledCommand}"
-                        DescriptionBinding="{Binding ToggleEnabledString}">
-	        <!-- <t:ToolInstance Command="{Binding ToggleEnabled}"/> -->
-	        <t:ToolTemplate.IconTemplate>
+        </t:Tool.IconTemplate>
+        <t:CommandTool Name="Rename" x:DataType="vm:FileNavigatorItemViewModel" 
+                       DefaultIconGeometry="{x:Static shapes:PathData.RenameIcon}"
+                       CommandBinding="{Binding RenameCommand}"/>
+        <t:Toolbox Name="Add Storage Item" x:DataType="vm:FileNavigatorItemViewModel"
+                   DefaultIconGeometry="{x:Static shapes:PathData.AddIcon}">
+            <t:CommandTool Name="Add Folder" x:DataType="vm:FileNavigatorItemViewModel" 
+                           DefaultIconGeometry="{x:Static shapes:PathData.FolderIcon}"
+                           CommandBinding="{Binding AddItemCommand}"
+                           CommandParameter="{x:Type fi:LaminarStorageFolder}"/>
+            <t:CommandTool Name="Add Script" x:DataType="vm:FileNavigatorItemViewModel" 
+                           DefaultIconGeometry="{x:Static shapes:PathData.ScriptIcon}"
+                           CommandBinding="{Binding AddItemCommand}"
+                           CommandParameter="{x:Type fi:LaminarStorageFile}"/>
+        </t:Toolbox>
+        <t:CommandTool Name="Delete" x:DataType="vm:FileNavigatorItemViewModel"
+                       DefaultIconGeometry="{x:Static shapes:PathData.DeleteIcon}"
+                       DescriptionBinding="{Binding ItemTypeName, StringFormat='Delete {0}'}"
+                       CommandBinding="{Binding DeleteCommand}"/>
+        <t:PropertySetterTool Name="Toggle Enabled" x:DataType="vm:FileNavigatorItemViewModel"
+                              Gesture="Alt+E"
+                              DescriptionBinding="{Binding ToggleEnabledString}"
+                              PropertyBinding="{Binding CoreItem.IsEnabled}"
+                              CanChangeValueBinding="{Binding CoreItem.ParentFolder.IsEffectivelyEnabled}">
+	        <t:Tool.IconTemplate>
                 <DataTemplate DataType="vm:FileNavigatorItemViewModel">
                     <t:SwitchIcon IsOn="{Binding CoreItem.IsEffectivelyEnabled}"/>
                 </DataTemplate>
-            </t:ToolTemplate.IconTemplate>
-        </t:ToolTemplate>
-    </t:ToolboxTemplate>
+            </t:Tool.IconTemplate>
+        </t:PropertySetterTool>
+    </t:Toolbox>
     
-    <t:ToolboxTemplate Name="File Navigator Tools" x:Key="Tools.FileNavigator"
-                       DefaultIconGeometry="{x:Static shapes:PathData.FileNavigatorIcon}">
+    <t:Toolbox Name="File Navigator Tools" x:Key="Tools.FileNavigator"
+               DefaultIconGeometry="{x:Static shapes:PathData.FileNavigatorIcon}">
         <StaticResource ResourceKey="Tools.FileNavigator.StorageItem"/>
-    </t:ToolboxTemplate>
+    </t:Toolbox>
     
     <!-- Window Tools -->
-    <t:ToolTemplate Name="Expand/Collapse Sidebar" x:Key="Tools.Window.ToggleSidebar" 
-                    x:DataType="vm:MainWindowViewModel"
-                    Gesture="Ctrl+B"
-                    DescriptionBinding="{Binding ToggleSidebarDescription}"
-                    CommandBinding="{Binding ToggleSidebarCommand}">
-        <t:ToolTemplate.IconTemplate>
+    <t:PropertySetterTool Name="Expand/Collapse Sidebar" x:Key="Tools.Window.ToggleSidebar" 
+                          x:DataType="vm:MainWindowViewModel"
+                          Gesture="Ctrl+B"
+                          DescriptionBinding="{Binding ToggleSidebarDescription}"
+                          PropertyBinding="{Binding SidebarExpanded}"
+                          CanChangeValueBinding="{Binding !SettingsOpen}">
+        <t:Tool.IconTemplate>
             <DataTemplate DataType="vm:MainWindowViewModel">
                 <Panel Classes.SidebarExpanded="{Binding SidebarExpanded}"
                        Classes.Disabled="{Binding SettingsOpen}">
@@ -150,15 +151,15 @@
                     </Panel.Styles>
                 </Panel>
             </DataTemplate>
-        </t:ToolTemplate.IconTemplate>
-    </t:ToolTemplate>
+        </t:Tool.IconTemplate>
+    </t:PropertySetterTool>
     
-    <t:ToolTemplate Name="Open/Close Settings Menu" x:Key="Tools.Window.ToggleSettings"
-                    x:DataType="vm:MainWindowViewModel"
-                    Gesture="Ctrl+Alt+S"
-                    DescriptionBinding="{Binding ToggleSettingsDescription}"
-                    CommandBinding="{Binding ToggleSettingsCommand}">
-		<t:ToolTemplate.IconTemplate>
+    <t:PropertySetterTool Name="Open/Close Settings Menu" x:Key="Tools.Window.ToggleSettings"
+                          x:DataType="vm:MainWindowViewModel"
+                          Gesture="Ctrl+Alt+S"
+                          DescriptionBinding="{Binding ToggleSettingsDescription}"
+                          PropertyBinding="{Binding SettingsOpen}">
+		<t:Tool.IconTemplate>
 			<DataTemplate x:DataType="vm:MainWindowViewModel">
 				<Panel Classes.SettingsOpen="{Binding SettingsOpen}"
 				       VerticalAlignment="Stretch"
@@ -234,24 +235,24 @@
 					</Panel.Styles>
 				</Panel>
 			</DataTemplate>
-		</t:ToolTemplate.IconTemplate>	    
-    </t:ToolTemplate>
+		</t:Tool.IconTemplate>	    
+    </t:PropertySetterTool>
     
     
-    <t:ToolTemplate x:Key="Tools.Windows.ChangeKeybinding" Name="Change Keybinding"
-                    x:DataType="t:ToolInstance"
-                    Gesture="Ctrl+Shift+B"
-                    CommandBinding="{Binding ToolTemplate.ChangeBindingCommand}"/>
+    <t:PropertySetterTool x:Key="Tools.Windows.ChangeKeybinding" Name="Change Keybinding"
+                          x:DataType="t:ToolInstance"
+                          Gesture="Ctrl+Shift+B"
+                          PropertyBinding="{Binding Tool.Gesture}"/>
     
-    <t:ToolboxTemplate x:Key="Tools.Window" Name="Window">
+    <t:Toolbox x:Key="Tools.Window" Name="Window">
 	    <StaticResource ResourceKey="Tools.Window.ToggleSettings"/>
 	    <StaticResource ResourceKey="Tools.Window.ToggleSidebar"/>
 	    <StaticResource ResourceKey="Tools.Windows.ChangeKeybinding"/>
-    </t:ToolboxTemplate>
+    </t:Toolbox>
 
-    <t:ToolboxTemplate x:Key="{x:Static t:ToolTemplate.ToolRootKey}" Name="LaminarToolRoot">
+    <t:Toolbox x:Key="{x:Static t:Tool.ToolRootKey}" Name="LaminarToolRoot">
         <StaticResource ResourceKey="Tools.Edit"/>
         <StaticResource ResourceKey="Tools.FileNavigator"/>
         <StaticResource ResourceKey="Tools.Window"/>
-    </t:ToolboxTemplate>
+    </t:Toolbox>
 </ResourceDictionary>

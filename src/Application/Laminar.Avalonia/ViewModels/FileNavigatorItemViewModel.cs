@@ -15,7 +15,7 @@ public partial class FileNavigatorItemViewModel : ViewModelBase
     private readonly IUserActionManager _actionManager;
     private readonly ILaminarStorageItemFactory _storageFactory;
 
-    [ObservableProperty] private bool _isExpanded = false;
+    [ObservableProperty] private bool _isExpanded;
     
     public FileNavigatorItemViewModel(ILaminarStorageItem coreItem, IUserActionManager actionManager, ILaminarStorageItemFactory storageFactory)
     {
@@ -26,12 +26,6 @@ public partial class FileNavigatorItemViewModel : ViewModelBase
             ? new MappedObservableCollection<ILaminarStorageItem, FileNavigatorItemViewModel>(coreFolder.Contents,
                 item => new FileNavigatorItemViewModel(item, _actionManager, _storageFactory))
             : null;
-
-        CoreItem.ParentFolder.PropertyChanged += (_, e) =>
-        {
-            if (e.PropertyName == nameof(ILaminarStorageItem.IsEffectivelyEnabled))
-                ToggleEnabledCommand.NotifyCanExecuteChanged();
-        };
 
         CoreItem.PropertyChanged += (_, e) =>
         {
@@ -50,18 +44,11 @@ public partial class FileNavigatorItemViewModel : ViewModelBase
     
     public ILaminarStorageItem CoreItem { get; }
 
-    public string ItemTypeName => ItemType switch
+    public string ItemTypeName => CoreItem switch
     {
-        FileNavigatorItemType.Folder => "folder",
-        FileNavigatorItemType.Script => "script",
+        LaminarStorageFolder => "folder",
+        LaminarStorageFile => "script",
         _ => "item"
-    };
-
-    public FileNavigatorItemType ItemType => CoreItem switch
-    {
-        LaminarStorageFolder => FileNavigatorItemType.Folder,
-        LaminarStorageFile => FileNavigatorItemType.Script,
-        _ => throw new Exception(),
     };
     
     public string ToggleEnabledString => $"{(CoreItem.IsEnabled ? "Disable" : "Enable")} this {ItemTypeName}";
@@ -97,17 +84,6 @@ public partial class FileNavigatorItemViewModel : ViewModelBase
     {
         _actionManager.ExecuteAction(new DeleteStorageItemAction<ILaminarStorageItem>(CoreItem));
     }
-
-    [RelayCommand(CanExecute = nameof(CanToggleEnabled))]
-    public void ToggleEnabled() => CoreItem.IsEnabled = !CoreItem.IsEnabled;
-
-    public bool CanToggleEnabled() => CoreItem.ParentFolder.IsEffectivelyEnabled;
-}
-
-public enum FileNavigatorItemType
-{
-    Folder,
-    Script,
 }
 
 public class FileNavigatorItemViewModelSerializer(ILaminarStorageItemFactory storageItemFactory) : TypeSerializer<FileNavigatorItemViewModel, string>
