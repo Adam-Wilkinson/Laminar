@@ -6,15 +6,9 @@ public class Slider : IUserInterfaceDefinition
     {
     }
 
-    public Slider(double min, double max)
-    {
-        Max = max;
-        Min = min;
-    }
+    public double Max { get; init; }
 
-    public double Max { get; }
-
-    public double Min { get; }
+    public double Min { get; init; }
 
     public double Increment { get; init; }
 }

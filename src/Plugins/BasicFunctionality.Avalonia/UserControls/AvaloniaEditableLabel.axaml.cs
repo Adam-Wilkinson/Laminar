@@ -8,47 +8,42 @@ namespace BasicFunctionality.Avalonia.UserControls;
 
 public partial class AvaloniaEditableLabel : UserControl
 {
-    string? _persistentValue;
-    readonly TextBlock _label;
-    readonly TextBox _entry;
+    private string? _persistentValue;
 
     public AvaloniaEditableLabel()
     {
         InitializeComponent();
-        _label = this.FindControl<TextBlock>("PART_Display");
-        _entry = this.FindControl<TextBox>("PART_Editor");
+        Display.DoubleTapped += AvaloniaEditableLabel_DoubleTapped;
 
-        _label.DoubleTapped += AvaloniaEditableLabel_DoubleTapped;
-
-        _entry.KeyDown += Entry_KeyDown;
+        Editor.KeyDown += Entry_KeyDown;
     }
 
     private void Entry_KeyDown(object? sender, KeyEventArgs e)
     {
-        if (e.Key == Key.Enter)
+        switch (e.Key)
         {
-            SetText(_entry.Text);
-            SetEditing(false);
-        }
-
-        if (e.Key == Key.Escape)
-        {
-            SetText(_persistentValue);
-            SetEditing(false);
+            case Key.Enter:
+                SetText(Editor.Text);
+                SetEditing(false);
+                break;
+            case Key.Escape:
+                SetText(_persistentValue);
+                SetEditing(false);
+                break;
         }
     }
 
     private void AvaloniaEditableLabel_DoubleTapped(object? sender, global::Avalonia.Interactivity.RoutedEventArgs e)
     {
-        _persistentValue = _label.Text;
+        _persistentValue = Display.Text;
         SetEditing(true);
-        _entry.Focus();
-        _entry.SelectAll();
+        Editor.Focus();
+        Editor.SelectAll();
     }
 
     private void SetEditing(bool editing)
     {
-        if (DataContext is IDisplayValue displayValue && displayValue.InterfaceDefinition is EditableLabel editableLabelDefinition)
+        if (DataContext is IDisplayValue { InterfaceDefinition: EditableLabel editableLabelDefinition })
         {
             editableLabelDefinition.IsBeingEdited = editing;
         }
@@ -58,8 +53,8 @@ public partial class AvaloniaEditableLabel : UserControl
     {
         text ??= "";
 
-        _label.Text = text;
-        _entry.Text = text;
+        Display.Text = text;
+        Editor.Text = text;
         if (DataContext is IDisplayValue displayValue)
         {
             displayValue.Value = text;

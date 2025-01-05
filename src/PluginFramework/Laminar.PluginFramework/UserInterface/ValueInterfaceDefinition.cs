@@ -39,14 +39,14 @@ public class SliderInterfaceDefinition : IUserInterfaceDefinition
     public double Min { get; init; }
 }
 
-public class UserInterface<T> : ValueInterface where T : IUserInterfaceDefinition
+public class UserInterface<T> : ValueInterface where T : IUserInterfaceDefinition, new()
 {
-    public T Definition { get; }
+    public T Definition { get; init; } = new();
 }
 
 public class ValueInterface
 {
-    public string Name { get; }
+    public string Name { get; init; } = "";
 
-    public object? Value { get; }
+    public object? Value { get; init; }
 }

@@ -2,7 +2,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:uid="using:Laminar.PluginFramework.UserInterface.UserInterfaceDefinitions"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:DataType="uid:Slider+UITarget"
              x:Class="BasicFunctionality.Avalonia.UserControls.SliderEditor">
 	<StackPanel Orientation="Vertical" HorizontalAlignment="Stretch">
 		<DockPanel HorizontalAlignment="Stretch">
@@ -10,8 +12,8 @@
 			<TextBlock HorizontalAlignment="Right" DockPanel.Dock="Right" Text="{Binding Value, StringFormat=\{0:0.0\}}"/>
 		</DockPanel>
 		<Slider Value="{Binding Value}"		   
-				Maximum="{Binding InterfaceDefinition.Max, FallbackValue=100}"
-				Minimum="{Binding InterfaceDefinition.Min, FallbackValue=0}"
-				Ticks="{Binding InterfaceDefinition.Increment, FallbackValue=1}"/>
+				Maximum="{Binding Definition.Max, FallbackValue=100}"
+				Minimum="{Binding Definition.Min, FallbackValue=0}"
+				Ticks="{Binding Definition.Increment, FallbackValue=1}"/>
 	</StackPanel>
 </UserControl>

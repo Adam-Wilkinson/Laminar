@@ -37,11 +37,11 @@ public partial class StringDisplay : UserControl
         
         if (_displayValue!.Value!.ToString()!.Length > _interfaceDefinition!.MaxStringLength)
         {
-            PART_MainDisplay.Text = _displayValue.Value.ToString()![.._interfaceDefinition.MaxStringLength] + "...";
+            ValueViewer.Text = _displayValue.Value.ToString()![.._interfaceDefinition.MaxStringLength] + "...";
         }
         else
         {
-            PART_MainDisplay.Text = _displayValue.Value.ToString();
+            ValueViewer.Text = _displayValue.Value.ToString();
         }
     }
 }
