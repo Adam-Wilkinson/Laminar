@@ -4,7 +4,9 @@ namespace Laminar.PluginFramework.UserInterface.UserInterfaceDefinitions;
 
 public class EditableLabel : IUserInterfaceDefinition, INotifyPropertyChanged
 {
-    public class UITarget : UserInterface<EditableLabel>
+    public static readonly UITarget DesignInstance = new() { Name = "Default Name", Value = "Default Value" };
+    
+    public class UITarget : UserInterface<EditableLabel, string>
     {
     }
 

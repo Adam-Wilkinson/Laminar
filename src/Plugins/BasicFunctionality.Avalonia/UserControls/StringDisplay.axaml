@@ -3,7 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:uid="using:Laminar.PluginFramework.UserInterface.UserInterfaceDefinitions"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             mc:Ignorable="d" d:DesignWidth="300" d:DesignHeight="40" d:DataContext="{x:Static uid:StringViewer.DesignInstance}"
              x:DataType="uid:StringViewer+UITarget"
              x:Class="BasicFunctionality.Avalonia.UserControls.StringDisplay">
 	<StackPanel Orientation="Horizontal" HorizontalAlignment="Center">

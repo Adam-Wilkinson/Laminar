@@ -2,7 +2,9 @@
 
 public class StringEditor : IUserInterfaceDefinition
 {
-    public class UITarget : UserInterface<StringEditor>
+    public static readonly UITarget DesignInstance = new() { Name = "Default String", Value = "Default Value" };
+    
+    public class UITarget : UserInterface<StringEditor, string>
     {
     }
 }

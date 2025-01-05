@@ -1,4 +1,6 @@
-﻿using Laminar.PluginFramework.UserInterface.UserInterfaceDefinitions;
+﻿using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using Laminar.PluginFramework.UserInterface.UserInterfaceDefinitions;
 
 namespace Laminar.PluginFramework.UserInterface;
 public interface IValueInterfaceDefinition
@@ -14,39 +16,34 @@ public interface IValueInterfaceDefinition
     public IUserInterfaceDefinition? GetCurrentDefinition();
 }
 
-public class DisplayValue<T> : DisplayValue
+public class UserInterface<TInterfaceDefinition, TValue> : ValueInterface<TValue> where TInterfaceDefinition : IUserInterfaceDefinition, new()
 {
-    public T Value { get; set; }
+    public TInterfaceDefinition Definition { get; init; } = new();
 }
 
-public class DisplayValue
+public class ValueInterface<T> : INotifyPropertyChanged
 {
-    public Type ValueType { get; }
-
-    public bool IsUserEditable { get; set; }
-
-    public ValueInterface Interface { get; }
-}
-
-public class SliderInterfaceDefinition : IUserInterfaceDefinition
-{
-    public class UITarget : UserInterface<SliderInterfaceDefinition>
-    {
-    }
-
-    public double Max { get; init; }
-
-    public double Min { get; init; }
-}
-
-public class UserInterface<T> : ValueInterface where T : IUserInterfaceDefinition, new()
-{
-    public T Definition { get; init; } = new();
-}
-
-public class ValueInterface
-{
+    private T _field = default!;
+    
     public string Name { get; init; } = "";
 
-    public object? Value { get; init; }
+    public required T Value
+    {
+        get => _field;
+        set => SetField(ref _field, value);
+    }
+    public event PropertyChangedEventHandler? PropertyChanged;
+
+    protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
+
+    protected bool SetField<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
+    {
+        if (EqualityComparer<T>.Default.Equals(field, value)) return false;
+        field = value;
+        OnPropertyChanged(propertyName);
+        return true;
+    }
 }

@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 
@@ -8,10 +9,5 @@ public partial class BoolEditor : UserControl
     public BoolEditor()
     {
         InitializeComponent();
-    }
-
-    private void InitializeComponent()
-    {
-        AvaloniaXamlLoader.Load(this);
     }
 }

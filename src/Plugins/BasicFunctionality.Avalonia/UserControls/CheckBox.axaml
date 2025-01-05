@@ -3,11 +3,11 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:uid="using:Laminar.PluginFramework.UserInterface.UserInterfaceDefinitions"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             mc:Ignorable="d" d:DesignWidth="300" d:DesignHeight="40" d:DataContext="{x:Static uid:Checkbox.DesignInstance}"
              x:DataType="uid:Checkbox+UITarget"
              x:Class="BasicFunctionality.Avalonia.UserControls.CheckBox">
-	<StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
-		<TextBlock Text="{Binding Name}" VerticalAlignment="Center"/>
-		<CheckBox IsChecked="{Binding Value}" Margin="5,0" VerticalAlignment="Center"/>
-	</StackPanel>
+	<DockPanel VerticalAlignment="Center" HorizontalAlignment="Stretch">
+		<CheckBox DockPanel.Dock="Right" IsChecked="{Binding Value}" Margin="5,0" VerticalAlignment="Center"/>
+		<TextBlock DockPanel.Dock="Left" Text="{Binding Name}" VerticalAlignment="Center"/>
+	</DockPanel>
 </UserControl>

@@ -2,7 +2,9 @@
 
 public class StringViewer : IUserInterfaceDefinition
 {
-    public class UITarget : UserInterface<StringViewer>
+    public static readonly UITarget DesignInstance = new() { Name = "Default Name", Value = "Default Value" };
+    
+    public class UITarget : UserInterface<StringViewer, string>
     {
     }
 

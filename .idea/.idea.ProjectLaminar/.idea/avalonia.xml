@@ -32,17 +32,18 @@
         <entry key="src/Application/Laminar.Avalonia/XamlAssets/Themes/ToolButtonTheme.axaml" value="src/Application/Laminar.Avalonia/Laminar.Avalonia.csproj" />
         <entry key="src/Application/Laminar.Avalonia/XamlAssets/Themes/ToolMenuItemTheme.axaml" value="src/Application/Laminar.Avalonia/Laminar.Avalonia.csproj" />
         <entry key="src/Plugins/BasicFunctionality.Avalonia.UISamples/App.axaml" value="src/Plugins/BasicFunctionality.Avalonia.UISamples/BasicFunctionality.Avalonia.UISamples.csproj" />
-        <entry key="src/Plugins/BasicFunctionality.Avalonia/UserControls/ActionDisplay.axaml" value="src/Plugins/BasicFunctionality.Avalonia.UISamples/BasicFunctionality.Avalonia.UISamples.csproj" />
-        <entry key="src/Plugins/BasicFunctionality.Avalonia/UserControls/AvaloniaEditableLabel.axaml" value="src/Plugins/BasicFunctionality.Avalonia.UISamples/BasicFunctionality.Avalonia.UISamples.csproj" />
-        <entry key="src/Plugins/BasicFunctionality.Avalonia/UserControls/BoolEditor.axaml" value="src/Plugins/BasicFunctionality.Avalonia.UISample/BasicFunctionality.Avalonia.UISample.csproj" />
-        <entry key="src/Plugins/BasicFunctionality.Avalonia/UserControls/CheckBox.axaml" value="src/Plugins/BasicFunctionality.Avalonia.UISample/BasicFunctionality.Avalonia.UISample.csproj" />
-        <entry key="src/Plugins/BasicFunctionality.Avalonia/UserControls/DefaultDisplay.axaml" value="src/Plugins/BasicFunctionality.Avalonia.UISamples/BasicFunctionality.Avalonia.UISamples.csproj" />
-        <entry key="src/Plugins/BasicFunctionality.Avalonia/UserControls/EnumEditor.axaml" value="src/Plugins/BasicFunctionality.Avalonia.UISamples/BasicFunctionality.Avalonia.UISamples.csproj" />
-        <entry key="src/Plugins/BasicFunctionality.Avalonia/UserControls/NumberEditor.axaml" value="src/Plugins/BasicFunctionality.Avalonia.UISamples/BasicFunctionality.Avalonia.UISamples.csproj" />
-        <entry key="src/Plugins/BasicFunctionality.Avalonia/UserControls/SliderEditor.axaml" value="src/Plugins/BasicFunctionality.Avalonia.UISamples/BasicFunctionality.Avalonia.UISamples.csproj" />
-        <entry key="src/Plugins/BasicFunctionality.Avalonia/UserControls/StringDisplay.axaml" value="src/Plugins/BasicFunctionality.Avalonia.UISamples/BasicFunctionality.Avalonia.UISamples.csproj" />
-        <entry key="src/Plugins/BasicFunctionality.Avalonia/UserControls/StringEditor.axaml" value="src/Plugins/BasicFunctionality.Avalonia.UISamples/BasicFunctionality.Avalonia.UISamples.csproj" />
-        <entry key="src/Plugins/BasicFunctionality.Avalonia/UserControls/ToggleSwitch.axaml" value="src/Plugins/BasicFunctionality.Avalonia.UISamples/BasicFunctionality.Avalonia.UISamples.csproj" />
+        <entry key="src/Plugins/BasicFunctionality.Avalonia.UIViewer/MainWindow.axaml" value="src/Plugins/BasicFunctionality.Avalonia.UIViewer/BasicFunctionality.Avalonia.UIViewer.csproj" />
+        <entry key="src/Plugins/BasicFunctionality.Avalonia/UserControls/ActionDisplay.axaml" value="src/Plugins/BasicFunctionality.Avalonia.UIViewer/BasicFunctionality.Avalonia.UIViewer.csproj" />
+        <entry key="src/Plugins/BasicFunctionality.Avalonia/UserControls/AvaloniaEditableLabel.axaml" value="src/Plugins/BasicFunctionality.Avalonia.UIViewer/BasicFunctionality.Avalonia.UIViewer.csproj" />
+        <entry key="src/Plugins/BasicFunctionality.Avalonia/UserControls/BoolEditor.axaml" value="src/Plugins/BasicFunctionality.Avalonia.UIViewer/BasicFunctionality.Avalonia.UIViewer.csproj" />
+        <entry key="src/Plugins/BasicFunctionality.Avalonia/UserControls/CheckBox.axaml" value="src/Plugins/BasicFunctionality.Avalonia.UIViewer/BasicFunctionality.Avalonia.UIViewer.csproj" />
+        <entry key="src/Plugins/BasicFunctionality.Avalonia/UserControls/DefaultDisplay.axaml" value="src/Plugins/BasicFunctionality.Avalonia.UIViewer/BasicFunctionality.Avalonia.UIViewer.csproj" />
+        <entry key="src/Plugins/BasicFunctionality.Avalonia/UserControls/EnumEditor.axaml" value="src/Plugins/BasicFunctionality.Avalonia.UIViewer/BasicFunctionality.Avalonia.UIViewer.csproj" />
+        <entry key="src/Plugins/BasicFunctionality.Avalonia/UserControls/NumberEditor.axaml" value="src/Plugins/BasicFunctionality.Avalonia.UIViewer/BasicFunctionality.Avalonia.UIViewer.csproj" />
+        <entry key="src/Plugins/BasicFunctionality.Avalonia/UserControls/SliderEditor.axaml" value="src/Plugins/BasicFunctionality.Avalonia.UIViewer/BasicFunctionality.Avalonia.UIViewer.csproj" />
+        <entry key="src/Plugins/BasicFunctionality.Avalonia/UserControls/StringDisplay.axaml" value="src/Plugins/BasicFunctionality.Avalonia.UIViewer/BasicFunctionality.Avalonia.UIViewer.csproj" />
+        <entry key="src/Plugins/BasicFunctionality.Avalonia/UserControls/StringEditor.axaml" value="src/Plugins/BasicFunctionality.Avalonia.UIViewer/BasicFunctionality.Avalonia.UIViewer.csproj" />
+        <entry key="src/Plugins/BasicFunctionality.Avalonia/UserControls/ToggleSwitch.axaml" value="src/Plugins/BasicFunctionality.Avalonia.UIViewer/BasicFunctionality.Avalonia.UIViewer.csproj" />
       </map>
     </option>
   </component>

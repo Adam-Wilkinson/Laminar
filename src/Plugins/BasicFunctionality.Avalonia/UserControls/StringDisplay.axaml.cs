@@ -15,14 +15,7 @@ public partial class StringDisplay : UserControl
         InitializeComponent();
     }
 
-    private void InitializeComponent()
-    {
-        AvaloniaXamlLoader.Load(this);
-
-        DataContextChanged += StringDisplay_DataContextChanged;
-    }
-
-    private void StringDisplay_DataContextChanged(object? sender, System.EventArgs e)
+    protected override void OnDataContextChanged(EventArgs e)
     {
         if (DataContext is not IDisplayValue displayValue) return;
         _displayValue = displayValue;

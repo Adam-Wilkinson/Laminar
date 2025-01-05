@@ -2,8 +2,74 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        xmlns:bfa="using:BasicFunctionality.Avalonia.UserControls"
+        xmlns:uid="using:Laminar.PluginFramework.UserInterface.UserInterfaceDefinitions"
+        xmlns:ui="using:Laminar.PluginFramework.UserInterface"
+        xmlns:pf="using:Laminar.PluginFramework"
+        mc:Ignorable="d" d:DesignWidth="350" d:DesignHeight="450"
         x:Class="BasicFunctionality.Avalonia.UIViewer.MainWindow"
         Title="BasicFunctionality.Avalonia.UIViewer">
-    Welcome to Avalonia!
+    <StackPanel Spacing="3">
+        <bfa:BoolEditor>
+            <bfa:BoolEditor.DataContext>
+                <ui:UserInterface x:TypeArguments="uid:Checkbox, x:Boolean" Value="True" Name="Test boolean"/>
+            </bfa:BoolEditor.DataContext>
+        </bfa:BoolEditor>
+        
+        <bfa:CheckBox>
+            <bfa:CheckBox.DataContext>
+                <ui:UserInterface x:TypeArguments="uid:Checkbox, x:Boolean" Value="True" Name="Test Checkbox"/>
+            </bfa:CheckBox.DataContext>
+        </bfa:CheckBox>
+        
+        <bfa:DefaultDisplay>
+            <bfa:DefaultDisplay.DataContext>
+                <ui:UserInterface x:TypeArguments="uid:DefaultViewer, pf:None" Name="Default Name"/>
+            </bfa:DefaultDisplay.DataContext>
+        </bfa:DefaultDisplay>
+        
+        <bfa:EnumEditor>
+            <bfa:EnumEditor.DataContext>
+                <ui:UserInterface x:TypeArguments="uid:EnumDropdown, x:Object" Name="Test Enum">
+                    <ui:UserInterface.Value>
+                        <MouseButton>Left</MouseButton>
+                    </ui:UserInterface.Value>
+                </ui:UserInterface>
+            </bfa:EnumEditor.DataContext>
+        </bfa:EnumEditor>
+        
+        <bfa:NumberEditor>
+            <bfa:NumberEditor.DataContext>
+                <ui:UserInterface x:TypeArguments="uid:NumberEntry, x:Double" Value="10.0" Name="Default Number"/>
+            </bfa:NumberEditor.DataContext>
+        </bfa:NumberEditor>
+        
+        <bfa:SliderEditor>
+            <bfa:SliderEditor.DataContext>
+                <ui:UserInterface x:TypeArguments="uid:Slider, x:Double" Value="10.0" Name="Default Slider">
+                    <ui:UserInterface.Definition>
+                        <uid:Slider Min="0" Max="100"/>
+                    </ui:UserInterface.Definition>
+                </ui:UserInterface>
+            </bfa:SliderEditor.DataContext>
+        </bfa:SliderEditor>
+        
+        <bfa:StringDisplay>
+            <bfa:StringDisplay.DataContext>
+                <ui:UserInterface x:TypeArguments="uid:StringViewer, x:String" Value="Default String" Name="Default Name"/>
+            </bfa:StringDisplay.DataContext>
+        </bfa:StringDisplay>
+        
+        <bfa:StringEditor>
+            <bfa:StringEditor.DataContext>
+                <ui:UserInterface x:TypeArguments="uid:StringEditor, x:String" Value="Default String" Name="Default Name"/>
+            </bfa:StringEditor.DataContext>
+        </bfa:StringEditor>
+        
+        <bfa:ToggleSwitch>
+            <bfa:ToggleSwitch.DataContext>
+                <ui:UserInterface x:TypeArguments="uid:ToggleSwitch, x:Boolean" Value="False" Name="Default Name"/>
+            </bfa:ToggleSwitch.DataContext>
+        </bfa:ToggleSwitch>
+    </StackPanel>
 </Window>

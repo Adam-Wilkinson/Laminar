@@ -3,12 +3,12 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:uid="using:Laminar.PluginFramework.UserInterface.UserInterfaceDefinitions"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="50" d:DataContext="{x:Static uid:Checkbox.DesignInstance}"
-             x:Class="BasicFunctionality.Avalonia.UserControls.BoolEditor"
-             x:DataType="uid:Checkbox+UITarget">
-	<Grid HorizontalAlignment="Stretch" x:DataType="uid:Checkbox+UITarget" RowDefinitions="Auto" ColumnDefinitions="Auto,*,*">
+             mc:Ignorable="d" d:DesignWidth="300" d:DesignHeight="40" d:DataContext="{x:Static uid:Checkbox.DesignInstance}"
+             x:DataType="uid:Checkbox+UITarget"
+             x:Class="BasicFunctionality.Avalonia.UserControls.BoolEditor">
+	<Grid VerticalAlignment="Center" HorizontalAlignment="Stretch" RowDefinitions="Auto" ColumnDefinitions="Auto,*,*">
 		<TextBlock Text="{Binding Name}" Grid.Column="0" VerticalAlignment="Center"/>
-		<ToggleButton HorizontalAlignment="Stretch" Margin="5,0,0,0" VerticalAlignment="Center" Grid.Column="1" IsEnabled="{Binding Value}" IsChecked="{Binding !Value}" Content="True"/>
-		<ToggleButton HorizontalAlignment="Stretch" Margin="0,0,5,0" VerticalAlignment="Center" Grid.Column="2" IsEnabled="{Binding !Value}" IsChecked="{Binding Value}" Content="False"/>
+		<ToggleButton HorizontalAlignment="Stretch" Margin="5,0,0,0" VerticalAlignment="Center" Grid.Column="1" IsHitTestVisible="{Binding !Value}" IsChecked="{Binding Value, Mode=TwoWay}" Content="True"/>
+		<ToggleButton HorizontalAlignment="Stretch" Margin="0,0,5,0" VerticalAlignment="Center" Grid.Column="2" IsHitTestVisible="{Binding Value}" IsChecked="{Binding !Value, Mode=TwoWay}" Content="False"/>
 	</Grid>
 </UserControl>
