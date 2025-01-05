@@ -3,7 +3,7 @@ using Avalonia.Markup.Xaml;
 
 namespace BasicFunctionality.Avalonia.UserControls;
 
-public class ToggleSwitch : UserControl
+public partial class ToggleSwitch : UserControl
 {
     public ToggleSwitch()
     {

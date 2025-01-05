@@ -3,7 +3,7 @@ using Avalonia.Markup.Xaml;
 
 namespace BasicFunctionality.Avalonia.UserControls;
 
-public class CheckBox : UserControl
+public partial class CheckBox : UserControl
 {
     public CheckBox()
     {

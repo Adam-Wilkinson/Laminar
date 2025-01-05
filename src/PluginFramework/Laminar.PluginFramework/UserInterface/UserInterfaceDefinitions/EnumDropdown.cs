@@ -2,4 +2,7 @@
 
 public class EnumDropdown : IUserInterfaceDefinition
 {
+    public class UITarget : UserInterface<EnumDropdown>
+    {
+    }
 }

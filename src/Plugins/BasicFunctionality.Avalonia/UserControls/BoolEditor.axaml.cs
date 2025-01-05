@@ -3,7 +3,7 @@ using Avalonia.Markup.Xaml;
 
 namespace BasicFunctionality.Avalonia.UserControls;
 
-public class BoolEditor : UserControl
+public partial class BoolEditor : UserControl
 {
     public BoolEditor()
     {

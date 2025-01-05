@@ -3,7 +3,7 @@ using Avalonia.Markup.Xaml;
 
 namespace BasicFunctionality.Avalonia.UserControls;
 
-public class SliderEditor : UserControl
+public partial class SliderEditor : UserControl
 {
     public SliderEditor()
     {

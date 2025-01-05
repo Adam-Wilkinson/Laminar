@@ -2,5 +2,7 @@
 
 public class DefaultViewer : IUserInterfaceDefinition
 {
-
+    public class UITarget : UserInterface<DefaultViewer>
+    {
+    }
 }

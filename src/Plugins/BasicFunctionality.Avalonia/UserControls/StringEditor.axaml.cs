@@ -3,7 +3,7 @@ using Avalonia.Markup.Xaml;
 
 namespace BasicFunctionality.Avalonia.UserControls;
 
-public class StringEditor : UserControl
+public partial class StringEditor : UserControl
 {
     public StringEditor()
     {

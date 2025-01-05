@@ -3,7 +3,7 @@ using Avalonia.Markup.Xaml;
 
 namespace BasicFunctionality.Avalonia.UserControls;
 
-public class ActionDisplay : UserControl
+public partial class ActionDisplay : UserControl
 {
     public ActionDisplay()
     {

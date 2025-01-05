@@ -4,6 +4,10 @@ namespace Laminar.PluginFramework.UserInterface.UserInterfaceDefinitions;
 
 public class EditableLabel : IUserInterfaceDefinition, INotifyPropertyChanged
 {
+    public class UITarget : UserInterface<EditableLabel>
+    {
+    }
+
     private bool _isBeingEdited;
 
     public bool IsBeingEdited

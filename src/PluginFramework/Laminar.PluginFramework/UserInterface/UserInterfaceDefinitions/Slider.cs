@@ -2,6 +2,10 @@
 
 public class Slider : IUserInterfaceDefinition
 {
+    public class UITarget : UserInterface<Slider>
+    {
+    }
+
     public Slider(double min, double max)
     {
         Max = max;
