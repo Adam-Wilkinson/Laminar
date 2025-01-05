@@ -8,5 +8,5 @@ public class StringViewer : IUserInterfaceDefinition
     {
     }
 
-    public int MaxStringLength { get; set; } = 12;
+    public int MaxStringLength { get; set; } = 20;
 }

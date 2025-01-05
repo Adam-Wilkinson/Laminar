@@ -6,8 +6,8 @@
              mc:Ignorable="d" d:DesignWidth="300" d:DesignHeight="40" d:DataContext="{x:Static uid:ToggleSwitch.DesignInstance}"
              x:DataType="uid:ToggleSwitch+UITarget"
              x:Class="BasicFunctionality.Avalonia.UserControls.ToggleSwitch">
-	<StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
-		<TextBlock Text="{Binding Name}" Margin="5,0" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-		<CheckBox IsChecked="{Binding Value}" VerticalAlignment="Center" HorizontalAlignment="Left"/>
-	</StackPanel>
+	<DockPanel HorizontalAlignment="Stretch">
+		<ToggleSwitch DockPanel.Dock="Right" IsChecked="{Binding Value}" VerticalAlignment="Center"/>
+		<TextBlock DockPanel.Dock="Left" Text="{Binding Name}" Margin="5,0" VerticalAlignment="Center"/>
+	</DockPanel>
 </UserControl>

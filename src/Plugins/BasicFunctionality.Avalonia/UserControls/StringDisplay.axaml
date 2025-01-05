@@ -6,9 +6,8 @@
              mc:Ignorable="d" d:DesignWidth="300" d:DesignHeight="40" d:DataContext="{x:Static uid:StringViewer.DesignInstance}"
              x:DataType="uid:StringViewer+UITarget"
              x:Class="BasicFunctionality.Avalonia.UserControls.StringDisplay">
-	<StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-		<TextBlock Text="{Binding Name}"/>
-		<TextBlock Text=": "/>
-		<TextBlock Name="ValueViewer"/>
-	</StackPanel>
+	<DockPanel>
+		<TextBlock DockPanel.Dock="Right" Name="ValueViewer"/>
+		<TextBlock DockPanel.Dock="Left" Text="{Binding Name}"/>
+	</DockPanel>
 </UserControl>

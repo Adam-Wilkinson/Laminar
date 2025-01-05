@@ -9,8 +9,8 @@
         mc:Ignorable="d" d:DesignWidth="350" d:DesignHeight="450"
         x:Class="BasicFunctionality.Avalonia.UIViewer.MainWindow"
         Title="BasicFunctionality.Avalonia.UIViewer">
-    <StackPanel Spacing="3">
-        <bfa:BoolEditor>
+    <ItemsControl>
+                <bfa:BoolEditor>
             <bfa:BoolEditor.DataContext>
                 <ui:UserInterface x:TypeArguments="uid:Checkbox, x:Boolean" Value="True" Name="Test boolean"/>
             </bfa:BoolEditor.DataContext>
@@ -71,5 +71,5 @@
                 <ui:UserInterface x:TypeArguments="uid:ToggleSwitch, x:Boolean" Value="False" Name="Default Name"/>
             </bfa:ToggleSwitch.DataContext>
         </bfa:ToggleSwitch>
-    </StackPanel>
+    </ItemsControl>
 </Window>
