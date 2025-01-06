@@ -9,12 +9,20 @@
         mc:Ignorable="d" d:DesignWidth="350" d:DesignHeight="450"
         x:Class="BasicFunctionality.Avalonia.UIViewer.MainWindow"
         Title="BasicFunctionality.Avalonia.UIViewer">
-    <ItemsControl>
-                <bfa:BoolEditor>
+    <StackPanel Margin="10" Spacing="5">
+        <StackPanel.Styles>
+            <Style Selector="StackPanel > :is(Control):not(Separator)">
+                <Setter Property="Height" Value="40"/>
+            </Style>
+        </StackPanel.Styles>
+        
+        <bfa:BoolEditor>
             <bfa:BoolEditor.DataContext>
                 <ui:UserInterface x:TypeArguments="uid:Checkbox, x:Boolean" Value="True" Name="Test boolean"/>
             </bfa:BoolEditor.DataContext>
         </bfa:BoolEditor>
+        
+        <Separator/>
         
         <bfa:CheckBox>
             <bfa:CheckBox.DataContext>
@@ -22,11 +30,15 @@
             </bfa:CheckBox.DataContext>
         </bfa:CheckBox>
         
+        <Separator/>
+        
         <bfa:DefaultDisplay>
             <bfa:DefaultDisplay.DataContext>
                 <ui:UserInterface x:TypeArguments="uid:DefaultViewer, pf:None" Name="Default Name"/>
             </bfa:DefaultDisplay.DataContext>
         </bfa:DefaultDisplay>
+        
+        <Separator/>
         
         <bfa:EnumEditor>
             <bfa:EnumEditor.DataContext>
@@ -38,11 +50,15 @@
             </bfa:EnumEditor.DataContext>
         </bfa:EnumEditor>
         
+        <Separator/>
+        
         <bfa:NumberEditor>
             <bfa:NumberEditor.DataContext>
                 <ui:UserInterface x:TypeArguments="uid:NumberEntry, x:Double" Value="10.0" Name="Default Number"/>
             </bfa:NumberEditor.DataContext>
         </bfa:NumberEditor>
+        
+        <Separator/>
         
         <bfa:SliderEditor>
             <bfa:SliderEditor.DataContext>
@@ -54,11 +70,15 @@
             </bfa:SliderEditor.DataContext>
         </bfa:SliderEditor>
         
+        <Separator/>
+        
         <bfa:StringDisplay>
             <bfa:StringDisplay.DataContext>
                 <ui:UserInterface x:TypeArguments="uid:StringViewer, x:String" Value="Default String" Name="Default Name"/>
             </bfa:StringDisplay.DataContext>
         </bfa:StringDisplay>
+        
+        <Separator/>
         
         <bfa:StringEditor>
             <bfa:StringEditor.DataContext>
@@ -66,10 +86,12 @@
             </bfa:StringEditor.DataContext>
         </bfa:StringEditor>
         
+        <Separator/>
+        
         <bfa:ToggleSwitch>
             <bfa:ToggleSwitch.DataContext>
                 <ui:UserInterface x:TypeArguments="uid:ToggleSwitch, x:Boolean" Value="False" Name="Default Name"/>
             </bfa:ToggleSwitch.DataContext>
         </bfa:ToggleSwitch>
-    </ItemsControl>
+    </StackPanel>
 </Window>

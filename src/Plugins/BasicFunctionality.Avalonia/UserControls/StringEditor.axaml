@@ -6,8 +6,12 @@
              mc:Ignorable="d" d:DesignWidth="300" d:DesignHeight="40" d:DataContext="{x:Static uid:StringEditor.DesignInstance}"
              x:DataType="uid:StringEditor+UITarget"
              x:Class="BasicFunctionality.Avalonia.UserControls.StringEditor">
-	<Grid HorizontalAlignment="Stretch" ColumnDefinitions="Auto,*" RowDefinitions="Auto">
+	<Grid HorizontalAlignment="Stretch" VerticalAlignment="Center">
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="*" SharedSizeGroup="SG_ValueName"/>
+			<ColumnDefinition Width="*" SharedSizeGroup="SG_Value"/>
+		</Grid.ColumnDefinitions>
 		<TextBlock Text="{Binding Name}" VerticalAlignment="Center" Grid.Column="0"/>
-		<TextBox Text="{Binding Value}" VerticalAlignment="Center" Margin="5,0" Grid.Column="1" HorizontalAlignment="Stretch"/>
+		<TextBox Text="{Binding Value}" VerticalAlignment="Center" VerticalContentAlignment="Center" Grid.Column="1" HorizontalAlignment="Stretch"/>
 	</Grid>
 </UserControl>

@@ -6,5 +6,5 @@
              mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="40" d:DataContext="{x:Static uid:DefaultViewer.DesignInstance}"
              x:DataType="uid:DefaultViewer+UITarget"
              x:Class="BasicFunctionality.Avalonia.UserControls.DefaultDisplay">
-	<TextBlock Text="{Binding Name}"/>
+	<TextBlock Text="{Binding Name}" VerticalAlignment="Center"/>
 </UserControl>

@@ -6,8 +6,12 @@
              mc:Ignorable="d" d:DesignWidth="300" d:DesignHeight="40" d:DataContext="{x:Static uid:EnumDropdown.Default}"
              x:DataType="uid:EnumDropdown+UITarget"
              x:Class="BasicFunctionality.Avalonia.UserControls.EnumEditor">
-	<Grid HorizontalAlignment="Stretch" ColumnDefinitions="Auto,*" RowDefinitions="Auto">
+	<Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="*" SharedSizeGroup="SG_ValueName"/>
+			<ColumnDefinition Width="*" SharedSizeGroup="SG_Value"/>
+		</Grid.ColumnDefinitions>
 		<TextBlock VerticalAlignment="Center" Text="{Binding Name}" Grid.Column="0"/>
-		<ComboBox VerticalAlignment="Center" Name="CBox" Margin="5,0" SelectedItem="{Binding Value}" Grid.Column="1" HorizontalAlignment="Stretch"/>
+		<ComboBox VerticalAlignment="Center" Name="CBox" SelectedItem="{Binding Value}" Grid.Column="1" HorizontalAlignment="Stretch"/>
 	</Grid>
 </UserControl>

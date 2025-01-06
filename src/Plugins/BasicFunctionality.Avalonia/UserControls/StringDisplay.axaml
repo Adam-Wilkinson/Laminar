@@ -6,8 +6,12 @@
              mc:Ignorable="d" d:DesignWidth="300" d:DesignHeight="40" d:DataContext="{x:Static uid:StringViewer.DesignInstance}"
              x:DataType="uid:StringViewer+UITarget"
              x:Class="BasicFunctionality.Avalonia.UserControls.StringDisplay">
-	<DockPanel>
-		<TextBlock DockPanel.Dock="Right" Name="ValueViewer"/>
-		<TextBlock DockPanel.Dock="Left" Text="{Binding Name}"/>
-	</DockPanel>
+	<Grid VerticalAlignment="Center">
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="*" SharedSizeGroup="SG_ValueName"/>
+			<ColumnDefinition Width="*" SharedSizeGroup="SG_Value"/>
+		</Grid.ColumnDefinitions>
+		<TextBlock Name="ValueViewer"/>
+		<TextBlock Grid.Column="1" Text="{Binding Name}"/>
+	</Grid>
 </UserControl>

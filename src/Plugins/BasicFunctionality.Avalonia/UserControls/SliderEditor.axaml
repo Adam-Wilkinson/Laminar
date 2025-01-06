@@ -6,14 +6,19 @@
              mc:Ignorable="d" d:DesignWidth="300" d:DesignHeight="40" d:DataContext="{x:Static uid:Slider.DesignInstance}"
              x:DataType="uid:Slider+UITarget"
              x:Class="BasicFunctionality.Avalonia.UserControls.SliderEditor">
-	<StackPanel Orientation="Vertical" HorizontalAlignment="Stretch">
-		<DockPanel HorizontalAlignment="Stretch">
-			<TextBlock HorizontalAlignment="Left" DockPanel.Dock="Left" Text="{Binding Name}"/>
-			<TextBlock HorizontalAlignment="Right" DockPanel.Dock="Right" Text="{Binding Value, StringFormat=\{0:0.0\}}"/>
-		</DockPanel>
-		<Slider Value="{Binding Value}"		   
+	<Panel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+		<Grid IsHitTestVisible="False" VerticalAlignment="Center">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="*" SharedSizeGroup="SG_ValueName"/>
+				<ColumnDefinition Width="*" SharedSizeGroup="SG_Value"/>
+			</Grid.ColumnDefinitions>
+			<TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Text="{Binding Name}"/>
+			<TextBlock Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center" Text="{Binding Value, StringFormat=\{0:0.0\}}"/>
+		</Grid>
+		<Slider Value="{Binding Value}"
+		        VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
 				Maximum="{Binding Definition.Max, FallbackValue=100}"
 				Minimum="{Binding Definition.Min, FallbackValue=0}"
 				Ticks="{Binding Definition.Increment, FallbackValue=1}"/>
-	</StackPanel>
+	</Panel>
 </UserControl>

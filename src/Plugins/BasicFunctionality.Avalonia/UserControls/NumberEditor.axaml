@@ -6,9 +6,15 @@
              mc:Ignorable="d" d:DesignWidth="300" d:DesignHeight="40" d:DataContext="{x:Static uid:NumberEntry.DesignInstance}"
              x:DataType="uid:NumberEntry+UITarget"
              x:Class="BasicFunctionality.Avalonia.UserControls.NumberEditor">
-	<DockPanel HorizontalAlignment="Stretch">
-		<TextBlock DockPanel.Dock="Left" Text="{Binding Name}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-		<TextBlock DockPanel.Dock="Right" Text="{Binding Definition.Units}" VerticalAlignment="Center"/>
-		<NumericUpDown DockPanel.Dock="Right" Value="{Binding Value}" Margin="8,0,2,0" VerticalAlignment="Center"/>
-	</DockPanel>
+	<Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="*" SharedSizeGroup="SG_ValueName"/>
+			<ColumnDefinition Width="*" SharedSizeGroup="SG_Value"/>
+		</Grid.ColumnDefinitions>
+		<TextBlock Text="{Binding Name}" VerticalAlignment="Center"/>
+		<DockPanel Grid.Column="1">
+			<TextBlock DockPanel.Dock="Right" Text="{Binding Definition.Units}" VerticalAlignment="Center"/>
+			<NumericUpDown VerticalContentAlignment="Center" Value="{Binding Value}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
+		</DockPanel>
+	</Grid>
 </UserControl>

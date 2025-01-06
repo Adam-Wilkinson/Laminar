@@ -6,8 +6,12 @@
              mc:Ignorable="d" d:DesignWidth="300" d:DesignHeight="40" d:DataContext="{x:Static uid:Checkbox.DesignInstance}"
              x:DataType="uid:Checkbox+UITarget"
              x:Class="BasicFunctionality.Avalonia.UserControls.CheckBox">
-	<DockPanel VerticalAlignment="Center" HorizontalAlignment="Stretch">
-		<CheckBox DockPanel.Dock="Right" IsChecked="{Binding Value}" Margin="5,0" VerticalAlignment="Center"/>
-		<TextBlock DockPanel.Dock="Left" Text="{Binding Name}" VerticalAlignment="Center"/>
-	</DockPanel>
+	<Grid VerticalAlignment="Center" HorizontalAlignment="Stretch">
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="*" SharedSizeGroup="SG_ValueName"/>
+			<ColumnDefinition Width="*" SharedSizeGroup="SG_Value"/>
+		</Grid.ColumnDefinitions>
+		<TextBlock Grid.Column="0" Text="{Binding Name}" VerticalAlignment="Center"/>
+		<CheckBox Grid.Column="1" IsChecked="{Binding Value}" Margin="5,0" VerticalAlignment="Center"/>
+	</Grid>
 </UserControl>
