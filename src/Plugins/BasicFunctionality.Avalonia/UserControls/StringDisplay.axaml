@@ -7,41 +7,8 @@
              mc:Ignorable="d" d:DesignWidth="300" d:DesignHeight="40" d:DataContext="{x:Static uid:StringViewer.DesignInstance}"
              x:DataType="uid:StringViewer+UITarget"
              x:Class="BasicFunctionality.Avalonia.UserControls.StringDisplay">
-	<Grid VerticalAlignment="Center" Name="MainGrid" local:Compact.Cutoff="300" local:Compact.CutoffTarget="{Binding $self}" Background="Transparent">
-		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="Auto" SharedSizeGroup="SG_PreTextMargin"/>
-			<ColumnDefinition Width="*"/>
-			<ColumnDefinition Width="*"/>
-		</Grid.ColumnDefinitions>
-		<TextBlock Grid.Column="1" Name="NameBlock" Text="{Binding Name}"/>
-		<TextBlock Name="ValueViewer" Margin="5,0,0,0"/>
-		
-		<Grid.Styles>
-			<Style Selector="Grid">
-				<Style Selector="^ > TextBlock#NameBlock">
-					<Setter Property="Transitions">
-						<Transitions>
-							<DoubleTransition Property="Opacity" Duration="0:0:0.2"/>
-						</Transitions>
-					</Setter>
-				</Style>
-				
-				<Style Selector="^ > TextBlock#ValueViewer">
-					<Setter Property="Grid.Column" Value="2"/>
-					<Setter Property="Grid.ColumnSpan" Value="1"/>
-				</Style>
-			</Style>
-			
-			<Style Selector="Grid[(local|Compact.IsCompact)=True]:pointerover">
-				<Style Selector="^ > TextBlock#NameBlock">
-					<Setter Property="Opacity" Value="0.0"/>
-				</Style>
-				
-				<Style Selector="^ > TextBlock#ValueViewer">
-					<Setter Property="Grid.Column" Value="1"/>
-					<Setter Property="Grid.ColumnSpan" Value="2"/>
-				</Style>
-				</Style>
-		</Grid.Styles>
-	</Grid>
+	<local:ValueEditorPanel>
+		<TextBlock VerticalAlignment="Center" local:ValueEditorPanel.Position="Nameplate" Text="{Binding Name}"/>
+		<TextBlock VerticalAlignment="Center" Name="ValueViewer" local:ValueEditorPanel.Position="Value"/>
+	</local:ValueEditorPanel>
 </UserControl>

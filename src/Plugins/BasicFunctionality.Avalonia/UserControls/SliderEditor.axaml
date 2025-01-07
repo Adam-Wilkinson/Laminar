@@ -88,23 +88,19 @@
 		
 	</UserControl.Resources>
 	<Panel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-		<Grid VerticalAlignment="Center" Name="MainGrid">
-			<Grid.ColumnDefinitions>
-				<ColumnDefinition Width="Auto" MinWidth="8" SharedSizeGroup="SG_PreTextMargin"/>
-				<ColumnDefinition Width="*"/>
-				<ColumnDefinition Width="*"/>
-			</Grid.ColumnDefinitions>
+		<local:ValueEditorPanel VerticalAlignment="Center" IsCompactCutoff="300">
 			<Slider Value="{Binding Value}"
 			        Name="MainSlider"
+			        local:ValueEditorPanel.Position="SpansWhenCompact"
 			        VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
 			        Maximum="{Binding Definition.Max, FallbackValue=100}"
 			        Minimum="{Binding Definition.Min, FallbackValue=0}"
 			        CornerRadius="7"
-			        local:Compact.Cutoff="300"
-			        local:Compact.CutoffTarget="{Binding $parent[UserControl]}"
 			        Theme="{StaticResource ValueEditorSlider}"/>
-			<TextBlock IsHitTestVisible="False" Grid.Column="1" Name="NameBlock" HorizontalAlignment="Left" VerticalAlignment="Center" Text="{Binding Name}"/>
-			<Panel Grid.Column="2">
+			<TextBlock IsHitTestVisible="False" local:ValueEditorPanel.Position="Nameplate" 
+			           VerticalAlignment="Center" 
+			           Text="{Binding Name}"/>
+			<Panel local:ValueEditorPanel.Position="Value">
 				<TextBlock IsHitTestVisible="False" 
 				           HorizontalAlignment="Center" 
 				           VerticalAlignment="Center" 
@@ -118,7 +114,7 @@
 				               FormatString="{}{0:0}"
 				               HorizontalContentAlignment="Center"/>
 			</Panel>
-		</Grid>
+		</local:ValueEditorPanel>
 		
 		<Panel.Styles>
 			<Style Selector="Slider#MainSlider">

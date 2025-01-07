@@ -7,33 +7,23 @@
              mc:Ignorable="d" d:DesignWidth="300" d:DesignHeight="40" d:DataContext="{x:Static uid:StringEditor.DesignInstance}"
              x:DataType="uid:StringEditor+UITarget"
              x:Class="BasicFunctionality.Avalonia.UserControls.StringEditor">
-	<Grid HorizontalAlignment="Stretch" VerticalAlignment="Center" Name="MainGrid">
-		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="Auto" SharedSizeGroup="SG_PreTextMargin"/>
-			<ColumnDefinition Width="*"/>
-			<ColumnDefinition Width="*"/>
-		</Grid.ColumnDefinitions>
-		<TextBlock IsVisible="{Binding #EntryTextbox.(Grid.Column)}" 
-		           Name="NameBlock"
-		           Text="{Binding Name}" VerticalAlignment="Center" Grid.Column="1">
-		</TextBlock>
-		<Control Name="SecondColumnSizer" HorizontalAlignment="Stretch" Grid.Column="2"/>
+	<local:ValueEditorPanel HorizontalAlignment="Stretch" VerticalAlignment="Center" Name="MainPanel">
+		<TextBlock local:ValueEditorPanel.Position="Nameplate"
+		           Text="{Binding Name}" 
+		           VerticalAlignment="Center"/>
+		<!-- <Control Name="SecondColumnSizer" HorizontalAlignment="Stretch" local:ValueEditorPanel.Position="Value"/> -->
 		<TextBox Text="{Binding Value}"
 		         Name="EntryTextbox"
-		         MinWidth="0" Margin="5,0,0,0"
-		         local:Compact.CutoffTarget="{Binding #SecondColumnSizer}"
-		         VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Stretch">
+		         VerticalAlignment="Center" HorizontalAlignment="Stretch">
 			<TextBox.Styles>
-				<Style Selector="TextBox[(local|Compact.IsCompact)=True]:focus">
-					<Setter Property="Grid.Column" Value="0"/>
-					<Setter Property="Grid.ColumnSpan" Value="3"/>
+				<Style Selector="TextBox:focus">
+					<Setter Property="local:ValueEditorPanel.Position" Value="SpansWhenCompact"/>
 				</Style>
 				
 				<Style Selector="TextBox">
-					<Setter Property="Grid.Column" Value="2"/>
-					<Setter Property="Grid.ColumnSpan" Value="1"/>
+					<Setter Property="local:ValueEditorPanel.Position" Value="Value"/>
 				</Style>
 			</TextBox.Styles>
 		</TextBox>
-	</Grid>
+	</local:ValueEditorPanel>
 </UserControl>

@@ -10,8 +10,6 @@ namespace BasicFunctionality.Avalonia.UserControls;
 
 public partial class SliderEditor : UserControl
 {
-    private double _previousTextLayoutWidth;
-
     private Point? _pointerDownPoint;
     private double _sliderPositionBeforePointerDown;
     
@@ -44,20 +42,6 @@ public partial class SliderEditor : UserControl
     public SliderEditor()
     {
         InitializeComponent();
-        
-        NameBlock.GetObservable(BoundsProperty).Subscribe(new AnonymousObserver<Rect>(_ =>
-        {
-            if (_previousTextLayoutWidth != NameBlock.TextLayout.Width)
-            {
-                MainGrid.ColumnDefinitions[1].MinWidth = NameBlock.TextLayout.Width;
-                _previousTextLayoutWidth = NameBlock.TextLayout.Width;
-            }
-        }));
-        
-        MainSlider.GetObservable(Grid.ColumnProperty).Subscribe(new AnonymousObserver<int>(_ =>
-        {
-            CompositionAnimator.SetEnableOffsetAnimation(MainSlider, TransitionSetting.OneTime);
-        }));
 
         MainSlider.PointerWheelChanged += (s, e) =>
         {
@@ -66,7 +50,7 @@ public partial class SliderEditor : UserControl
 
         NumberEntry.Classes.CollectionChanged += (s, e) =>
         {
-            if (e.Action == NotifyCollectionChangedAction.Remove && e.OldItems.Contains(":focus-within"))
+            if (e.Action == NotifyCollectionChangedAction.Remove && e.OldItems!.Contains(":focus-within"))
             {
                 if (NumberEntry.Value.HasValue)
                 {

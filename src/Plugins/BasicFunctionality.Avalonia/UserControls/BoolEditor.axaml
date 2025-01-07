@@ -7,14 +7,9 @@
              mc:Ignorable="d" d:DesignWidth="300" d:DesignHeight="40" d:DataContext="{x:Static uid:BoolTwoButton.DesignInstance}"
              x:DataType="uid:BoolTwoButton+UITarget"
              x:Class="BasicFunctionality.Avalonia.UserControls.BoolEditor">
-	<Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Name="MainGrid">
-		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="Auto" SharedSizeGroup="SG_PreTextMargin"/>
-			<ColumnDefinition Width="*"/>
-			<ColumnDefinition Width="*"/>
-		</Grid.ColumnDefinitions>
-		<TextBlock Name="NameBlock" Text="{Binding Name}" Grid.Column="1" VerticalAlignment="Center"/>
-		<Grid Margin="5,0,0,0" Name="FullSizeTarget" Grid.Column="2" HorizontalAlignment="Stretch" ColumnDefinitions="*,*" VerticalAlignment="Stretch">
+	<local:ValueEditorPanel VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+		<TextBlock Text="{Binding Name}" local:ValueEditorPanel.Position="Nameplate" VerticalAlignment="Center"/>
+		<Grid Margin="5,0,0,0" HorizontalAlignment="Stretch" ColumnDefinitions="*,*" VerticalAlignment="Stretch" local:ValueEditorPanel.Position="Value">
 			<ToggleButton VerticalContentAlignment="Center" HorizontalAlignment="Stretch"
 			              BorderThickness="0" CornerRadius="8,0,0,8"
 			              VerticalAlignment="Center"
@@ -33,5 +28,5 @@
 			              HorizontalContentAlignment="Center"
 			              Content="{Binding Definition.FalseText}"/>
 		</Grid>
-	</Grid>
+	</local:ValueEditorPanel>
 </UserControl>

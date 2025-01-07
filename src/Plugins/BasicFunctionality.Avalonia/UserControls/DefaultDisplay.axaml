@@ -3,15 +3,13 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:uid="using:Laminar.PluginFramework.UserInterface.UserInterfaceDefinitions"
+             xmlns:local="using:BasicFunctionality.Avalonia"
              mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="40" d:DataContext="{x:Static uid:DefaultViewer.DesignInstance}"
              x:DataType="uid:DefaultViewer+UITarget"
              x:Class="BasicFunctionality.Avalonia.UserControls.DefaultDisplay">
-	<Grid>
-		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="Auto" SharedSizeGroup="SG_PreTextMargin"/>
-			<ColumnDefinition Width="*"/>
-			<ColumnDefinition Width="*"/>
-		</Grid.ColumnDefinitions>
-		<TextBlock Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding Name}" VerticalAlignment="Center"/>
-	</Grid>
+	<local:ValueEditorPanel>
+		<TextBlock local:ValueEditorPanel.Position="Nameplate" 
+		           Text="{Binding Name}" 
+		           VerticalAlignment="Center"/>
+	</local:ValueEditorPanel>
 </UserControl>

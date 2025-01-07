@@ -2,32 +2,29 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:ui="using:Laminar.PluginFramework.UserInterface"
              xmlns:uid="using:Laminar.PluginFramework.UserInterface.UserInterfaceDefinitions"
              xmlns:local="using:BasicFunctionality.Avalonia"
              mc:Ignorable="d" d:DesignWidth="100" d:DesignHeight="40" d:DataContext="{x:Static uid:EnumDropdown.Default}"
              x:DataType="uid:EnumDropdown+UITarget"
              x:Class="BasicFunctionality.Avalonia.UserControls.EnumEditor">
-	<Grid local:Compact.CutoffTarget="{Binding $self}" local:Compact.Cutoff="300" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Name="GridRoot">
-		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="Auto" MinWidth="8" SharedSizeGroup="SG_PreTextMargin"/>
-			<ColumnDefinition Width="*"/>
-			<ColumnDefinition Width="*"/>
-		</Grid.ColumnDefinitions>
-		<ComboBox VerticalAlignment="Center" VerticalContentAlignment="Center" Name="CBox" SelectedItem="{Binding Value, Mode=TwoWay}" HorizontalAlignment="Stretch"/>
-		<TextBlock VerticalAlignment="Center" Margin="0,0,0,1.45" IsHitTestVisible="False" Text="{Binding Name}" Grid.Column="1"/>
-		
-	</Grid>
+	<local:ValueEditorPanel IsCompactCutoff="300">
+		<ComboBox VerticalAlignment="Center" HorizontalAlignment="Stretch" VerticalContentAlignment="Center" 
+		          Name="CBox"
+		          local:ValueEditorPanel.Position="SpansWhenCompact"
+		          SelectedItem="{Binding Value, Mode=TwoWay}"/>
+		<TextBlock local:ValueEditorPanel.Position="Nameplate"
+		           VerticalAlignment="Center" 
+		           Margin="0,0,0,1.45" 
+		           IsHitTestVisible="False" 
+		           Text="{Binding Name}"/>
+	</local:ValueEditorPanel>
+	
 	<UserControl.Styles>
-		<Style Selector="Grid[(local|Compact.IsCompact)=False] ComboBox">
-			<Setter Property="Grid.Column" Value="2"/>
-			<Setter Property="Grid.ColumnSpan" Value="1"/>
+		<Style Selector="local|ValueEditorPanel[IsCompact=True] ComboBox">
 			<Setter Property="HorizontalContentAlignment" Value="Left"/>
 		</Style>
 		
-		<Style Selector="Grid[(local|Compact.IsCompact)=True] ComboBox">
-			<Setter Property="Grid.Column" Value="0"/>
-			<Setter Property="Grid.ColumnSpan" Value="3"/>
+		<Style Selector="local|ValueEditorPanel[IsCompact=True] ComboBox">
 			<Setter Property="HorizontalContentAlignment" Value="Right"/>
 		</Style>
 	</UserControl.Styles>

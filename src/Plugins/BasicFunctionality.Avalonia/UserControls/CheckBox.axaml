@@ -3,16 +3,16 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:uid="using:Laminar.PluginFramework.UserInterface.UserInterfaceDefinitions"
+             xmlns:local="using:BasicFunctionality.Avalonia"
              mc:Ignorable="d" d:DesignWidth="300" d:DesignHeight="40" d:DataContext="{x:Static uid:Checkbox.DesignInstance}"
              x:DataType="uid:Checkbox+UITarget"
              x:Class="BasicFunctionality.Avalonia.UserControls.CheckBox">
-	<Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Name="MainGrid">
-		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="Auto" SharedSizeGroup="SG_PreTextMargin"/>
-			<ColumnDefinition Width="*"/>
-			<ColumnDefinition Width="*"/>
-		</Grid.ColumnDefinitions>
-		<TextBlock Grid.Column="1" Name="NameBlock" Text="{Binding Name}" VerticalAlignment="Center"/>
-		<CheckBox Grid.Column="2" HorizontalAlignment="Center" IsChecked="{Binding Value}" Margin="5,0" VerticalAlignment="Center"/>
-	</Grid>
+	<local:ValueEditorPanel>
+		<TextBlock local:ValueEditorPanel.Position="Nameplate" 
+		           Text="{Binding Name}" 
+		           VerticalAlignment="Center"/>
+		<CheckBox local:ValueEditorPanel.Position="Value" 
+		          HorizontalAlignment="Center" VerticalAlignment="Center" 
+		          IsChecked="{Binding Value}"/>
+	</local:ValueEditorPanel>
 </UserControl>

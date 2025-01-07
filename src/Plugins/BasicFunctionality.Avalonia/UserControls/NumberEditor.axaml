@@ -111,30 +111,32 @@
       </ControlTheme>
 	</UserControl.Resources>
 	
-	<Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Name="MainGrid">
-		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="Auto" SharedSizeGroup="SG_PreTextMargin"/>
-			<ColumnDefinition Width="*"/>
-			<ColumnDefinition Width="*"/>
-		</Grid.ColumnDefinitions>
-		<TextBlock Name="NameBlock" Text="{Binding Name}" Grid.Column="1" VerticalAlignment="Center"/>
-		<NumericUpDown Grid.Column="2"  
+	<local:ValueEditorPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Name="MainGrid">
+		<TextBlock local:ValueEditorPanel.Position="Nameplate"
+               Text="{Binding Name}" 
+               VerticalAlignment="Center"/>
+		<NumericUpDown local:ValueEditorPanel.Position="Value"  
                    VerticalContentAlignment="Center" 
                    Value="{Binding Value}" 
                    VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
                    MinWidth="0"
-                   Margin="5,0,0,0"
-                   local:Compact.Cutoff="80"
-                   local:Compact.CutoffTarget="{Binding $self}"
-                   ShowButtonSpinner="{Binding !$self.(local:Compact.IsCompact)}">
+                   Margin="5,0,0,0">
       <NumericUpDown.Styles>
         <Style Selector="NumericUpDown /template/ ButtonSpinner#PART_Spinner">
           <Setter Property="Theme" Value="{StaticResource MyButtonSpinner}"/>
         </Style>
-        <Style Selector="NumericUpDown[(local|Compact.IsCompact)=False]">
-          <Setter Property="FormatString" Value="{Binding Definition.FormatString}"/>
-        </Style>
       </NumericUpDown.Styles>
     </NumericUpDown>
-	</Grid>
+    
+    <local:ValueEditorPanel.Styles>
+      <Style Selector="local|ValueEditorPanel[IsCompact=True] > NumericUpDown">
+        <Setter Property="ShowButtonSpinner" Value="False"/>
+      </Style>
+      
+      <Style Selector="local|ValueEditorPanel[IsCompact=False] > NumericUpDown">
+        <Setter Property="FormatString" Value="{Binding Definition.FormatString}"/>
+        <Setter Property="ShowButtonSpinner" Value="True"/>
+      </Style>
+    </local:ValueEditorPanel.Styles>
+	</local:ValueEditorPanel>
 </UserControl>

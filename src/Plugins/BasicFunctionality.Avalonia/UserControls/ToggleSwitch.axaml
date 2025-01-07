@@ -3,16 +3,16 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:uid="using:Laminar.PluginFramework.UserInterface.UserInterfaceDefinitions"
+             xmlns:local="using:BasicFunctionality.Avalonia"
              mc:Ignorable="d" d:DesignWidth="300" d:DesignHeight="40" d:DataContext="{x:Static uid:ToggleSwitch.DesignInstance}"
              x:DataType="uid:ToggleSwitch+UITarget"
              x:Class="BasicFunctionality.Avalonia.UserControls.ToggleSwitch">
-	<Grid HorizontalAlignment="Stretch">
-		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="Auto" SharedSizeGroup="SG_PreTextMargin"/>
-			<ColumnDefinition Width="*"/>
-			<ColumnDefinition Width="*"/>
-		</Grid.ColumnDefinitions>
-		<TextBlock Grid.Column="1" Text="{Binding Name}" VerticalAlignment="Center"/>
-		<ToggleSwitch Grid.Column="2" IsChecked="{Binding Value}" VerticalAlignment="Center"/>
-	</Grid>
+	<local:ValueEditorPanel>
+		<TextBlock local:ValueEditorPanel.Position="Nameplate" 
+		           Text="{Binding Name}" 
+		           VerticalAlignment="Center"/>
+		<ToggleSwitch local:ValueEditorPanel.Position="Value" 
+		              IsChecked="{Binding Value}" 
+		              VerticalAlignment="Center"/>
+	</local:ValueEditorPanel>
 </UserControl>
