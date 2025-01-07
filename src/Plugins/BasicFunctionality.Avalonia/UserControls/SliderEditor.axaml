@@ -3,22 +3,143 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:uid="using:Laminar.PluginFramework.UserInterface.UserInterfaceDefinitions"
-             mc:Ignorable="d" d:DesignWidth="300" d:DesignHeight="40" d:DataContext="{x:Static uid:Slider.DesignInstance}"
+             xmlns:local="using:BasicFunctionality.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="350" d:DesignHeight="40" d:DataContext="{x:Static uid:Slider.DesignInstance}"
              x:DataType="uid:Slider+UITarget"
              x:Class="BasicFunctionality.Avalonia.UserControls.SliderEditor">
+	<UserControl.Resources>
+		<ControlTheme x:Key="FluentSliderHorizontalRepeatButton" TargetType="RepeatButton">
+			<Setter Property="VerticalAlignment" Value="Stretch"/>
+			<Setter Property="Template">
+				<ControlTemplate>
+					<Grid VerticalAlignment="Stretch">
+						<Border Name="FocusTarget" VerticalAlignment="Stretch" Background="Transparent" />
+						<Border Name="TrackBackground"
+						        Background="{TemplateBinding Background}"
+						        CornerRadius="0"
+						        VerticalAlignment="Stretch"/>
+					</Grid>
+				</ControlTemplate>
+			</Setter>
+		</ControlTheme>
+		
+		<ControlTheme x:Key="ValueEditorSlider" TargetType="Slider">
+		    <Setter Property="Background" Value="{DynamicResource SliderTrackFill}" />
+		    <Setter Property="BorderThickness" Value="{DynamicResource SliderBorderThemeThickness}" />
+		    <Setter Property="Foreground" Value="{DynamicResource SliderTrackValueFill}" />
+		      <Setter Property="Template">
+		        <ControlTemplate>
+		          <DataValidationErrors>
+		            <Border
+			            VerticalAlignment="Stretch"
+		                BorderBrush="{TemplateBinding BorderBrush}"
+		                BorderThickness="{TemplateBinding BorderThickness}"
+			            CornerRadius="{TemplateBinding CornerRadius}"
+			            ClipToBounds="True">
+		                <Grid x:Name="SliderContainer"
+		                      VerticalAlignment="Stretch"
+		                      Margin="{TemplateBinding Padding}"
+		                      Background="{DynamicResource SliderContainerBackground}">
+		                  <Grid.Styles>
+		                    <Style Selector="TickBar">
+		                      <Setter Property="ReservedSpace" Value="{Binding #PART_Track.Thumb.Bounds}" />
+		                    </Style>
+		                  </Grid.Styles>
+		                  <Grid
+			                  VerticalAlignment="Stretch"
+		                      x:Name="HorizontalTemplate"
+		                      MinHeight="{DynamicResource SliderHorizontalHeight}"
+		                      ColumnDefinitions="Auto,Auto,*">
+		                    <Track
+		                        Name="PART_Track"
+		                        Grid.ColumnSpan="3"
+		                        Minimum="{TemplateBinding Minimum}"
+		                        Maximum="{TemplateBinding Maximum}"
+		                        Value="{TemplateBinding Value, Mode=TwoWay}"
+		                        IsDirectionReversed="{TemplateBinding IsDirectionReversed}"
+		                        VerticalAlignment="Stretch"
+		                        Orientation="Horizontal">
+		                      <Track.DecreaseButton>
+		                        <RepeatButton
+			                        VerticalAlignment="Stretch"
+		                            Name="PART_DecreaseButton"
+		                            Theme="{StaticResource FluentSliderHorizontalRepeatButton}"
+		                            Background="{TemplateBinding Foreground}"
+			                        VerticalContentAlignment="Stretch"
+		                            Focusable="False"/>
+		                      </Track.DecreaseButton>
+		                      <Track.IncreaseButton>
+		                        <RepeatButton
+			                        VerticalAlignment="Stretch"
+		                            Name="PART_IncreaseButton"
+		                            Theme="{StaticResource FluentSliderHorizontalRepeatButton}"
+			                        VerticalContentAlignment="Stretch"
+		                            Background="{TemplateBinding Background}"
+		                            Focusable="False"/>
+		                      </Track.IncreaseButton>
+		                    </Track>
+		                  </Grid>
+		                </Grid>
+		            </Border>
+		          </DataValidationErrors>
+		        </ControlTemplate>
+		      </Setter>
+		</ControlTheme>
+		
+	</UserControl.Resources>
 	<Panel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-		<Grid IsHitTestVisible="False" VerticalAlignment="Center">
+		<Grid VerticalAlignment="Center" Name="MainGrid">
 			<Grid.ColumnDefinitions>
-				<ColumnDefinition Width="*" SharedSizeGroup="SG_ValueName"/>
-				<ColumnDefinition Width="*" SharedSizeGroup="SG_Value"/>
+				<ColumnDefinition Width="Auto" MinWidth="8" SharedSizeGroup="SG_PreTextMargin"/>
+				<ColumnDefinition Width="*"/>
+				<ColumnDefinition Width="*"/>
 			</Grid.ColumnDefinitions>
-			<TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Text="{Binding Name}"/>
-			<TextBlock Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center" Text="{Binding Value, StringFormat=\{0:0.0\}}"/>
+			<Slider Value="{Binding Value}"
+			        Name="MainSlider"
+			        VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+			        Maximum="{Binding Definition.Max, FallbackValue=100}"
+			        Minimum="{Binding Definition.Min, FallbackValue=0}"
+			        CornerRadius="7"
+			        local:Compact.Cutoff="300"
+			        local:Compact.CutoffTarget="{Binding $parent[UserControl]}"
+			        Theme="{StaticResource ValueEditorSlider}"/>
+			<TextBlock IsHitTestVisible="False" Grid.Column="1" Name="NameBlock" HorizontalAlignment="Left" VerticalAlignment="Center" Text="{Binding Name}"/>
+			<Panel Grid.Column="2">
+				<TextBlock IsHitTestVisible="False" 
+				           HorizontalAlignment="Center" 
+				           VerticalAlignment="Center" 
+				           Text="{Binding Value, StringFormat=\{0:0\}}"
+				           Name="NumberDisplay"/>
+				<NumericUpDown ShowButtonSpinner="False"
+				               IsVisible="False"
+				               Name="NumberEntry"
+				               Maximum="{Binding Definition.Max}" 
+				               Minimum="{Binding Definition.Min}"
+				               FormatString="{}{0:0}"
+				               HorizontalContentAlignment="Center"/>
+			</Panel>
 		</Grid>
-		<Slider Value="{Binding Value}"
-		        VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
-				Maximum="{Binding Definition.Max, FallbackValue=100}"
-				Minimum="{Binding Definition.Min, FallbackValue=0}"
-				Ticks="{Binding Definition.Increment, FallbackValue=1}"/>
+		
+		<Panel.Styles>
+			<Style Selector="Slider#MainSlider">
+				<Setter Property="Opacity" Value="0.7"/>
+				<Setter Property="Grid.ColumnSpan" Value="1"/>
+				<Setter Property="Grid.Column" Value="2"/>
+				<Setter Property="Transitions">
+					<Transitions>
+						<DoubleTransition Property="Opacity" Duration="0:0:0.1"/>
+					</Transitions>
+				</Setter>
+			</Style>
+			
+			<Style Selector="Slider#MainSlider[(local|Compact.IsCompact)=true]">
+				<Setter Property="Grid.ColumnSpan" Value="4"/>
+				<Setter Property="Grid.Column" Value="0"/>
+			</Style>
+			
+			<Style Selector="Slider#MainSlider:pointerover">
+				<Setter Property="Opacity" Value="0.8"></Setter>
+			</Style>
+		</Panel.Styles>
 	</Panel>
 </UserControl>

@@ -2,11 +2,11 @@
 
 public class NumberEntry : IUserInterfaceDefinition
 {
-    public static readonly UITarget DesignInstance = new() { Name = "Default Number", Value = 5.0, Definition = new NumberEntry { Units = "ms" }};
+    public static readonly UITarget DesignInstance = new() { Name = "Default Number", Value = 5.0, Definition = new NumberEntry { FormatString = "{0:0} ms" }};
     
     public class UITarget : UserInterface<NumberEntry, double>
     {
     }
 
-    public string Units { get; set; } = "";
+    public string FormatString { get; init; } = "";
 }

@@ -6,5 +6,12 @@
              mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="40" d:DataContext="{x:Static uid:DefaultViewer.DesignInstance}"
              x:DataType="uid:DefaultViewer+UITarget"
              x:Class="BasicFunctionality.Avalonia.UserControls.DefaultDisplay">
-	<TextBlock Text="{Binding Name}" VerticalAlignment="Center"/>
+	<Grid>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="Auto" SharedSizeGroup="SG_PreTextMargin"/>
+			<ColumnDefinition Width="*"/>
+			<ColumnDefinition Width="*"/>
+		</Grid.ColumnDefinitions>
+		<TextBlock Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding Name}" VerticalAlignment="Center"/>
+	</Grid>
 </UserControl>

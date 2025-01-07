@@ -1,5 +1,5 @@
+using System.Diagnostics;
 using Avalonia.Controls;
-using Avalonia.Markup.Xaml;
 using Laminar.PluginFramework.UserInterface;
 using Laminar.PluginFramework.UserInterface.UserInterfaceDefinitions;
 

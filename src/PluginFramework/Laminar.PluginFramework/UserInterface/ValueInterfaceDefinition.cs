@@ -21,11 +21,9 @@ public class UserInterface<TInterfaceDefinition, TValue> : ValueInterface<TValue
     public TInterfaceDefinition Definition { get; init; } = new();
 }
 
-public class ValueInterface<T> : INotifyPropertyChanged
+public class ValueInterface<T> : NamedInterface, INotifyPropertyChanged
 {
     private T _field = default!;
-    
-    public string Name { get; init; } = "";
 
     public required T Value
     {
@@ -46,4 +44,9 @@ public class ValueInterface<T> : INotifyPropertyChanged
         OnPropertyChanged(propertyName);
         return true;
     }
+}
+
+public class NamedInterface
+{
+    public string Name { get; init; } = "";
 }

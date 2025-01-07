@@ -8,10 +8,11 @@
              x:Class="BasicFunctionality.Avalonia.UserControls.ToggleSwitch">
 	<Grid HorizontalAlignment="Stretch">
 		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="*" SharedSizeGroup="SG_ValueName"/>
-			<ColumnDefinition Width="*" SharedSizeGroup="SG_Value"/>
+			<ColumnDefinition Width="Auto" SharedSizeGroup="SG_PreTextMargin"/>
+			<ColumnDefinition Width="*"/>
+			<ColumnDefinition Width="*"/>
 		</Grid.ColumnDefinitions>
-		<TextBlock Text="{Binding Name}" VerticalAlignment="Center"/>
-		<ToggleSwitch Grid.Column="1" IsChecked="{Binding Value}" VerticalAlignment="Center"/>
+		<TextBlock Grid.Column="1" Text="{Binding Name}" VerticalAlignment="Center"/>
+		<ToggleSwitch Grid.Column="2" IsChecked="{Binding Value}" VerticalAlignment="Center"/>
 	</Grid>
 </UserControl>
