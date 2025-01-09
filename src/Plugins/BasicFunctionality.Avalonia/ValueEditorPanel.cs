@@ -1,6 +1,8 @@
 using System.Collections.Specialized;
 using System.Diagnostics;
 using Avalonia;
+using Avalonia.Animation;
+using Avalonia.Animation.Easings;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 
@@ -12,6 +14,10 @@ public class ValueEditorPanel : Panel
     public static ValueEditorChildPosition GetPosition(Control control) => control.GetValue(PositionProperty);
     public static void SetPosition(Control control, ValueEditorChildPosition position) => control.SetValue(PositionProperty, position);
 
+    private static readonly AttachedProperty<double> LeftControlOffsetProperty = AvaloniaProperty.RegisterAttached<ValueEditorPanel, Control, double>("LeftControlOffset");
+    private static double GetLeftControlOffset(Control control) => control.GetValue(LeftControlOffsetProperty);
+    private static void SetLeftControlOffset(Control control, double offset) => control.SetValue(LeftControlOffsetProperty, offset);
+    
     public static readonly StyledProperty<double> IsCompactCutoffProperty = AvaloniaProperty.Register<ValueEditorPanel, double>(nameof(IsCompactCutoff), defaultValue: double.NaN);
     public double IsCompactCutoff
     {
@@ -20,7 +26,6 @@ public class ValueEditorPanel : Panel
     }
 
     public static readonly DirectProperty<ValueEditorPanel, bool> IsCompactProperty = AvaloniaProperty.RegisterDirect<ValueEditorPanel, bool>(nameof(IsCompact), o => o.IsCompact);
-
     public bool IsCompact
     {
         get => _isCompact;
@@ -34,82 +39,53 @@ public class ValueEditorPanel : Panel
         set => SetValue(LeftNameplateMarginProperty, value);
     }
     
-    private readonly Dictionary<ValueEditorChildPosition, List<Control>> _sortedChildren = Enum.GetValues<ValueEditorChildPosition>().ToDictionary(x => x, x => new List<Control>());
-
+    private readonly Dictionary<Control, (int startingDesignator, int endingIndicator)> _previousPositionIndicators = [];
+    
+    
     private double _nameplateMeasuredDesiredWidth;
     private double _compactValueMeasuredDesiredWidth;
     private double _expandedValueMeasuredDesiredWidth;
     private bool _isCompact;
 
+    private readonly DoubleTransition _leftControlOffsetTransition = new() { Property = LeftControlOffsetProperty, Duration = TimeSpan.FromMilliseconds(150), Easing = new QuadraticEaseInOut() };
+
     static ValueEditorPanel()
     {
-        PositionProperty.Changed.AddClassHandler<Control>((control, args) =>
-        {
-            if (control.Parent is not ValueEditorPanel valueEditor) return;
-            var (oldValue, newValue) = args.GetOldAndNewValue<ValueEditorChildPosition>();
-            valueEditor._sortedChildren[oldValue].Remove(control);
-            valueEditor._sortedChildren[newValue].Add(control);
-            valueEditor.InvalidateMeasure();
-        });
-    }
-
-    protected override void ChildrenChanged(object? sender, NotifyCollectionChangedEventArgs e)
-    {
-        base.ChildrenChanged(sender, e);
-        if (e.OldItems is not null)
-        {
-            foreach (Control control in e.OldItems)
-            {
-                _sortedChildren[GetPosition(control)].Remove(control);
-            }
-        }
-
-        if (e.NewItems is not null)
-        {
-            foreach (Control control in e.NewItems)
-            {
-                _sortedChildren[GetPosition(control)].Add(control);
-            }
-        }
+        AffectsParentMeasure<ValueEditorPanel>(PositionProperty, LeftControlOffsetProperty);
+        AffectsMeasure<ValueEditorPanel>(IsCompactProperty, IsCompactCutoffProperty, LeftNameplateMarginProperty);
     }
 
     protected override Size ArrangeOverride(Size finalSize)
     {
-        double actualNameplateWidth, actualValueWidth;
+        var isCompact = finalSize.Width < (double.IsNaN(IsCompactCutoff) ? LeftNameplateMargin + _nameplateMeasuredDesiredWidth + _expandedValueMeasuredDesiredWidth : IsCompactCutoff);
+        Span<double> positionIndicatorValues = stackalloc double[4];
+        positionIndicatorValues[0] = 0;
+        positionIndicatorValues[1] = LeftNameplateMargin;
+
+        positionIndicatorValues[2] = finalSize.Width > _nameplateMeasuredDesiredWidth * 2 + LeftNameplateMargin
+            ? (finalSize.Width + LeftNameplateMargin) / 2
+            : LeftNameplateMargin + _nameplateMeasuredDesiredWidth;
+
+        positionIndicatorValues[3] = finalSize.Width;
         
-        if (finalSize.Width > _nameplateMeasuredDesiredWidth * 2 + LeftNameplateMargin)
+        foreach (var control in Children)
         {
-            actualNameplateWidth = (finalSize.Width - LeftNameplateMargin) / 2;
-            actualValueWidth = (finalSize.Width - LeftNameplateMargin) / 2;
-        }
-        else
-        {
-            actualNameplateWidth = _nameplateMeasuredDesiredWidth;
-            actualValueWidth = Math.Max(0, finalSize.Width - _nameplateMeasuredDesiredWidth - LeftNameplateMargin);
+            var (newStartingDesignator, newEndingDesignator) = GetPositionDesignators(control, isCompact);
+            if (_previousPositionIndicators.TryGetValue(control, out var designators))
+            {
+                var (oldStartingDesignator, _) = designators;
+                if (oldStartingDesignator != newStartingDesignator)
+                {
+                    ChangeOffsetAnimation(control, positionIndicatorValues[oldStartingDesignator] - positionIndicatorValues[newStartingDesignator]);
+                }
+            }
+            _previousPositionIndicators[control] = (newStartingDesignator, newEndingDesignator);
+            var leftControlOffset = GetLeftControlOffset(control);
+            control.Arrange(new Rect(positionIndicatorValues[newStartingDesignator] + leftControlOffset, 0, Math.Max(control.DesiredSize.Width, positionIndicatorValues[newEndingDesignator] - positionIndicatorValues[newStartingDesignator] - leftControlOffset), finalSize.Height));
         }
 
-        var actualNameplateEnd = actualNameplateWidth + LeftNameplateMargin;
-        IsCompact = finalSize.Width < (double.IsNaN(IsCompactCutoff) ? LeftNameplateMargin + _nameplateMeasuredDesiredWidth + _expandedValueMeasuredDesiredWidth : IsCompactCutoff);
+        IsCompact = isCompact;
         
-        var compactElementRect = IsCompact
-            ? new Rect(0, 0, finalSize.Width, finalSize.Height)
-            : new Rect(actualNameplateEnd, 0, actualValueWidth, finalSize.Height);
-        
-        foreach (var control in _sortedChildren[ValueEditorChildPosition.Nameplate])
-        {
-            control.Arrange(new Rect(LeftNameplateMargin, 0, actualNameplateWidth, finalSize.Height));
-        }
-        
-        foreach (var control in _sortedChildren[ValueEditorChildPosition.Value])
-        {
-            control.Arrange(new Rect(actualNameplateEnd, 0, Math.Max(actualValueWidth, control.DesiredSize.Width), finalSize.Height));
-        }
-        
-        foreach (var control in _sortedChildren[ValueEditorChildPosition.SpansWhenCompact])
-        {
-            control.Arrange(compactElementRect);
-        }
-
         return finalSize;
     }
 
@@ -119,38 +95,48 @@ public class ValueEditorPanel : Panel
 
         _nameplateMeasuredDesiredWidth = 0;
         _compactValueMeasuredDesiredWidth = 0;
-        
-        foreach (var control in _sortedChildren[ValueEditorChildPosition.Nameplate])
+
+        if (!IsCompact)
         {
-            control.Measure(availableSize);
-            maxHeight = Math.Max(maxHeight, control.DesiredSize.Height);
-            _nameplateMeasuredDesiredWidth = Math.Max(_nameplateMeasuredDesiredWidth, control.DesiredSize.Width);            
+            _expandedValueMeasuredDesiredWidth = 0;
         }
 
-        foreach (var control in _sortedChildren[ValueEditorChildPosition.Value])
+        foreach (var control in Children)
         {
             control.Measure(availableSize.WithWidth(double.PositiveInfinity));
             maxHeight = Math.Max(maxHeight, control.DesiredSize.Height);
-            if (IsCompact)
+            if (GetPosition(control) == ValueEditorChildPosition.Nameplate)
             {
-                _compactValueMeasuredDesiredWidth = Math.Max(_compactValueMeasuredDesiredWidth, control.DesiredSize.Width);   
+                _nameplateMeasuredDesiredWidth = Math.Max(_nameplateMeasuredDesiredWidth, control.DesiredSize.Width);
             }
-            else
+        
+            if (GetPosition(control) == ValueEditorChildPosition.Value && !IsCompact)
             {
-                _expandedValueMeasuredDesiredWidth = Math.Max(_compactValueMeasuredDesiredWidth, control.DesiredSize.Width);
+                _expandedValueMeasuredDesiredWidth = Math.Max(_expandedValueMeasuredDesiredWidth, control.DesiredSize.Width);
             }
-        }
-
-        foreach (var control in _sortedChildren[ValueEditorChildPosition.SpansWhenCompact])
-        {
-            control.Measure(availableSize);
-            maxHeight = Math.Max(maxHeight, control.DesiredSize.Height);
-            _compactValueMeasuredDesiredWidth = Math.Max(_compactValueMeasuredDesiredWidth, control.DesiredSize.Width);
         }
 
         var desiredWidth = LeftNameplateMargin + _nameplateMeasuredDesiredWidth + _compactValueMeasuredDesiredWidth;
         return new Size(desiredWidth, maxHeight);
     }
+
+    private void ChangeOffsetAnimation(Control control, double offsetChange)
+    {
+        control.Transitions ??= [];
+        var currentLeftControlOffset = GetLeftControlOffset(control);
+        control.Transitions.Remove(_leftControlOffsetTransition);
+        SetLeftControlOffset(control, currentLeftControlOffset + offsetChange);
+        control.Transitions.Add(_leftControlOffsetTransition);
+        SetLeftControlOffset(control, 0);
+    }
+
+    private static (int, int) GetPositionDesignators(Control control, bool isCompact) => GetPosition(control) switch
+    {
+        ValueEditorChildPosition.Nameplate => (1, 2),
+        ValueEditorChildPosition.Value => (2, 3),
+        ValueEditorChildPosition.SpansWhenCompact => (isCompact ? 0 : 2, 3),
+        _ => (0, 3)
+    };
 }
 
 public enum ValueEditorChildPosition

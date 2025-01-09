@@ -7,23 +7,53 @@
              mc:Ignorable="d" d:DesignWidth="300" d:DesignHeight="40" d:DataContext="{x:Static uid:StringEditor.DesignInstance}"
              x:DataType="uid:StringEditor+UITarget"
              x:Class="BasicFunctionality.Avalonia.UserControls.StringEditor">
-	<local:ValueEditorPanel HorizontalAlignment="Stretch" VerticalAlignment="Center" Name="MainPanel">
+	<local:ValueEditorPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Name="MainPanel" Background="Transparent">
 		<TextBlock local:ValueEditorPanel.Position="Nameplate"
+		           Name="NameDisplay"
 		           Text="{Binding Name}" 
 		           VerticalAlignment="Center"/>
-		<!-- <Control Name="SecondColumnSizer" HorizontalAlignment="Stretch" local:ValueEditorPanel.Position="Value"/> -->
 		<TextBox Text="{Binding Value}"
 		         Name="EntryTextbox"
-		         VerticalAlignment="Center" HorizontalAlignment="Stretch">
-			<TextBox.Styles>
-				<Style Selector="TextBox:focus">
-					<Setter Property="local:ValueEditorPanel.Position" Value="SpansWhenCompact"/>
-				</Style>
-				
-				<Style Selector="TextBox">
-					<Setter Property="local:ValueEditorPanel.Position" Value="Value"/>
-				</Style>
-			</TextBox.Styles>
+		         Margin="5,0,0,0"
+		         VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+		         VerticalContentAlignment="Center">
 		</TextBox>
 	</local:ValueEditorPanel>
+	
+	<UserControl.Styles>
+		<Style Selector="local|ValueEditorPanel[IsCompact=True]:pointerover">
+			<Style Selector="^ > TextBox#EntryTextbox">
+				<Setter Property="local:ValueEditorPanel.Position" Value="SpansWhenCompact"/>
+			</Style>
+			
+			<Style Selector="^ > TextBlock#NameDisplay">
+				<Setter Property="Opacity" Value="0.0"/>
+			</Style>
+		</Style>
+		
+		<Style Selector="local|ValueEditorPanel[IsCompact=True]:focus-within">
+			<Style Selector="^ > TextBox#EntryTextbox">
+				<Setter Property="local:ValueEditorPanel.Position" Value="SpansWhenCompact"/>
+			</Style>
+			
+			<Style Selector="^ > TextBlock#NameDisplay">
+				<Setter Property="Opacity" Value="0.0"/>
+			</Style>
+		</Style>
+		
+		<Style Selector="local|ValueEditorPanel">
+			<Style Selector="^ > TextBox#EntryTextbox">
+				<Setter Property="local:ValueEditorPanel.Position" Value="Value"/>
+			</Style>
+			
+			<Style Selector="^ > TextBlock#NameDisplay">
+				<Setter Property="Opacity" Value="1.0"/>
+				<Setter Property="Transitions">
+					<Transitions>
+						<DoubleTransition Property="Opacity" Duration="0:0:0.15"/>
+					</Transitions>
+				</Setter>
+			</Style>
+		</Style>
+	</UserControl.Styles>
 </UserControl>

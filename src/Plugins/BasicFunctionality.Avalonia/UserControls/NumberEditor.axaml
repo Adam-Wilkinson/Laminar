@@ -111,12 +111,12 @@
       </ControlTheme>
 	</UserControl.Resources>
 	
-	<local:ValueEditorPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Name="MainGrid">
+	<local:ValueEditorPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent">
 		<TextBlock local:ValueEditorPanel.Position="Nameplate"
+               Name="NameTextblock"
                Text="{Binding Name}" 
                VerticalAlignment="Center"/>
-		<NumericUpDown local:ValueEditorPanel.Position="Value"  
-                   VerticalContentAlignment="Center" 
+		<NumericUpDown VerticalContentAlignment="Center" 
                    Value="{Binding Value}" 
                    VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
                    MinWidth="0"
@@ -129,13 +129,56 @@
     </NumericUpDown>
     
     <local:ValueEditorPanel.Styles>
-      <Style Selector="local|ValueEditorPanel[IsCompact=True] > NumericUpDown">
-        <Setter Property="ShowButtonSpinner" Value="False"/>
+      <Style Selector="local|ValueEditorPanel[IsCompact=True]">
+        <Style Selector="^ > NumericUpDown">
+          <Setter Property="ShowButtonSpinner" Value="False"/>
+          <Setter Property="local:ValueEditorPanel.Position" Value="Value"></Setter>
+        </Style>
+        
+        <Style Selector="^ > TextBlock#NameTextblock">
+          <Setter Property="Opacity" Value="1.0"/>
+          <Setter Property="Transitions">
+            <Transitions>
+              <DoubleTransition Property="Opacity" Duration="0:0:0.15"/>
+            </Transitions>
+          </Setter>
+        </Style>
       </Style>
       
-      <Style Selector="local|ValueEditorPanel[IsCompact=False] > NumericUpDown">
-        <Setter Property="FormatString" Value="{Binding Definition.FormatString}"/>
-        <Setter Property="ShowButtonSpinner" Value="True"/>
+      <Style Selector="local|ValueEditorPanel[IsCompact=False]">
+        <Style Selector="^ > NumericUpDown">
+          <Setter Property="FormatString" Value="{Binding Definition.FormatString}"/>
+          <Setter Property="ShowButtonSpinner" Value="True"/>
+          <Setter Property="local:ValueEditorPanel.Position" Value="Value"/>
+        </Style>
+        
+        <Style Selector="^ > TextBlock#NameTextblock">
+          <Setter Property="Opacity" Value="1.0"/>
+        </Style>
+      </Style>
+      
+      <Style Selector="local|ValueEditorPanel[IsCompact=True]:pointerover">
+        <Style Selector="^ > NumericUpDown">
+          <Setter Property="FormatString" Value="{Binding Definition.FormatString}"/>
+          <Setter Property="ShowButtonSpinner" Value="True"/>
+          <Setter Property="local:ValueEditorPanel.Position" Value="SpansWhenCompact"/>
+        </Style>
+        
+        <Style Selector="^ > TextBlock#NameTextblock">
+          <Setter Property="Opacity" Value="0.0"/>
+        </Style>
+      </Style>
+      
+      <Style Selector="local|ValueEditorPanel[IsCompact=True]:focus-within">
+        <Style Selector="^ > NumericUpDown">
+          <Setter Property="FormatString" Value="{Binding Definition.FormatString}"/>
+          <Setter Property="ShowButtonSpinner" Value="True"/>
+          <Setter Property="local:ValueEditorPanel.Position" Value="SpansWhenCompact"/>
+        </Style>
+        
+        <Style Selector="^ > TextBlock#NameTextblock">
+          <Setter Property="Opacity" Value="0.0"/>
+        </Style>
       </Style>
     </local:ValueEditorPanel.Styles>
 	</local:ValueEditorPanel>

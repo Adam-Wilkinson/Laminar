@@ -9,9 +9,10 @@
              x:Class="BasicFunctionality.Avalonia.UserControls.ToggleSwitch">
 	<local:ValueEditorPanel>
 		<TextBlock local:ValueEditorPanel.Position="Nameplate" 
-		           Text="{Binding Name}" 
+		           Text="{Binding Name}"
 		           VerticalAlignment="Center"/>
-		<ToggleSwitch local:ValueEditorPanel.Position="Value" 
+		<ToggleSwitch local:ValueEditorPanel.Position="SpansWhenCompact" 
+		              Margin="5,0,0,0"
 		              IsChecked="{Binding Value}" 
 		              VerticalAlignment="Center"/>
 	</local:ValueEditorPanel>

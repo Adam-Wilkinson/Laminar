@@ -43,12 +43,12 @@ public partial class SliderEditor : UserControl
     {
         InitializeComponent();
 
-        MainSlider.PointerWheelChanged += (s, e) =>
+        MainSlider.PointerWheelChanged += (_, e) =>
         {
             MainSlider.Value += e.Delta.Y - e.Delta.X;
         };
 
-        NumberEntry.Classes.CollectionChanged += (s, e) =>
+        NumberEntry.Classes.CollectionChanged += (_, e) =>
         {
             if (e.Action == NotifyCollectionChangedAction.Remove && e.OldItems!.Contains(":focus-within"))
             {

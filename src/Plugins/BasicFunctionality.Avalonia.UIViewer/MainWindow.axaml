@@ -11,14 +11,7 @@
         x:Class="BasicFunctionality.Avalonia.UIViewer.MainWindow"
         x:DataType="local:MainWindow"
         Title="BasicFunctionality.Avalonia.UIViewer">
-    <StackPanel Margin="10" Spacing="5" HorizontalAlignment="Stretch" Grid.IsSharedSizeScope="True">
-        <StackPanel.Styles>
-            <Style Selector="StackPanel > :is(Control):not(Separator)">
-                <Setter Property="Height" Value="40"/>
-            </Style>
-        </StackPanel.Styles>
-        
-        <Button Name="InvalidateButton" Command="{Binding Invalid}"/>
+    <UniformGrid Columns="1" Margin="10" HorizontalAlignment="Stretch" >
         
         <bfa:BoolEditor HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
             <bfa:BoolEditor.DataContext>
@@ -101,5 +94,5 @@
                 <ui:UserInterface x:TypeArguments="uid:ToggleSwitch, x:Boolean" Value="False" Name="Default Name"/>
             </bfa:ToggleSwitch.DataContext>
         </bfa:ToggleSwitch>
-    </StackPanel>
+    </UniformGrid>
 </Window>

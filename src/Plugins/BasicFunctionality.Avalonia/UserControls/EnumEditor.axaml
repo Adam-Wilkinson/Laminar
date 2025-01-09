@@ -7,7 +7,7 @@
              mc:Ignorable="d" d:DesignWidth="100" d:DesignHeight="40" d:DataContext="{x:Static uid:EnumDropdown.Default}"
              x:DataType="uid:EnumDropdown+UITarget"
              x:Class="BasicFunctionality.Avalonia.UserControls.EnumEditor">
-	<local:ValueEditorPanel IsCompactCutoff="300">
+	<local:ValueEditorPanel>
 		<ComboBox VerticalAlignment="Center" HorizontalAlignment="Stretch" VerticalContentAlignment="Center" 
 		          Name="CBox"
 		          local:ValueEditorPanel.Position="SpansWhenCompact"
