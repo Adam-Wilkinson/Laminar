@@ -5,7 +5,7 @@
              xmlns:uid="using:Laminar.PluginFramework.UserInterface.UserInterfaceDefinitions"
              xmlns:local="using:BasicFunctionality.Avalonia"
              mc:Ignorable="d" d:DesignWidth="350" d:DesignHeight="40" d:DataContext="{x:Static uid:Slider.DesignInstance}"
-             x:DataType="uid:Slider+UITarget"
+             x:DataType="uid:Slider+IXamlTarget"
              x:Class="BasicFunctionality.Avalonia.UserControls.SliderEditor">
 	<UserControl.Resources>
 		<ControlTheme x:Key="FluentSliderHorizontalRepeatButton" TargetType="RepeatButton">
@@ -119,18 +119,11 @@
 		<Panel.Styles>
 			<Style Selector="Slider#MainSlider">
 				<Setter Property="Opacity" Value="0.7"/>
-				<Setter Property="Grid.ColumnSpan" Value="1"/>
-				<Setter Property="Grid.Column" Value="2"/>
 				<Setter Property="Transitions">
 					<Transitions>
 						<DoubleTransition Property="Opacity" Duration="0:0:0.1"/>
 					</Transitions>
 				</Setter>
-			</Style>
-			
-			<Style Selector="Slider#MainSlider[(local|Compact.IsCompact)=true]">
-				<Setter Property="Grid.ColumnSpan" Value="4"/>
-				<Setter Property="Grid.Column" Value="0"/>
 			</Style>
 			
 			<Style Selector="Slider#MainSlider:pointerover">

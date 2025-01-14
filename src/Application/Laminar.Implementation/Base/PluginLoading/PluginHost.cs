@@ -19,6 +19,7 @@ public class PluginHost(
     ITypeInfoStore typeInfoStore,
     ILoadedNodeManager loadedNodeManager,
     IUserInterfaceStore userInterfaceStore,
+    IDataInterfaceFactory dataInterfaceFactory,
     ISerializer serializer)
     : IPluginHost
 {
@@ -27,6 +28,12 @@ public class PluginHost(
         TNode node = new();
         registeredPlugin.RegisterNode(node);
         loadedNodeManager.AddNodeToCatagory(node, subItemName is null ? menuItemName : $"{menuItemName}{ItemCatagory<IWrappedNode>.SeparationChar}{subItemName}");
+    }
+
+    public bool RegisterDataInterface<TInterfaceDefinition, TData, TInterface>() where TInterfaceDefinition : IUserInterfaceDefinition, new() where TData : notnull
+    {
+        dataInterfaceFactory.RegisterInterface<TInterfaceDefinition, TData, TInterface>();
+        return true;
     }
 
     public bool RegisterType<T>(string hexColour, string userFriendlyName, T defaultValue, IUserInterfaceDefinition defaultEditor, IUserInterfaceDefinition defaultDisplay, TypeSerializer<T>? serializer1)

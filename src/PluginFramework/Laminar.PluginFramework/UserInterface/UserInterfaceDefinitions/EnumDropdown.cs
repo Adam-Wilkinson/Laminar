@@ -6,7 +6,7 @@ public class EnumDropdown : IUserInterfaceDefinition
 {
     public static readonly UITarget Default = new() { Value = NotifyCollectionChangedAction.Add, Name = "Default Enum"};
     
-    public class UITarget : UserInterface<EnumDropdown, object>
+    public class UITarget : InterfaceData<EnumDropdown, object>
     {
     }
 }

@@ -4,7 +4,7 @@ public class StringEditor : IUserInterfaceDefinition
 {
     public static readonly UITarget DesignInstance = new() { Name = "Default String", Value = "Default Value" };
     
-    public class UITarget : UserInterface<StringEditor, string>
+    public class UITarget : InterfaceData<StringEditor, string>
     {
     }
 }

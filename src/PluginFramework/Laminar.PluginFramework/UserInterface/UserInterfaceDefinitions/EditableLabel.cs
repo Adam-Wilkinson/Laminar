@@ -6,7 +6,7 @@ public class EditableLabel : IUserInterfaceDefinition, INotifyPropertyChanged
 {
     public static readonly UITarget DesignInstance = new() { Name = "Default Name", Value = "Default Value" };
     
-    public class UITarget : UserInterface<EditableLabel, string>
+    public class UITarget : InterfaceData<EditableLabel, string>
     {
     }
 

@@ -4,7 +4,7 @@ public class DefaultViewer : IUserInterfaceDefinition
 {
     public static readonly UITarget DesignInstance = new() { Name = "Default Name", Value = None.Instance};
     
-    public class UITarget : UserInterface<DefaultViewer, None>
+    public class UITarget : InterfaceData<DefaultViewer, None>
     {
     }
 }

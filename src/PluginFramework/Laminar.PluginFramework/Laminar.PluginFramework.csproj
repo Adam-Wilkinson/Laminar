@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-	<TargetFramework>net7.0</TargetFramework>
+	<TargetFramework>net8.0</TargetFramework>
 	<Nullable>enable</Nullable>
 	<ImplicitUsings>enable</ImplicitUsings>
 	<Nullable>enable</Nullable>
@@ -13,6 +13,7 @@
 	<RepositoryType>git</RepositoryType>
 	<PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
 	<PackageLicenseFile>COPYING.txt</PackageLicenseFile>
+	<LangVersion>default</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>

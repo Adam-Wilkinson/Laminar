@@ -6,6 +6,7 @@ using Avalonia.Markup.Xaml;
 using Laminar.Avalonia.InitializationTargets;
 using Laminar.Avalonia.ViewModels;
 using Laminar.Avalonia.Views;
+using Laminar.Contracts.Base.UserInterface;
 using Laminar.Implementation.Extensions.ServiceInitializers;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -35,6 +36,8 @@ public partial class App : Application
                 .AddSingleton<TopLevel>(desktop.MainWindow)
                 .BuildServiceProvider();
 
+            DataTemplates.Add(new DataInterfaceTemplate(services.GetRequiredService<IDataInterfaceFactory>()));
+            
             services.GetServices<IBeforeApplicationBuiltTarget>().Initialize();
             
             desktop.MainWindow.DataContext = services.GetRequiredService<MainWindowViewModel>();

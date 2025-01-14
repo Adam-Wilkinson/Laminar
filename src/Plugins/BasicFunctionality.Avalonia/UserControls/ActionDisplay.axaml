@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:uid="using:Laminar.PluginFramework.UserInterface.UserInterfaceDefinitions"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:DataType="uid:Slider+UITarget"
+             x:DataType="uid:Slider+IXamlTarget"
              x:Class="BasicFunctionality.Avalonia.UserControls.ActionDisplay">
 	<Button Content="{Binding Name}"/>
 </UserControl>

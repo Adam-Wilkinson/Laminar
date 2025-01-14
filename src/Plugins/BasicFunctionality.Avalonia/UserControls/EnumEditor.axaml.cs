@@ -14,6 +14,6 @@ public partial class EnumEditor : UserControl
 
     protected override void OnDataContextChanged(EventArgs e)
     {
-        CBox.ItemsSource = (DataContext as UserInterface<EnumDropdown, object>)?.Value.GetType().GetEnumValues();
+        CBox.ItemsSource = (DataContext as InterfaceData<EnumDropdown, object>)?.Value.GetType().GetEnumValues();
     }
 }

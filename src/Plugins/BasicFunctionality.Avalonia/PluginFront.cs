@@ -2,6 +2,9 @@
 using BasicFunctionality.Avalonia.UserControls;
 using Laminar.PluginFramework.Registration;
 using Laminar.PluginFramework.UserInterface.UserInterfaceDefinitions;
+using Slider = Laminar.PluginFramework.UserInterface.UserInterfaceDefinitions.Slider;
+using StringEditor = Laminar.PluginFramework.UserInterface.UserInterfaceDefinitions.StringEditor;
+using ToggleSwitch = Laminar.PluginFramework.UserInterface.UserInterfaceDefinitions.ToggleSwitch;
 
 [module: HasFrontendDependency(FrontendDependency.Avalonia)]
 
@@ -26,5 +29,15 @@ public class PluginFront : IPlugin
         host.RegisterInterface<Laminar.PluginFramework.UserInterface.UserInterfaceDefinitions.ToggleSwitch, UserControls.ToggleSwitch, Control>();
         host.RegisterInterface<Checkbox, UserControls.CheckBox, Control>();
         host.RegisterInterface<EditableLabel, AvaloniaEditableLabel, Control>();
+
+        host.RegisterDataInterface<NumberEntry, double, NumberEditor>();
+        host.RegisterDataInterface<DefaultViewer, object, DefaultDisplay>();
+        host.RegisterDataInterface<StringViewer, string, StringDisplay>();
+        host.RegisterDataInterface<StringEditor, string, UserControls.StringEditor>();
+        host.RegisterDataInterface<EnumDropdown, object, EnumEditor>();
+        host.RegisterDataInterface<Slider, double, SliderEditor>();
+        host.RegisterDataInterface<ToggleSwitch, bool, UserControls.ToggleSwitch>();
+        host.RegisterDataInterface<Checkbox, bool, UserControls.CheckBox>();
+        host.RegisterDataInterface<EditableLabel, string, AvaloniaEditableLabel>();
     }
 }

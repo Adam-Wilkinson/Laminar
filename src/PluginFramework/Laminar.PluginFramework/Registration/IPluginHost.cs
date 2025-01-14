@@ -151,6 +151,9 @@ public interface IPluginHost
         where TInterfaceDefinition : IUserInterfaceDefinition
         where TInterface : TFrontend, new();
 
+    bool RegisterDataInterface<TInterfaceDefinition, TData, TInterface>()
+        where TInterfaceDefinition : IUserInterfaceDefinition, new() where TData : notnull;
+    
     bool RegisterType<T>(string hexColour, string userFriendlyName, T defaultValue, IUserInterfaceDefinition defaultEditor, IUserInterfaceDefinition defaultDisplay, TypeSerializer<T>? serializer)
         where T : notnull;
 }

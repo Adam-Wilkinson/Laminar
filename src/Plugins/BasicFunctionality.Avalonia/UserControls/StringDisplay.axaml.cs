@@ -9,7 +9,7 @@ namespace BasicFunctionality.Avalonia.UserControls;
 
 public partial class StringDisplay : UserControl
 {
-    private UserInterface<StringViewer, string>? _interface;
+    private InterfaceData<StringViewer, string>? _interface;
     
     public StringDisplay()
     {
@@ -23,13 +23,13 @@ public partial class StringDisplay : UserControl
             _interface.PropertyChanged -= DisplayValue_PropertyChanged;   
         }
         
-        _interface = DataContext as UserInterface<StringViewer, string>;
+        _interface = DataContext as InterfaceData<StringViewer, string>;
         if (_interface is not null)
         {
             _interface.PropertyChanged += DisplayValue_PropertyChanged;
         }
         
-        DisplayValue_PropertyChanged(this, new PropertyChangedEventArgs(nameof(ValueInterface<string>.Value)));
+        DisplayValue_PropertyChanged(this, new PropertyChangedEventArgs(nameof(StringViewer.UITarget.Value)));
     }
 
     private void DisplayValue_PropertyChanged(object? sender, PropertyChangedEventArgs e)

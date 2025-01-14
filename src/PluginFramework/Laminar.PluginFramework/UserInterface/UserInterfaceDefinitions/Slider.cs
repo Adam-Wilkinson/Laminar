@@ -2,9 +2,9 @@
 
 public class Slider : IUserInterfaceDefinition
 {
-    public static readonly UITarget DesignInstance = new() { Name = "Default Slider", Value = 5.0, Definition = new Slider { Min = 0.0, Max = 100.0 }};
+    public static readonly InterfaceData<Slider, double> DesignInstance = new() { Name = "Default Slider", Value = 5.0, Definition = new Slider { Min = 0.0, Max = 100.0 }};
     
-    public class UITarget : UserInterface<Slider, double>
+    public interface IXamlTarget : IInterfaceData<Slider, double>
     {
     }
 

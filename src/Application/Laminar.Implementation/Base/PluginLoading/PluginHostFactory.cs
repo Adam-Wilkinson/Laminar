@@ -11,11 +11,12 @@ internal class PluginHostFactory(
     ITypeInfoStore typeInfoStore,
     ILoadedNodeManager loadedNodeManager,
     IUserInterfaceStore userInterfaceStore,
+    IDataInterfaceFactory dataInterfaceFactory,
     ISerializer serializer)
     : IPluginHostFactory
 {
     public IPluginHost GetPluginhost(IRegisteredPlugin registeredPlugin)
     {
-        return new PluginHost(registeredPlugin, typeInfoStore, loadedNodeManager, userInterfaceStore, serializer);
+        return new PluginHost(registeredPlugin, typeInfoStore, loadedNodeManager, userInterfaceStore, dataInterfaceFactory, serializer);
     }
 }
